@@ -1,16 +1,11 @@
 # properties
 
-A new Flutter project.
+Naina-Asset.
 
 ## Getting Started
 
-This project is a starting point for a Flutter application.
+"สร้างมูลค่าอสังหาริมทรัพย์ที่คุณมี ที่ 𝐍𝐀𝐈𝐍𝐀 𝐀𝐒𝐒𝐄𝐓"
+บริษัท ในนา แอสเสท จํากัด เปิดรับบริหารอสังหาริมทรัพย์ทุกรูปแบบ ด้วยประสบการณ์และความเชี่ยวชาญกว่า 10 ปี พร้อมทั้งทีมบุคลากรที่มีคุณภาพในทุกด้าน เพียงคุณมีอสังหาริมทรัพย์และฝากให้เราดูแล เราพร้อมที่จะสร้างความคุ้มค่าในการลงทุนอย่างแน่นอน :
 
-A few resources to get you started if this is your first Flutter project:
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+© 2023  Dzentric Co.,Ltd. All Rights Reserved.
