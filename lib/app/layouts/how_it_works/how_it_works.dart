@@ -220,7 +220,7 @@ class _HowItWorksState extends State<HowItWorks> {
                                       : Metrics.isTablet(context)
                                           ? 3
                                           : 4,
-                              childAspectRatio: 285 / (340),
+                              childAspectRatio: 285 / (400),
                               crossAxisSpacing: 24,
                               mainAxisSpacing: 0,
                             ),
@@ -282,16 +282,70 @@ class _HowItWorksState extends State<HowItWorks> {
                                         crossAxisAlignment:
                                             CrossAxisAlignment.stretch,
                                         children: [
-                                          AspectRatio(
-                                            aspectRatio: 285 / 230,
-                                            child: ClipRRect(
-                                              borderRadius:
-                                                  BorderRadius.circular(20),
-                                              child: Image.network(
-                                                gridItem.imgPath,
-                                                fit: BoxFit.cover,
+                                          Stack(
+                                            children: [
+                                              AspectRatio(
+                                                aspectRatio: 285 / 230,
+                                                child: ClipRRect(
+                                                  borderRadius:
+                                                      BorderRadius.circular(20),
+                                                  child: Image.network(
+                                                    gridItem.imgPath,
+                                                    fit: BoxFit.cover,
+                                                  ),
+                                                ),
                                               ),
-                                            ),
+                                              Positioned(
+                                                top: 10,
+                                                left: 20,
+                                                child: Container(
+                                                  // width: 150,
+                                                  // height: 70,
+                                                  decoration: BoxDecoration(
+                                                    color: white,
+                                                    borderRadius:
+                                                        const BorderRadius.only(
+                                                      topLeft:
+                                                          Radius.circular(15),
+                                                      topRight:
+                                                          Radius.circular(15),
+                                                      bottomLeft:
+                                                          Radius.circular(15),
+                                                      bottomRight:
+                                                          Radius.circular(15),
+                                                    ),
+                                                    boxShadow: [
+                                                      BoxShadow(
+                                                        color: Colors.grey
+                                                            .withOpacity(0.25),
+                                                        offset:
+                                                            const Offset(0, 4),
+                                                        blurRadius: 4,
+                                                      ),
+                                                    ],
+                                                  ),
+                                                  padding:
+                                                      const EdgeInsets.all(4),
+                                                  child: Center(
+                                                    child: ' Guest favourite'
+                                                        .poppins(
+                                                      color: greenBg,
+                                                      fontSize: 15 + 4 * pad,
+                                                    ),
+                                                  ),
+                                                ),
+                                              ),
+                                              Positioned(
+                                                  top: 10,
+                                                  right: 20,
+                                                  child: IconButton(
+                                                    onPressed: () {},
+                                                    icon: Icon(
+                                                      Icons.favorite,
+                                                      color: white,
+                                                    ),
+                                                  ))
+                                            ],
                                           ),
                                           Expanded(
                                             child: Padding(
@@ -306,6 +360,46 @@ class _HowItWorksState extends State<HowItWorks> {
                                                   gridItem.title.poppins(
                                                     fontWeight: FontWeight.bold,
                                                     fontSize: 18,
+                                                  ),
+                                                  Row(
+                                                    mainAxisAlignment:
+                                                        MainAxisAlignment
+                                                            .spaceBetween,
+                                                    children: [
+                                                      gridItem.subtitle.poppins(
+                                                        fontSize: 18,
+                                                      ),
+                                                      gridItem.price.poppins(
+                                                        fontSize: 18,
+                                                        fontWeight:
+                                                            FontWeight.bold,
+                                                      ),
+                                                    ],
+                                                  ),
+                                                  Row(
+                                                    mainAxisAlignment:
+                                                        MainAxisAlignment
+                                                            .spaceBetween,
+                                                    children: [
+                                                      gridItem.subtitle.poppins(
+                                                        fontSize: 18,
+                                                      ),
+                                                      gridItem.price.poppins(
+                                                        fontSize: 18,
+                                                        fontWeight:
+                                                            FontWeight.bold,
+                                                      ),
+                                                    ],
+                                                  ),
+                                                  Padding(
+                                                    padding: const EdgeInsets
+                                                        .fromLTRB(0, 4, 0, 4),
+                                                    child:
+                                                        gridItem.title.poppins(
+                                                      fontWeight:
+                                                          FontWeight.bold,
+                                                      fontSize: 18,
+                                                    ),
                                                   ),
                                                   Row(
                                                     mainAxisAlignment:

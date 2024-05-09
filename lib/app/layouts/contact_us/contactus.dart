@@ -21,27 +21,30 @@ class _ContactusState extends State<Contactus> {
   double Map_Lng = 98.99387637805485;
 
   Widget Map() {
-    return GoogleMap(
-      markers: {
-        Marker(
-          markerId: const MarkerId("marker1"),
-          position: LatLng(Map_Lat, Map_Lng),
-          draggable: true,
-          onDragEnd: (value) {
-            // value is the new position
-          },
-          // To do: custom marker icon
+    return Container(
+      color: brown.withOpacity(0.5),
+      child: GoogleMap(
+        markers: {
+          Marker(
+            markerId: const MarkerId("marker1"),
+            position: LatLng(Map_Lat, Map_Lng),
+            draggable: true,
+            onDragEnd: (value) {
+              // value is the new position
+            },
+            // To do: custom marker icon
+          ),
+          Marker(
+            markerId: const MarkerId("marker2"),
+            position: LatLng(Map_Lat, Map_Lng),
+          ),
+        },
+        initialCameraPosition: CameraPosition(
+          target: LatLng(Map_Lat, Map_Lng),
+          zoom: 14,
         ),
-        Marker(
-          markerId: const MarkerId("marker2"),
-          position: LatLng(Map_Lat, Map_Lng),
-        ),
-      },
-      initialCameraPosition: CameraPosition(
-        target: LatLng(Map_Lat, Map_Lng),
-        zoom: 14,
+        // ToDO: add markers
       ),
-      // ToDO: add markers
     );
   }
 

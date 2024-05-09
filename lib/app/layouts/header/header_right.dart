@@ -72,7 +72,7 @@ class HeaderRight extends StatelessWidget {
                                   ),
                                 ),
                                 child: Center(
-                                  child: 'Ventura'.msMadi(
+                                  child: 'Naina Asset'.msMadi(
                                     color: orange,
                                     fontSize: 36,
                                     height: 1.5,
@@ -115,7 +115,7 @@ class HeaderRight extends StatelessWidget {
                                       letterSpacing: 1,
                                       height: 1.25,
                                     ),
-                                    '2001'.poppins(
+                                    '2024'.poppins(
                                       fontWeight: FontWeight.bold,
                                       fontSize: 24,
                                       letterSpacing: 0.5,

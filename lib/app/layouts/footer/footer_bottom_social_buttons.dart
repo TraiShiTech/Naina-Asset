@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-
+import 'package:properties/core/core.dart';
 
 import '../../../core/utils/metrics.dart';
 
@@ -12,10 +12,12 @@ class FooterBottomSocialButtons extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Row(
-      mainAxisAlignment: Metrics.isMobile(context) ? MainAxisAlignment.center : MainAxisAlignment.start,
+      mainAxisAlignment: Metrics.isMobile(context)
+          ? MainAxisAlignment.center
+          : MainAxisAlignment.start,
       children: [
         Material(
-          color: Colors.transparent,
+          color: white,
           shape: const RoundedRectangleBorder(
             side: BorderSide(color: Color(0xff988968)),
           ),
@@ -36,7 +38,7 @@ class FooterBottomSocialButtons extends StatelessWidget {
         ),
         const SizedBox(width: 12),
         Material(
-          color: Colors.transparent,
+          color: white,
           shape: const RoundedRectangleBorder(
             side: BorderSide(color: Color(0xff988968)),
           ),
@@ -57,7 +59,7 @@ class FooterBottomSocialButtons extends StatelessWidget {
         ),
         const SizedBox(width: 12),
         Material(
-          color: Colors.transparent,
+          color: white,
           shape: const RoundedRectangleBorder(
             side: BorderSide(color: Color(0xff988968)),
           ),

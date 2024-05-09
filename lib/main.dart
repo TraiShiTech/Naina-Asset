@@ -29,7 +29,7 @@ import 'app/home.dart';
 //----(Git Lab)
 //1.----> git add .
 //2.------> git remote set-url origin https://github.com/TraiShiTech/Naina-Asset.git
-//3.-------->git commit -m "Start 1"
+//3.-------->git commit -m "Start 2"
 //4.-----------> git push origin main
 //----------------------------------------------------->
 //----(Git Hub)
@@ -49,10 +49,10 @@ class Ventura extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Ventura',
+      title: 'Naina Asset',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
-        primarySwatch: Colors.green,
+        primarySwatch: Colors.brown,
       ),
       scrollBehavior: MyCustomScrollBehavior(),
       home: const Home(),

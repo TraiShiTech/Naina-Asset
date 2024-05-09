@@ -1,5 +1,5 @@
 name: properties
-description: A new Flutter project.
+description: Naina Asset.
 # The following line prevents the package from being accidentally published to
 # pub.dev using `flutter pub publish`. This is preferred for private packages.
 publish_to: 'none' # Remove this line if you wish to publish to pub.dev
@@ -53,6 +53,7 @@ dev_dependencies:
   google_maps_flutter: ^2.2.1
   google_maps_flutter_web: ^0.5.4
   flutter_widget_from_html_core: ^0.8.0
+  # flutter_osm_plugin: ^0.70.0
   flutter_map_location_marker: ^8.0.8
 
   # venturedive_flutter_cli: ^0.0.1
