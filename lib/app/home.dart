@@ -22,8 +22,7 @@ class _HomeState extends ConsumerState<Home> {
   final GlobalKey _headerKey = GlobalKey();
 
   Future scrollToItem(GlobalKey key) async {
-    await Scrollable.ensureVisible(key.currentContext!,
-        duration: const Duration(milliseconds: 480));
+    await Scrollable.ensureVisible(key.currentContext!, duration: const Duration(milliseconds: 480));
   }
 
   @override
@@ -83,18 +82,18 @@ class _HomeState extends ConsumerState<Home> {
                         ),
                         Container(
                             width: Metrics.width(context),
-                            decoration: BoxDecoration(
-                              gradient: LinearGradient(
-                                colors: [
-                                  BG_AboutUs.withOpacity(0.9),
-                                  BG_AboutUs.withOpacity(0.8),
-                                  BG_AboutUs.withOpacity(0.7),
-                                  BG_AboutUs.withOpacity(0.6),
-                                ],
-                                begin: Alignment.topCenter,
-                                end: Alignment.bottomCenter,
-                              ),
-                            ),
+                            decoration: BoxDecoration(color: Color.fromRGBO(52, 49, 36, 1)
+                                // gradient: LinearGradient(
+                                //   colors: [
+                                //     BG_AboutUs.withOpacity(0.9),
+                                //     BG_AboutUs.withOpacity(0.8),
+                                //     BG_AboutUs.withOpacity(0.7),
+                                //     BG_AboutUs.withOpacity(0.6),
+                                //   ],
+                                //   begin: Alignment.topCenter,
+                                //   end: Alignment.bottomCenter,
+                                // ),
+                                ),
                             child: Column(children: [
                               const Experiences(),
                               const AboutUs(),
