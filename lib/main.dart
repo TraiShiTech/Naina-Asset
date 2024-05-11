@@ -29,7 +29,7 @@ import 'app/home.dart';
 //----(Git Lab)
 //1.----> git add .
 //2.------> git remote set-url origin https://github.com/TraiShiTech/Naina-Asset.git
-//3.-------->git commit -m "Start 2"
+//3.-------->git commit -m "โครง Main"
 //4.-----------> git push origin main
 //----------------------------------------------------->
 //----(Git Hub)

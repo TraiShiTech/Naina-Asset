@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:properties/core/core.dart';
 
 import '../../../core/theme/app_colors.dart';
 import '../../../core/utils/methods.dart';
 import '../../../core/utils/metrics.dart';
+import '../../asset_all.dart';
 import '../../widgets/base_container.dart';
 import '../about_us/about_us_info.dart';
 import 'experiences_image.dart';
@@ -63,6 +65,43 @@ class Experiences extends StatelessWidget {
                         ),
                       ],
                     ),
+                const SizedBox(height: 40),
+                InkWell(
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => AssetAll(),
+                      ),
+                    );
+                  },
+                  child: Container(
+                    width: 200,
+                    height: 70,
+                    decoration: BoxDecoration(
+                      color: brown,
+                      borderRadius: const BorderRadius.only(
+                        topLeft: Radius.circular(20),
+                        topRight: Radius.circular(20),
+                        bottomLeft: Radius.circular(20),
+                        bottomRight: Radius.circular(20),
+                      ),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.grey.withOpacity(0.25),
+                          offset: const Offset(0, 4),
+                          blurRadius: 4,
+                        ),
+                      ],
+                    ),
+                    child: Center(
+                      child: 'More Information'.poppins(
+                        color: white,
+                        fontSize: 15 + 4 * pad,
+                      ),
+                    ),
+                  ),
+                ),
                 const SizedBox(height: 90),
               ],
             ),

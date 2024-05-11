@@ -5,6 +5,7 @@ import 'package:properties/core/core.dart';
 import '../../core/utils/methods.dart';
 import '../../core/utils/metrics.dart';
 import '../widgets/base_container.dart';
+import '../with_us.dart';
 
 class Brands extends StatelessWidget {
   const Brands({
@@ -57,29 +58,39 @@ class Brands extends StatelessWidget {
                     flex: 1,
                     child: Align(
                       alignment: Alignment.centerLeft,
-                      child: Container(
-                        width: 150,
-                        height: 70,
-                        decoration: BoxDecoration(
-                          color: brown,
-                          borderRadius: const BorderRadius.only(
-                            topLeft: Radius.circular(20),
-                            topRight: Radius.circular(20),
-                            bottomLeft: Radius.circular(20),
-                            bottomRight: Radius.circular(20),
-                          ),
-                          boxShadow: [
-                            BoxShadow(
-                              color: Colors.grey.withOpacity(0.25),
-                              offset: const Offset(0, 4),
-                              blurRadius: 4,
+                      child: InkWell(
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => WistUs(),
                             ),
-                          ],
-                        ),
-                        child: Center(
-                          child: 'List with Us '.poppins(
-                            color: white,
-                            fontSize: 15 + 4 * pad,
+                          );
+                        },
+                        child: Container(
+                          width: 150,
+                          height: 70,
+                          decoration: BoxDecoration(
+                            color: brown,
+                            borderRadius: const BorderRadius.only(
+                              topLeft: Radius.circular(20),
+                              topRight: Radius.circular(20),
+                              bottomLeft: Radius.circular(20),
+                              bottomRight: Radius.circular(20),
+                            ),
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.grey.withOpacity(0.25),
+                                offset: const Offset(0, 4),
+                                blurRadius: 4,
+                              ),
+                            ],
+                          ),
+                          child: Center(
+                            child: 'List with Us '.poppins(
+                              color: white,
+                              fontSize: 15 + 4 * pad,
+                            ),
                           ),
                         ),
                       ),

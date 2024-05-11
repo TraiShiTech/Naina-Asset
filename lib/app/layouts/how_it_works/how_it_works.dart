@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:properties/core/core.dart';
 
 import '../../../core/utils/metrics.dart';
+import '../../rent_all.dart';
 import '../../widgets/base_container.dart';
 import '../../widgets/how_it_work_card_item.dart';
 import '../header/header_left.dart';
@@ -230,39 +231,34 @@ class _HowItWorksState extends State<HowItWorks> {
                             itemBuilder: (context, index) {
                               final gridItem = decorativeItems[index];
 
-                              return MouseRegion(
-                                  onEnter: (val) => setState(
-                                      () => isHover[index1][index] = true),
-                                  onExit: (val) => setState(
-                                      () => isHover[index1][index] = false),
-                                  child: AnimatedContainer(
-                                    duration: const Duration(milliseconds: 240),
-                                    padding: const EdgeInsets.all(8),
-                                    decoration: BoxDecoration(
-                                      color: isHover[index1][index]
-                                          ? Colors.grey[100]
-                                          : white.withOpacity(0),
-                                      borderRadius: const BorderRadius.only(
-                                        topLeft: Radius.circular(20),
-                                        topRight: Radius.circular(20),
-                                        bottomLeft: Radius.circular(8),
-                                        bottomRight: Radius.circular(8),
-                                      ),
-                                      boxShadow: [
-                                        BoxShadow(
-                                          color: isHover[index1][index]
-                                              ? textPrimary.withOpacity(0.15)
-                                              : textPrimary.withOpacity(0),
-                                          offset: const Offset(0, 6),
-                                          blurRadius: 10,
-                                        ),
-                                      ],
+                              return InkWell(
+                                onTap: () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) => RentAll(),
                                     ),
-                                    child: Container(
-                                      margin: EdgeInsets.only(
-                                          bottom: 12 + 12 * pad),
+                                  );
+                                  // Navigator.pushReplacement(
+                                  //   context,
+                                  //   MaterialPageRoute(
+                                  //     builder: (context) => Rent(),
+                                  //   ),
+                                  // );
+                                },
+                                child: MouseRegion(
+                                    onEnter: (val) => setState(
+                                        () => isHover[index1][index] = true),
+                                    onExit: (val) => setState(
+                                        () => isHover[index1][index] = false),
+                                    child: AnimatedContainer(
+                                      duration:
+                                          const Duration(milliseconds: 240),
+                                      padding: const EdgeInsets.all(8),
                                       decoration: BoxDecoration(
-                                        color: white,
+                                        color: isHover[index1][index]
+                                            ? Colors.grey[100]
+                                            : white.withOpacity(0),
                                         borderRadius: const BorderRadius.only(
                                           topLeft: Radius.circular(20),
                                           topRight: Radius.circular(20),
@@ -271,159 +267,189 @@ class _HowItWorksState extends State<HowItWorks> {
                                         ),
                                         boxShadow: [
                                           BoxShadow(
-                                            color:
-                                                Colors.grey.withOpacity(0.25),
-                                            offset: const Offset(0, 4),
-                                            blurRadius: 4,
+                                            color: isHover[index1][index]
+                                                ? textPrimary.withOpacity(0.15)
+                                                : textPrimary.withOpacity(0),
+                                            offset: const Offset(0, 6),
+                                            blurRadius: 10,
                                           ),
                                         ],
                                       ),
-                                      child: Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.stretch,
-                                        children: [
-                                          Stack(
-                                            children: [
-                                              AspectRatio(
-                                                aspectRatio: 285 / 230,
-                                                child: ClipRRect(
-                                                  borderRadius:
-                                                      BorderRadius.circular(20),
-                                                  child: Image.network(
-                                                    gridItem.imgPath,
-                                                    fit: BoxFit.cover,
-                                                  ),
-                                                ),
-                                              ),
-                                              Positioned(
-                                                top: 10,
-                                                left: 20,
-                                                child: Container(
-                                                  // width: 150,
-                                                  // height: 70,
-                                                  decoration: BoxDecoration(
-                                                    color: white,
-                                                    borderRadius:
-                                                        const BorderRadius.only(
-                                                      topLeft:
-                                                          Radius.circular(15),
-                                                      topRight:
-                                                          Radius.circular(15),
-                                                      bottomLeft:
-                                                          Radius.circular(15),
-                                                      bottomRight:
-                                                          Radius.circular(15),
-                                                    ),
-                                                    boxShadow: [
-                                                      BoxShadow(
-                                                        color: Colors.grey
-                                                            .withOpacity(0.25),
-                                                        offset:
-                                                            const Offset(0, 4),
-                                                        blurRadius: 4,
-                                                      ),
-                                                    ],
-                                                  ),
-                                                  padding:
-                                                      const EdgeInsets.all(4),
-                                                  child: Center(
-                                                    child: ' Guest favourite'
-                                                        .poppins(
-                                                      color: greenBg,
-                                                      fontSize: 15 + 4 * pad,
-                                                    ),
-                                                  ),
-                                                ),
-                                              ),
-                                              Positioned(
-                                                  top: 10,
-                                                  right: 20,
-                                                  child: IconButton(
-                                                    onPressed: () {},
-                                                    icon: Icon(
-                                                      Icons.favorite,
-                                                      color: white,
-                                                    ),
-                                                  ))
-                                            ],
+                                      child: Container(
+                                        margin: EdgeInsets.only(
+                                            bottom: 12 + 12 * pad),
+                                        decoration: BoxDecoration(
+                                          color: white,
+                                          borderRadius: const BorderRadius.only(
+                                            topLeft: Radius.circular(20),
+                                            topRight: Radius.circular(20),
+                                            bottomLeft: Radius.circular(8),
+                                            bottomRight: Radius.circular(8),
                                           ),
-                                          Expanded(
-                                            child: Padding(
-                                              padding: const EdgeInsets.all(24),
-                                              child: Column(
-                                                crossAxisAlignment:
-                                                    CrossAxisAlignment.start,
-                                                mainAxisAlignment:
-                                                    MainAxisAlignment
-                                                        .spaceBetween,
-                                                children: [
-                                                  gridItem.title.poppins(
-                                                    fontWeight: FontWeight.bold,
-                                                    fontSize: 18,
+                                          boxShadow: [
+                                            BoxShadow(
+                                              color:
+                                                  Colors.grey.withOpacity(0.25),
+                                              offset: const Offset(0, 4),
+                                              blurRadius: 4,
+                                            ),
+                                          ],
+                                        ),
+                                        child: Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.stretch,
+                                          children: [
+                                            Stack(
+                                              children: [
+                                                AspectRatio(
+                                                  aspectRatio: 285 / 230,
+                                                  child: ClipRRect(
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            20),
+                                                    child: Image.network(
+                                                      gridItem.imgPath,
+                                                      fit: BoxFit.cover,
+                                                    ),
                                                   ),
-                                                  Row(
-                                                    mainAxisAlignment:
-                                                        MainAxisAlignment
-                                                            .spaceBetween,
-                                                    children: [
-                                                      gridItem.subtitle.poppins(
-                                                        fontSize: 18,
+                                                ),
+                                                Positioned(
+                                                  top: 10,
+                                                  left: 20,
+                                                  child: Container(
+                                                    // width: 150,
+                                                    // height: 70,
+                                                    decoration: BoxDecoration(
+                                                      color: white,
+                                                      borderRadius:
+                                                          const BorderRadius
+                                                              .only(
+                                                        topLeft:
+                                                            Radius.circular(15),
+                                                        topRight:
+                                                            Radius.circular(15),
+                                                        bottomLeft:
+                                                            Radius.circular(15),
+                                                        bottomRight:
+                                                            Radius.circular(15),
                                                       ),
-                                                      gridItem.price.poppins(
-                                                        fontSize: 18,
-                                                        fontWeight:
-                                                            FontWeight.bold,
+                                                      boxShadow: [
+                                                        BoxShadow(
+                                                          color: Colors.grey
+                                                              .withOpacity(
+                                                                  0.25),
+                                                          offset: const Offset(
+                                                              0, 4),
+                                                          blurRadius: 4,
+                                                        ),
+                                                      ],
+                                                    ),
+                                                    padding:
+                                                        const EdgeInsets.all(4),
+                                                    child: Center(
+                                                      child: ' Guest favourite'
+                                                          .poppins(
+                                                        color: greenBg,
+                                                        fontSize: 15 + 4 * pad,
                                                       ),
-                                                    ],
+                                                    ),
                                                   ),
-                                                  Row(
-                                                    mainAxisAlignment:
-                                                        MainAxisAlignment
-                                                            .spaceBetween,
-                                                    children: [
-                                                      gridItem.subtitle.poppins(
-                                                        fontSize: 18,
+                                                ),
+                                                Positioned(
+                                                    top: 10,
+                                                    right: 20,
+                                                    child: IconButton(
+                                                      onPressed: () {},
+                                                      icon: Icon(
+                                                        Icons.favorite,
+                                                        color: white,
                                                       ),
-                                                      gridItem.price.poppins(
-                                                        fontSize: 18,
-                                                        fontWeight:
-                                                            FontWeight.bold,
-                                                      ),
-                                                    ],
-                                                  ),
-                                                  Padding(
-                                                    padding: const EdgeInsets
-                                                        .fromLTRB(0, 4, 0, 4),
-                                                    child:
-                                                        gridItem.title.poppins(
+                                                    ))
+                                              ],
+                                            ),
+                                            Expanded(
+                                              child: Padding(
+                                                padding:
+                                                    const EdgeInsets.all(24),
+                                                child: Column(
+                                                  crossAxisAlignment:
+                                                      CrossAxisAlignment.start,
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment
+                                                          .spaceBetween,
+                                                  children: [
+                                                    gridItem.title.poppins(
                                                       fontWeight:
                                                           FontWeight.bold,
                                                       fontSize: 18,
                                                     ),
-                                                  ),
-                                                  Row(
-                                                    mainAxisAlignment:
-                                                        MainAxisAlignment
-                                                            .spaceBetween,
-                                                    children: [
-                                                      gridItem.subtitle.poppins(
-                                                        fontSize: 18,
-                                                      ),
-                                                      gridItem.price.poppins(
-                                                        fontSize: 18,
+                                                    Row(
+                                                      mainAxisAlignment:
+                                                          MainAxisAlignment
+                                                              .spaceBetween,
+                                                      children: [
+                                                        gridItem.subtitle
+                                                            .poppins(
+                                                          fontSize: 18,
+                                                        ),
+                                                        gridItem.price.poppins(
+                                                          fontSize: 18,
+                                                          fontWeight:
+                                                              FontWeight.bold,
+                                                        ),
+                                                      ],
+                                                    ),
+                                                    Row(
+                                                      mainAxisAlignment:
+                                                          MainAxisAlignment
+                                                              .spaceBetween,
+                                                      children: [
+                                                        gridItem.subtitle
+                                                            .poppins(
+                                                          fontSize: 18,
+                                                        ),
+                                                        gridItem.price.poppins(
+                                                          fontSize: 18,
+                                                          fontWeight:
+                                                              FontWeight.bold,
+                                                        ),
+                                                      ],
+                                                    ),
+                                                    Padding(
+                                                      padding: const EdgeInsets
+                                                          .fromLTRB(0, 4, 0, 4),
+                                                      child: gridItem.title
+                                                          .poppins(
                                                         fontWeight:
                                                             FontWeight.bold,
+                                                        fontSize: 18,
                                                       ),
-                                                    ],
-                                                  ),
-                                                ],
+                                                    ),
+                                                    Row(
+                                                      mainAxisAlignment:
+                                                          MainAxisAlignment
+                                                              .spaceBetween,
+                                                      children: [
+                                                        gridItem.subtitle
+                                                            .poppins(
+                                                          fontSize: 18,
+                                                        ),
+                                                        gridItem.price.poppins(
+                                                          fontSize: 18,
+                                                          fontWeight:
+                                                              FontWeight.bold,
+                                                        ),
+                                                      ],
+                                                    ),
+                                                  ],
+                                                ),
                                               ),
                                             ),
-                                          ),
-                                        ],
+                                          ],
+                                        ),
                                       ),
-                                    ),
-                                  ));
+                                    )),
+                              );
                             },
                           ),
                         ],
