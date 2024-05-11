@@ -831,4 +831,8 @@ packages:
     version: "6.3.0"
 sdks:
   dart: ">=3.2.0-0 <4.0.0"
+<<<<<<< Updated upstream
   flutter: ">=3.19.2"
+=======
+  flutter: ">=3.10.0"
+>>>>>>> Stashed changes
