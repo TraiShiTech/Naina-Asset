@@ -30,33 +30,6 @@ class _HowItWorksState extends State<HowItWorks> {
     'Commercial Buildings',
     'Others',
   ];
-
-  List<Image> icons_links = [
-    // Icon(Icons.home),
-    // Icon(Icons.offline_share),
-    // Icon(Icons.home_work),
-    // Icon(Icons.search),
-    Image.asset(
-      'images/0a2957b866583552c2a99e30ae16a983.png',
-      width: 40,
-      height: 40,
-    ),
-    Image.asset(
-      'images/429021569a7eea5b675f332d01cb14c3.png',
-      width: 40,
-      height: 40,
-    ),
-    Image.asset(
-      'images/3f1e9ce98091d9b06574ed58aeff6056.png',
-      width: 40,
-      height: 40,
-    ),
-    Image.asset(
-      'images/c2572995202a9d2831d9a57c325fe511.png',
-      width: 40,
-      height: 40,
-    ),
-  ];
   List<List<bool>> isHover = [];
 
   @override
@@ -102,6 +75,33 @@ class _HowItWorksState extends State<HowItWorks> {
     final isBigScreen = Metrics.isDesktop(context) || Metrics.isTablet(context);
     final pad1 = isBigScreen ? 0.0 : normalize(min: 576, max: 976, data: Metrics.width(context));
 
+    List<Image> icons_links = [
+      // Icon(Icons.home),
+      // Icon(Icons.offline_share),
+      // Icon(Icons.home_work),
+      // Icon(Icons.search),
+      Image.asset(
+        'images/0a2957b866583552c2a99e30ae16a983.png',
+        width: Metrics.isMobile(context) ? 30 : 40,
+        height: Metrics.isMobile(context) ? 30 : 40,
+      ),
+      Image.asset(
+        'images/429021569a7eea5b675f332d01cb14c3.png',
+        width: Metrics.isMobile(context) ? 30 : 40,
+        height: Metrics.isMobile(context) ? 30 : 40,
+      ),
+      Image.asset(
+        'images/3f1e9ce98091d9b06574ed58aeff6056.png',
+        width: Metrics.isMobile(context) ? 30 : 40,
+        height: Metrics.isMobile(context) ? 30 : 40,
+      ),
+      Image.asset(
+        'images/c2572995202a9d2831d9a57c325fe511.png',
+        width: Metrics.isMobile(context) ? 30 : 40,
+        height: Metrics.isMobile(context) ? 30 : 40,
+      ),
+    ];
+
     return BaseContainer(
       child: Column(
         // crossAxisAlignment: Metrics.isMobile(context) ? CrossAxisAlignment.center : CrossAxisAlignment.start,
@@ -119,41 +119,42 @@ class _HowItWorksState extends State<HowItWorks> {
           //     letterSpacing: 1,
           //   ),
           // ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Text(
-                'All properties are',
-                style: GoogleFonts.poppins(
-                    textStyle: const TextStyle(
-                  color: Color.fromRGBO(137, 125, 120, 1),
-                  fontWeight: FontWeight.w300,
-                  height: 1.5,
-                  letterSpacing: 1,
-                )),
-              ),
-              Text(
-                ' handpicked, curated and managed ',
-                style: GoogleFonts.poppins(
-                    textStyle: const TextStyle(
-                  color: Color.fromRGBO(137, 125, 120, 1),
-                  fontWeight: FontWeight.bold,
-                  height: 1.5,
-                  letterSpacing: 1,
-                )),
-              ),
-              Text(
-                'by us! Become worry-free by choosing us today!',
-                style: GoogleFonts.poppins(
-                    textStyle: const TextStyle(
-                  color: Color.fromRGBO(137, 125, 120, 1),
-                  fontWeight: FontWeight.w300,
-                  height: 1.5,
-                  letterSpacing: 1,
-                )),
-              ),
-            ],
-          ),
+
+          isBigScreen == Metrics.isTablet(context)
+              ? const Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    title1(
+                      text: ' All properties are ',
+                      fw: FontWeight.w300,
+                    ),
+                    title1(
+                      text: ' handpicked, curated and managed ',
+                      fw: FontWeight.bold,
+                    ),
+                    title1(
+                      text: 'by us! Become worry-free by choosing us today!',
+                      fw: FontWeight.w300,
+                    ),
+                  ],
+                )
+              : const Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    title1(
+                      text: ' All properties are ',
+                      fw: FontWeight.w300,
+                    ),
+                    title1(
+                      text: ' handpicked, curated and managed ',
+                      fw: FontWeight.bold,
+                    ),
+                    title1(
+                      text: 'by us! Become worry-free by choosing us today!',
+                      fw: FontWeight.w300,
+                    ),
+                  ],
+                ),
           Padding(
             padding: const EdgeInsets.all(8.0),
             child: Align(
@@ -194,13 +195,14 @@ class _HowItWorksState extends State<HowItWorks> {
           const SizedBox(height: 20),
           Center(
             child: FractionallySizedBox(
-              widthFactor: 0.7,
+              widthFactor: isBigScreen == Metrics.isTablet(context) ? 1 : 0.7,
               child: Padding(
-                padding: const EdgeInsets.all(8.0),
+                padding: EdgeInsets.all(Metrics.isMobile(context) ? 6 : 8.0),
                 child: Container(
+                  alignment: Alignment.center,
                   width: Metrics.width(context),
                   // height: 72,
-                  padding: const EdgeInsets.all(8),
+                  padding: EdgeInsets.all(Metrics.isMobile(context) ? 6 : 8.0),
                   decoration: BoxDecoration(
                     borderRadius: const BorderRadius.only(
                       topLeft: Radius.circular(20),
@@ -221,6 +223,7 @@ class _HowItWorksState extends State<HowItWorks> {
                     //     color: const Color.fromARGB(255, 163, 161, 161), width: 1),
                   ),
                   child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.center,
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
                       // if (Metrics.isDesktop(context) || Metrics.isTablet(context))
@@ -228,16 +231,24 @@ class _HowItWorksState extends State<HowItWorks> {
                         final link = links[index];
 
                         return Column(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            icons_links[index],
+                            Center(child: icons_links[index]),
                             Padding(
-                              padding: EdgeInsets.only(left: index != 0 ? 24 : 0),
+                              padding: EdgeInsets.only(
+                                  left: index != 0
+                                      ? isBigScreen == Metrics.isMobile(context)
+                                          ? 0
+                                          : 0
+                                      : 0),
                               child: TextButton(
                                 onPressed: () {},
+                                style: ButtonStyle(padding: MaterialStateProperty.all(EdgeInsets.all(0))),
                                 child: link.poppins(
                                   fontWeight: FontWeight.w500,
                                   color: Color.fromRGBO(71, 69, 69, 1),
-                                  fontSize: (Metrics.isDesktop(context) || Metrics.isTablet(context)) ? 16 : 12,
+                                  fontSize: (Metrics.isDesktop(context) || Metrics.isTablet(context)) ? 16 : 8,
                                   height: 1.5,
                                 ),
                               ),
@@ -286,7 +297,7 @@ class _HowItWorksState extends State<HowItWorks> {
                                             : 4,
                                 childAspectRatio: 150 / (250),
                                 crossAxisSpacing: 24,
-                                mainAxisSpacing: 0,
+                                mainAxisSpacing: 10,
                               ),
                               shrinkWrap: true,
                               physics: const NeverScrollableScrollPhysics(),
@@ -317,7 +328,8 @@ class _HowItWorksState extends State<HowItWorks> {
                                         duration: const Duration(milliseconds: 240),
                                         padding: const EdgeInsets.all(8),
                                         decoration: BoxDecoration(
-                                          color: isHover[index1][index] ? Colors.grey[100] : white.withOpacity(0),
+                                          // color: isHover[index1][index] ? Colors.grey[100] : white.withOpacity(0),
+                                          color: isHover[index1][index] ? white : white,
 // =======
                                           // return MouseRegion(
                                           //     onEnter: (val) => setState(() => isHover[index1][index] = true),
@@ -388,22 +400,13 @@ class _HowItWorksState extends State<HowItWorks> {
                                               ),
                                           child: Column(
                                             crossAxisAlignment: CrossAxisAlignment.stretch,
-// >>>>>>> main-nav
                                             children: [
                                               Stack(
                                                 children: [
                                                   AspectRatio(
-// <<<<<<< HEAD
-                                                    // aspectRatio: 285 / 230,
-                                                    // child: ClipRRect(
-                                                    //   borderRadius:
-                                                    //       BorderRadius.circular(
-                                                    //           20),
-// =======
                                                     aspectRatio: 150 / 150,
                                                     child: ClipRRect(
                                                       borderRadius: BorderRadius.circular(20),
-// >>>>>>> main-nav
                                                       child: Image.network(
                                                         gridItem.imgPath,
                                                         fit: BoxFit.cover,
@@ -576,7 +579,7 @@ class _HowItWorksState extends State<HowItWorks> {
                                               ),
                                               Expanded(
                                                 child: Padding(
-                                                  padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 0),
+                                                  padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
                                                   child: Column(
                                                     crossAxisAlignment: CrossAxisAlignment.start,
                                                     mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -705,7 +708,7 @@ class _HowItWorksState extends State<HowItWorks> {
           FractionallySizedBox(
             widthFactor: 0.9,
             child: AspectRatio(
-              aspectRatio: 16 / 3,
+              aspectRatio: isBigScreen == Metrics.isTablet(context) ? 16 / 12 : 16 / 3,
               child: Container(
                 clipBehavior: Clip.antiAlias,
                 decoration: const BoxDecoration(
@@ -719,7 +722,7 @@ class _HowItWorksState extends State<HowItWorks> {
                 ),
                 child: Center(
                   child: FractionallySizedBox(
-                    widthFactor: 0.6,
+                    widthFactor: isBigScreen == Metrics.isMobile(context) ? 0.9 : 0.6,
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
@@ -728,7 +731,7 @@ class _HowItWorksState extends State<HowItWorks> {
                           decoration: InputDecoration(
                               hintText: 'Email or Phone number ...'.toUpperCase(),
                               filled: true,
-                              hintStyle: TextStyle(fontSize: 12),
+                              hintStyle: TextStyle(fontSize: Metrics.isMobile(context) ? 8 : 12),
                               fillColor: white,
                               border: OutlineInputBorder(
                                   borderSide: BorderSide.none, borderRadius: BorderRadius.circular(5))),
@@ -753,11 +756,12 @@ class _HowItWorksState extends State<HowItWorks> {
                               // ],
                             ),
                             child: 'Submit Contact Information >'.toUpperCase().poppins(
-                                color: Color.fromRGBO(72, 72, 72, 1),
-                                fontWeight: FontWeight.w500,
-                                height: 1.5,
-                                letterSpacing: 1,
-                                fontSize: 12),
+                                  color: Color.fromRGBO(72, 72, 72, 1),
+                                  fontWeight: FontWeight.w500,
+                                  height: 1.5,
+                                  letterSpacing: 1,
+                                  fontSize: isBigScreen == Metrics.isTablet(context) ? 6 : 12,
+                                ),
                           ),
                         ),
                       ],
@@ -814,6 +818,25 @@ class _HowItWorksState extends State<HowItWorks> {
           // const SizedBox(height: 80),
         ],
       ),
+    );
+  }
+}
+
+class title1 extends StatelessWidget {
+  const title1({super.key, required this.text, required this.fw});
+  final String text;
+  final FontWeight fw;
+  @override
+  Widget build(BuildContext context) {
+    return Text(
+      text,
+      style: GoogleFonts.poppins(
+          textStyle: TextStyle(
+        color: Color.fromRGBO(137, 125, 120, 1),
+        fontWeight: fw,
+        height: 1.5,
+        letterSpacing: 1,
+      )),
     );
   }
 }

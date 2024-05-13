@@ -31,6 +31,12 @@ class _Asset_ManagementState extends State<Asset_Management> {
     'https://images.unsplash.com/photo-1540638349517-3abd5afc5847?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=774&q=80',
     'https://images.unsplash.com/photo-1599696848652-f0ff23bc911f?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=774&q=80',
   ];
+  List<String> title = [
+    'Decorations &\n Renovations',
+    'Photography &\n Listing',
+    'Guest \n Communications',
+    'Cleaning &\n Maintenance',
+  ];
 ///////----------------------------------------------->
   @override
   void initState() {
@@ -55,13 +61,9 @@ class _Asset_ManagementState extends State<Asset_Management> {
     final pad = normalize(min: 576, max: 1440, data: Metrics.width(context));
 
     final isBigScreen = Metrics.isDesktop(context) || Metrics.isTablet(context);
-    final pad1 = isBigScreen
-        ? 0.0
-        : normalize(min: 576, max: 976, data: Metrics.width(context));
-    double plus = Metrics.isDesktop(context)
-        ? 0
-        : (0.5 *
-            (1 - normalize(min: 976, max: 1440, data: Metrics.width(context))));
+    final pad1 = isBigScreen ? 0.0 : normalize(min: 576, max: 976, data: Metrics.width(context));
+    double plus =
+        Metrics.isDesktop(context) ? 0 : (0.5 * (1 - normalize(min: 976, max: 1440, data: Metrics.width(context))));
     _controller = PageController(
       initialPage: currentPage,
       keepPage: false,
@@ -82,8 +84,7 @@ class _Asset_ManagementState extends State<Asset_Management> {
                   child: Container(
                     width: 130,
                     // height: 30,
-                    margin: EdgeInsets.only(
-                        right: (72 * pad) + (120 * pad1), left: 120 * pad1),
+                    margin: EdgeInsets.only(right: (72 * pad) + (120 * pad1), left: 120 * pad1),
                     padding: const EdgeInsets.all(10),
                     decoration: BoxDecoration(
                       borderRadius: const BorderRadius.only(
@@ -155,14 +156,10 @@ class _Asset_ManagementState extends State<Asset_Management> {
                                       bottomRight: Radius.circular(20),
                                     ),
                                     color: Colors.grey,
-                                    border: Border.all(
-                                        color: const Color.fromARGB(
-                                            255, 163, 161, 161),
-                                        width: 1),
+                                    border: Border.all(color: const Color.fromARGB(255, 163, 161, 161), width: 1),
                                   ),
                                   child: Column(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
+                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                     children: [
                                       '35%'.poppins(
                                         color: brown,
@@ -183,9 +180,8 @@ class _Asset_ManagementState extends State<Asset_Management> {
                           Expanded(
                             flex: 2,
                             child: Column(
-                                crossAxisAlignment: Metrics.isMobile(context)
-                                    ? CrossAxisAlignment.center
-                                    : CrossAxisAlignment.start,
+                                crossAxisAlignment:
+                                    Metrics.isMobile(context) ? CrossAxisAlignment.center : CrossAxisAlignment.start,
                                 children: [
                                   const SizedBox(height: 80),
                                   Align(
@@ -217,8 +213,7 @@ class _Asset_ManagementState extends State<Asset_Management> {
                       Container(
                         padding: const EdgeInsets.all(8.0),
                         child: GridView.builder(
-                          gridDelegate:
-                              SliverGridDelegateWithFixedCrossAxisCount(
+                          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                             crossAxisCount: Metrics.isMobile(context)
                                 ? 1
                                 : Metrics.isCompact(context)
@@ -253,8 +248,7 @@ class _Asset_ManagementState extends State<Asset_Management> {
                                   // );
                                 },
                                 child: Container(
-                                  margin:
-                                      EdgeInsets.only(bottom: 12 + 12 * pad),
+                                  margin: EdgeInsets.only(bottom: 12 + 12 * pad),
                                   decoration: BoxDecoration(
                                     color: white,
                                     borderRadius: const BorderRadius.only(
@@ -272,16 +266,14 @@ class _Asset_ManagementState extends State<Asset_Management> {
                                     ],
                                   ),
                                   child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.stretch,
+                                    crossAxisAlignment: CrossAxisAlignment.stretch,
                                     children: [
                                       Stack(
                                         children: [
                                           AspectRatio(
                                             aspectRatio: 265 / 150,
                                             child: ClipRRect(
-                                              borderRadius:
-                                                  BorderRadius.circular(20),
+                                              borderRadius: BorderRadius.circular(20),
                                               child: Image.network(
                                                 gridItem.imgPath,
                                                 fit: BoxFit.cover,
@@ -296,19 +288,15 @@ class _Asset_ManagementState extends State<Asset_Management> {
                                               // height: 70,
                                               decoration: BoxDecoration(
                                                 color: white,
-                                                borderRadius:
-                                                    const BorderRadius.only(
+                                                borderRadius: const BorderRadius.only(
                                                   topLeft: Radius.circular(15),
                                                   topRight: Radius.circular(15),
-                                                  bottomLeft:
-                                                      Radius.circular(15),
-                                                  bottomRight:
-                                                      Radius.circular(15),
+                                                  bottomLeft: Radius.circular(15),
+                                                  bottomRight: Radius.circular(15),
                                                 ),
                                                 boxShadow: [
                                                   BoxShadow(
-                                                    color: Colors.grey
-                                                        .withOpacity(0.25),
+                                                    color: Colors.grey.withOpacity(0.25),
                                                     offset: const Offset(0, 4),
                                                     blurRadius: 4,
                                                   ),
@@ -316,8 +304,7 @@ class _Asset_ManagementState extends State<Asset_Management> {
                                               ),
                                               padding: const EdgeInsets.all(4),
                                               child: Center(
-                                                child:
-                                                    ' Guest favourite'.poppins(
+                                                child: ' Guest favourite'.poppins(
                                                   color: greenBg,
                                                   fontSize: 15 + 4 * pad,
                                                 ),
@@ -392,6 +379,7 @@ class _Asset_ManagementState extends State<Asset_Management> {
         ImageSliderController(
           currentPage: currentPage,
           images: images,
+          title: title,
           prev: currentPage != 0
               ? () {
                   _controller.animateToPage(
@@ -452,8 +440,7 @@ class _Asset_ManagementState extends State<Asset_Management> {
           color: brown,
           fontSize: 25 + 4 * pad,
         ),
-        'Please kindly leave your email or phone number and we will get back to you as soon as possible!'
-            .poppins(
+        'Please kindly leave your email or phone number and we will get back to you as soon as possible!'.poppins(
           color: brown,
           fontSize: 16 + 4 * pad,
         ),
@@ -479,8 +466,7 @@ class _Asset_ManagementState extends State<Asset_Management> {
                         // width: 200,
                         height: 40,
                         // color: white,
-                        padding: EdgeInsets.only(
-                            left: 260.0 * pad, right: 260.0 * pad),
+                        padding: EdgeInsets.only(left: 260.0 * pad, right: 260.0 * pad),
                         child: Container(
                           color: white,
                           child: TextFormField(
@@ -494,9 +480,7 @@ class _Asset_ManagementState extends State<Asset_Management> {
                               // code when the user saves the form.
                             },
                             validator: (String? value) {
-                              return (value != null && value.contains('@'))
-                                  ? 'Do not use the @ char.'
-                                  : null;
+                              return (value != null && value.contains('@')) ? 'Do not use the @ char.' : null;
                             },
                           ),
                         ),

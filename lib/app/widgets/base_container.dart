@@ -14,7 +14,7 @@ class BaseContainer extends StatelessWidget {
       width: Metrics.width(context),
       height: height,
       child: Padding(
-        padding: EdgeInsets.symmetric(horizontal: Metrics.isMobile(context) ? 16 : 24),
+        padding: EdgeInsets.symmetric(horizontal: Metrics.isMobile(context) ? 10 : 24),
         child: child,
       ),
     );

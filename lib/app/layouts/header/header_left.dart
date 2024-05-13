@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -56,7 +57,7 @@ class HeaderLeftInput extends StatelessWidget {
 
     return Center(
       child: FractionallySizedBox(
-        widthFactor: 0.7,
+        widthFactor: isBigScreen == Metrics.isTablet(context) ? 1 : 0.7,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -80,7 +81,7 @@ class HeaderLeftInput extends StatelessWidget {
                   child: 'Monthly Stay'.poppins(
                     color: white,
                     fontWeight: FontWeight.w300,
-                    fontSize: 14,
+                    fontSize: isBigScreen == Metrics.isMobile(context) ? 10 : 14,
                     letterSpacing: 1,
                     height: 1.25,
                   ),
@@ -90,7 +91,7 @@ class HeaderLeftInput extends StatelessWidget {
             Container(
               // height: 72,
               margin: EdgeInsets.only(right: (72 * pad) + (120 * pad1), left: 120 * pad1),
-              padding: const EdgeInsets.all(8),
+              padding: EdgeInsets.all(Metrics.isMobile(context) ? 2 : 8),
               decoration: BoxDecoration(
                 // borderRadius: const BorderRadius.only(
                 //   topLeft: Radius.circular(20),
@@ -113,53 +114,61 @@ class HeaderLeftInput extends StatelessWidget {
                       ...List.generate(links.length, (index) {
                         final link = links[index];
 
-                        return Row(
-                          children: [
-                            if (Metrics.isDesktop(context) || Metrics.isTablet(context))
-                              if (index != 0)
-                                Container(
-                                  height: 30,
-                                  width: 1,
-                                  color: Colors.grey.withOpacity(0.5),
-                                  margin: const EdgeInsets.symmetric(horizontal: 24),
+                        return Expanded(
+                          flex: index == 0 ? 45 : 25,
+                          child: Row(
+                            children: [
+                              if (Metrics.isDesktop(context) || Metrics.isTablet(context))
+                                if (index != 0)
+                                  Container(
+                                    height: 30,
+                                    width: 1,
+                                    color: Colors.grey.withOpacity(0.5),
+                                    margin: const EdgeInsets.symmetric(horizontal: 5),
+                                  ),
+                              Padding(
+                                padding: EdgeInsets.only(
+                                    left: index != 0
+                                        ? Metrics.isMobile(context)
+                                            ? 5
+                                            : 24
+                                        : 0),
+                                child: TextButton(
+                                  style: ButtonStyle(alignment: Alignment.centerLeft),
+                                  onPressed: () {},
+                                  child: Column(
+                                      // mainAxisAlignment: MainAxisAlignment.start,
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: [
+                                        link.poppins(
+                                          fontWeight: FontWeight.w500,
+                                          color: Colors.black,
+                                          fontSize: (Metrics.isDesktop(context) || Metrics.isTablet(context)) ? 13 : 9,
+                                          height: 1,
+                                        ),
+                                        SizedBox(
+                                          height: 5,
+                                        ),
+                                        index == 0
+                                            ? 'Select Property from the List '.poppins(
+                                                fontWeight: FontWeight.w400,
+                                                color: Colors.grey,
+                                                fontSize:
+                                                    (Metrics.isDesktop(context) || Metrics.isTablet(context)) ? 14 : 8,
+                                                height: 0.7,
+                                              )
+                                            : 'Add dates'.poppins(
+                                                fontWeight: FontWeight.w400,
+                                                color: Colors.grey,
+                                                fontSize:
+                                                    (Metrics.isDesktop(context) || Metrics.isTablet(context)) ? 14 : 8,
+                                                height: 0.7,
+                                              ),
+                                      ]),
                                 ),
-                            Padding(
-                              padding: EdgeInsets.only(left: index != 0 ? 24 : 0),
-                              child: TextButton(
-                                style: ButtonStyle(alignment: Alignment.centerLeft),
-                                onPressed: () {},
-                                child: Column(
-                                    // mainAxisAlignment: MainAxisAlignment.start,
-                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                    children: [
-                                      link.poppins(
-                                        fontWeight: FontWeight.w500,
-                                        color: Colors.black,
-                                        fontSize: (Metrics.isDesktop(context) || Metrics.isTablet(context)) ? 13 : 9,
-                                        height: 1,
-                                      ),
-                                      SizedBox(
-                                        height: 5,
-                                      ),
-                                      index == 0
-                                          ? 'Select Property from the List '.poppins(
-                                              fontWeight: FontWeight.w400,
-                                              color: Colors.grey,
-                                              fontSize:
-                                                  (Metrics.isDesktop(context) || Metrics.isTablet(context)) ? 14 : 10,
-                                              height: 0.7,
-                                            )
-                                          : 'Add dates'.poppins(
-                                              fontWeight: FontWeight.w400,
-                                              color: Colors.grey,
-                                              fontSize:
-                                                  (Metrics.isDesktop(context) || Metrics.isTablet(context)) ? 14 : 10,
-                                              height: 0.7,
-                                            ),
-                                    ]),
                               ),
-                            ),
-                          ],
+                            ],
+                          ),
                         );
                       }),
                     ],
@@ -190,18 +199,20 @@ class HeaderLeftInput extends StatelessWidget {
                       color: Colors.grey.withOpacity(0.5),
                       margin: const EdgeInsets.symmetric(horizontal: 24),
                     ),
-                  InkWell(
-                      onTap: () {},
-                      child: CircleAvatar(
-                        radius: 25,
-                        backgroundColor: Color.fromRGBO(232, 191, 66, 1),
-                        child: Icon(
-                          FontAwesomeIcons.magnifyingGlass,
-                          // FontAwesomeIcons.chevronRight,
-                          color: white,
-                          size: 12,
-                        ),
-                      )),
+                  if (Metrics.isDesktop(context) || Metrics.isTablet(context))
+                    InkWell(
+                        onTap: () {},
+                        child: CircleAvatar(
+                          radius: 25,
+                          backgroundColor: Color.fromRGBO(232, 191, 66, 1),
+                          child: Icon(
+                            FontAwesomeIcons.magnifyingGlass,
+                            // FontAwesomeIcons.chevronRight,
+                            color: white,
+                            size: 12,
+                          ),
+                        )),
+
                   // Material(
                   //   color: const Color.fromARGB(255, 141, 106, 93),
                   //   child: InkWell(
@@ -247,6 +258,24 @@ class HeaderLeftInput extends StatelessWidget {
                 ],
               ),
             ),
+            if (!Metrics.isTablet(context) && !Metrics.isDesktop(context))
+              Center(
+                child: InkWell(
+                    onTap: () {},
+                    child: Container(
+                      margin: EdgeInsets.all(8.0),
+                      padding: EdgeInsets.symmetric(vertical: 10, horizontal: 40),
+                      // radius: 25,
+                      decoration: BoxDecoration(
+                          color: Color.fromRGBO(232, 191, 66, 1), borderRadius: BorderRadius.circular(50)),
+                      child: Icon(
+                        FontAwesomeIcons.magnifyingGlass,
+                        // FontAwesomeIcons.chevronRight,
+                        color: white,
+                        size: 20,
+                      ),
+                    )),
+              ),
           ],
         ),
       ),
@@ -281,7 +310,7 @@ class HeaderLeftSubtitle extends StatelessWidget {
         'choose from over 20+ exclusive properties curated by Naina Asset',
         style: GoogleFonts.poppins(
           textStyle: TextStyle(
-              fontSize: 28,
+              fontSize: Metrics.isMobile(context) ? 16 : 28,
               fontWeight: FontWeight.w500,
               color: white,
               shadows: [Shadow(blurRadius: 2, color: Colors.black38, offset: Offset(2, 2))]),
@@ -304,7 +333,7 @@ class HeaderLeftTitle extends StatelessWidget {
       child: 'NAINA ASSET'.poppins(
         // textAlign: isBigScreen ? TextAlign.left : TextAlign.center,
         textAlign: TextAlign.center,
-        fontSize: 60,
+        fontSize: Metrics.isMobile(context) ? 40 : 60,
         fontWeight: FontWeight.w200,
         color: white,
         height: 1,

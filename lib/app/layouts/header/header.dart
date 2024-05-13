@@ -26,7 +26,7 @@ class Header extends StatelessWidget {
       // color: greenBorder,
       decoration: const BoxDecoration(
         image: DecorationImage(
-            colorFilter: ColorFilter.mode(Colors.white38, BlendMode.softLight),
+            // colorFilter: ColorFilter.mode(Colors.white38, BlendMode.softLight),
             image: AssetImage('images/cb287a4c8aaff8332ca509a48b015fb81.png'),
 
             // image: NetworkImage(

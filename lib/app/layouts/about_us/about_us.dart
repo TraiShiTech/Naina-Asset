@@ -54,6 +54,7 @@ class AboutUs extends StatelessWidget {
       ],
     ];
     final pad = normalize(min: 976, max: 1440, data: Metrics.width(context));
+    final isBigScreen = Metrics.isDesktop(context) || Metrics.isTablet(context);
     final gride_review = review.length / 2;
     return Container(
       width: Metrics.width(context),
@@ -65,10 +66,8 @@ class AboutUs extends StatelessWidget {
           const SizedBox(height: 20),
           Align(
             alignment: Alignment.center,
-            child: 'Our full management service includes:'.poppins(
-              color: white,
-              fontSize: 25 + 4 * pad,
-            ),
+            child: 'Our full management service includes:'
+                .poppins(color: white, fontSize: 25 + 4 * pad, textAlign: TextAlign.center),
           ),
           const SizedBox(height: 20),
           // AboutUsInfo(pad: pad),
@@ -77,57 +76,60 @@ class AboutUs extends StatelessWidget {
             widthFactor: 0.9,
             child: Column(
               children: [
-                Row(
-                  children: [
-                    for (var index = 0; index < 4; index++)
-                      Expanded(
-                        child: Padding(
-                          padding: const EdgeInsets.all(16),
-                          child: AspectRatio(
-                            aspectRatio: 9 / 16,
-                            child: Container(
-                              padding: EdgeInsets.all(8),
-                              clipBehavior: Clip.antiAlias,
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.all(Radius.circular(10)),
-                                image: DecorationImage(
-                                  // colorFilter: ColorFilter.mode(Colors.white38, BlendMode.softLight),
-                                  image: NetworkImage(content_image[index]),
-                                  fit: BoxFit.cover,
-                                  alignment: index == 1 ? Alignment.centerLeft : Alignment.center,
+                isBigScreen == Metrics.isTablet(context)
+                    ? const AboutUsImageSlider()
+                    : Row(
+                        children: [
+                          for (var index = 0; index < 4; index++)
+                            Expanded(
+                              child: Padding(
+                                padding: const EdgeInsets.all(16),
+                                child: AspectRatio(
+                                  aspectRatio: 9 / 16,
+                                  child: Container(
+                                    padding: EdgeInsets.all(8),
+                                    clipBehavior: Clip.antiAlias,
+                                    decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.all(Radius.circular(10)),
+                                      image: DecorationImage(
+                                        // colorFilter: ColorFilter.mode(Colors.white38, BlendMode.softLight),
+                                        image: NetworkImage(content_image[index]),
+                                        fit: BoxFit.cover,
+                                        alignment: index == 1 ? Alignment.centerLeft : Alignment.center,
+                                      ),
+                                    ),
+                                    child: Column(
+                                      mainAxisAlignment: MainAxisAlignment.end,
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          content_text[index],
+                                          style: GoogleFonts.poppins(
+                                            textStyle: TextStyle(
+                                                fontSize: 25,
+                                                fontWeight: FontWeight.w600,
+                                                color: white,
+                                                shadows: [
+                                                  Shadow(blurRadius: 2, color: Colors.black38, offset: Offset(2, 2))
+                                                ]),
+                                          ),
+                                          textAlign: TextAlign.start,
+                                        ),
+                                      ],
+                                    ),
+                                  ),
                                 ),
                               ),
-                              child: Column(
-                                mainAxisAlignment: MainAxisAlignment.end,
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    content_text[index],
-                                    style: GoogleFonts.poppins(
-                                      textStyle: TextStyle(
-                                          fontSize: 25,
-                                          fontWeight: FontWeight.w600,
-                                          color: white,
-                                          shadows: [
-                                            Shadow(blurRadius: 2, color: Colors.black38, offset: Offset(2, 2))
-                                          ]),
-                                    ),
-                                    textAlign: TextAlign.start,
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ),
-                        ),
-                      )
-                  ],
-                ),
+                            )
+                        ],
+                      ),
                 const SizedBox(height: 28),
                 Padding(
                   padding: const EdgeInsets.all(30),
                   child: Text(
                     "With over 10+ years of experience in real estate industry, we are a real estate development company, which achieves the maximum benefit by meeting the needs of customers and investors. We have a new generation team that understands market trends. When you need the help fornew investors, we have experts to guide you. Don't worry about contacting us. Because we always have good suggestions.",
-                    style: GoogleFonts.poppins(color: white, fontSize: 20, fontWeight: FontWeight.w300),
+                    style: GoogleFonts.poppins(
+                        color: white, fontSize: Metrics.isMobile(context) ? 12 : 20, fontWeight: FontWeight.w300),
                     textAlign: TextAlign.center,
                   ),
                 ),
@@ -149,10 +151,16 @@ class AboutUs extends StatelessWidget {
                       ),
                       const SizedBox(height: 50),
                       SizedBox(
-                        height: 720,
+                        // height: 1440,
                         child: GridView.builder(
                           gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                            crossAxisCount: 4, // Number of columns
+                            crossAxisCount: Metrics.isMobile(context)
+                                ? 1
+                                : Metrics.isCompact(context)
+                                    ? 2
+                                    : Metrics.isTablet(context)
+                                        ? 2
+                                        : 4,
                             crossAxisSpacing: 45.0, // Spacing between columns
                             mainAxisSpacing: 45.0, // Spacing between rows
                             childAspectRatio: 9 / (8),
@@ -174,7 +182,7 @@ class AboutUs extends StatelessWidget {
                             );
                           },
                         ),
-                      )
+                      ),
                     ],
                   ),
                 ),
@@ -264,9 +272,9 @@ class AboutUs extends StatelessWidget {
                     children: [
                       const SizedBox(height: 64),
                       'Property Owner Reviews: Why let us look after your property?'.poppins(
-                        color: Color.fromRGBO(60, 60, 60, 1),
-                        fontSize: 25 + 4 * pad,
-                      ),
+                          color: Color.fromRGBO(60, 60, 60, 1),
+                          fontSize: Metrics.isMobile(context) ? 12 : 25,
+                          textAlign: TextAlign.center),
                       const SizedBox(height: 34),
                       Expanded(
                         child: SingleChildScrollView(
@@ -280,13 +288,13 @@ class AboutUs extends StatelessWidget {
                                   crossAxisCount: Metrics.isMobile(context)
                                       ? 1
                                       : Metrics.isCompact(context)
-                                          ? 2
+                                          ? 1
                                           : Metrics.isTablet(context)
                                               ? 2
                                               : 2,
                                   // crossAxisCount: gride_review.toInt(),
                                   // crossAxisCount: 2,
-                                  childAspectRatio: 3 / 1,
+                                  // childAspectRatio: 3 / 1,
                                   crossAxisSpacing: 24,
                                   mainAxisSpacing: 0,
                                   mainAxisExtent: 200.0),
@@ -301,9 +309,12 @@ class AboutUs extends StatelessWidget {
                                   // alignment: Alignment.center,
                                   children: [
                                     Container(
-                                      margin: EdgeInsets.only(bottom: 12 + 12 * pad, left: 150, top: 30),
+                                      width: 400,
+                                      // height: 100,
+                                      margin: EdgeInsets.only(bottom: 12 + 12 * pad, left: 50, top: 25, right: 25),
                                       decoration: BoxDecoration(
                                         color: white,
+
                                         borderRadius: const BorderRadius.only(
                                           topLeft: Radius.circular(20),
                                           topRight: Radius.circular(20),
@@ -318,36 +329,35 @@ class AboutUs extends StatelessWidget {
                                         //   ),
                                         // ],
                                       ),
-                                      child: AspectRatio(
-                                        aspectRatio: 3 / 1,
-                                        child: ClipRRect(
-                                            borderRadius: BorderRadius.circular(20),
-                                            child: Container(
-                                              color: white,
-                                              height: 200,
-                                              padding: EdgeInsets.only(left: 120,),
-                                              child: Column(
-                                                mainAxisAlignment: MainAxisAlignment.center,
-                                                crossAxisAlignment: CrossAxisAlignment.start,
-                                                children: [
-                                                  const SizedBox(height: 10),
-                                                  Text(review[index][0],
-                                                      style: GoogleFonts.poppins(
-                                                        color: Color.fromRGBO(72, 72, 72, 1),
-                                                        fontSize: 14 + 4 * pad,
-                                                      ),
-                                                      textAlign: TextAlign.start),
-                                                  Text(review[index][1],
-                                                      style: GoogleFonts.poppins(
-                                                        color: Color.fromRGBO(72, 72, 72, 1),
-                                                        fontSize: 10 + 4 * pad,
-                                                      ),
-                                                      textAlign: TextAlign.start),
-                                                  // const SizedBox(height: 10),
-                                                ],
-                                              ),
-                                            )),
-                                      ),
+                                      child: ClipRRect(
+                                          borderRadius: BorderRadius.circular(20),
+                                          child: Container(
+                                            color: white,
+                                            height: 150,
+                                            padding: EdgeInsets.only(
+                                              left: 100,
+                                            ),
+                                            child: Column(
+                                              mainAxisAlignment: MainAxisAlignment.center,
+                                              crossAxisAlignment: CrossAxisAlignment.start,
+                                              children: [
+                                                const SizedBox(height: 10),
+                                                Text(review[index][0],
+                                                    style: GoogleFonts.poppins(
+                                                      color: Color.fromRGBO(72, 72, 72, 1),
+                                                      fontSize: 14 + 4 * pad,
+                                                    ),
+                                                    textAlign: TextAlign.start),
+                                                Text(review[index][1],
+                                                    style: GoogleFonts.poppins(
+                                                      color: Color.fromRGBO(72, 72, 72, 1),
+                                                      fontSize: 10 + 4 * pad,
+                                                    ),
+                                                    textAlign: TextAlign.start),
+                                                // const SizedBox(height: 10),
+                                              ],
+                                            ),
+                                          )),
                                     ),
                                     // AspectRatio(
                                     //   aspectRatio: 2 / 1,
@@ -361,9 +371,9 @@ class AboutUs extends StatelessWidget {
                                     // ),
                                     Positioned(
                                         top: 25,
-                                        width: 150,
-                                        height: 150,
-                                        left: 80,
+                                        width: 100,
+                                        height: 100,
+                                        left: -12.5,
                                         child: CircleAvatar(
                                           backgroundColor: Color.fromRGBO(177, 170, 151, 1),
                                           radius: 50,
@@ -407,47 +417,91 @@ class AboutUs extends StatelessWidget {
                   ),
                 ),
               ),
-              Expanded(
-                  flex: 2,
-                  child: Container(
-                    padding: EdgeInsets.all(30),
-                    decoration: BoxDecoration(
-                        color: white,
-                        borderRadius: BorderRadius.only(topLeft: Radius.circular(20), bottomLeft: Radius.circular(20))),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceAround,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        Text(
-                          'Our Partner',
-                          style: GoogleFonts.poppins(
-                              color: Color.fromRGBO(82, 82, 82, 1), fontWeight: FontWeight.w600, fontSize: 20),
-                        ),
-                        Image.network(
-                          'https://s3-alpha-sig.figma.com/img/1364/4a39/74b868d76c02b2f0c4cba2cd0a186b74?Expires=1716163200&Key-Pair-Id=APKAQ4GOSFWCVNEHN3O4&Signature=pBo8US~JrwBJiB5UmjSfltQn1VG67G-3U01ocKNYRN64rcX~Zx9ZczKgPpg1ozXhy1pZVGD9Dk~RmncNVa1fleBj3PMWnxvf-lXobnfKMQ24CCZmc5ksYp9LM3NbeRSwI5-eDBQZ9pXeCm4By9vnok3FkL77DjRpL8qAC5ckBBURzz1Pszymrz7IOi21mhzcUTokp-~8jxbJJf4KEB~83EQBjxjiOha1QsScfltQjehpFkCeFdeH8WJN6KO4F1fn-ESYusA9pduUiEcafE440KWhWV2oRDhkcY215lu3Ay16Et~g~w-i9AtQMHFiZTLF1vWgCzPXp0iKTkK~eIHwSg__',
-                          width: 70,
-                          height: 70,
-                        ),
-                        Image.network(
-                          'https://s3-alpha-sig.figma.com/img/3bbb/75c2/faf15c463c09ad26929ddcbc325a963f?Expires=1716163200&Key-Pair-Id=APKAQ4GOSFWCVNEHN3O4&Signature=H43Y4JZqD4rt9xKcKvvKWHHu5Ag~2Y~4bFB4eBDDsNbTZxqpZ-61ijJ44Bqya52CrnCN45tTTo7Q4qKTgF5D4Js9kwAvK0eVIZj-8zaNVeikfQMThYMZjjY~Bbcnd-1PAoiqVmJGPLd6ZYi10aDqXrhWkmH600nxpHO2EAk38UrK~zc1yVvicMwBm-PBhfCKyv32PwZRO8mD0bodZoaLYkJza1XNW8jggdM1iCY8RQttRiIzc5gLLu7pPnJPozNUc4PzWcDd4JfmSODv2gZrsVZ0A6S0SV9~L7CkXW6XChFxT-IAzy2q91a5FraFQ-2dv9ezgSSCAjM3EbOrrh2ejw__',
-                          width: 70,
-                          height: 70,
-                        ),
-                        Image.network(
-                          'https://s3-alpha-sig.figma.com/img/bcc9/03b4/05cb5f5488e95194aea6b5e70a9ae844?Expires=1716163200&Key-Pair-Id=APKAQ4GOSFWCVNEHN3O4&Signature=VvC69YFvbVRsdxuM59YyWci~J2UiZTcTP8GTSDcYJqQcy9-hZVSSHMNq~HmJDFIUZrbuV3Yy7smF7K6HNonMbee18fZSufbMDw2lOv33TezYz1Iu85uMWJtfAM8ddAyqNo-yV6QaZ5GSJYK5ADo3o97qSJFSykDbgfO36CG~tKP4Nh763Y5mU7Ahc-Bo2Wlhnc2QPW3SpTFEEiOVAhHmMIKNc28SjmskHa2iVeWK9rfoJiYePFU~N~uX2NCSDxAAdI-M8oku5~yt1rSyeLppGb1EerFqeEiA-lEGeVuaap0VAygbOdI5w9mvDxE3QDqJzXYIoqV3zrwl62D0SOCe4Q__',
-                          width: 70,
-                          height: 70,
-                        ),
-                        Image.network(
-                          'https://s3-alpha-sig.figma.com/img/41d6/449e/c1260892f94e05edb74aff5285a7ad39?Expires=1716163200&Key-Pair-Id=APKAQ4GOSFWCVNEHN3O4&Signature=R6NH1yqKYC2gPDwk3bVxTYxCqpqWQ0rw3yw3vD4AKMnxQDQyHi6RoNOfOnrxnTWvB4LaRvFMElKzDeEvSpUgBJQr4JOET6vsYqQXGBkui-asrF-tEOjLTy7knciauSFHxoDO0x0U3~NMJciFBODdorY1NO4dWjNyl6Dpk7C4t9Zgl~BiLPhWlTNaVE7vqHEKNbusNLk4EHQ9TlCXREkS5WsA2smT5vev8dnXz4DXaBF63JZLq8Kfpn31tORTMIaxzROjX3qO9jJELIZAVNPMq~HnCo8YY-lpU40D9TcuRE1DK8UNmRIahFt7SG7wrgN8jQXyMG~9NxdHuCne4Xtq-w__',
-                          width: 70,
-                          height: 70,
-                        ),
-                      ],
-                    ),
-                  ))
+              if (Metrics.isDesktop(context) || Metrics.isTablet(context))
+                Expanded(
+                    flex: 2,
+                    child: Container(
+                      padding: EdgeInsets.all(30),
+                      decoration: BoxDecoration(
+                          color: white,
+                          borderRadius:
+                              BorderRadius.only(topLeft: Radius.circular(20), bottomLeft: Radius.circular(20))),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceAround,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          Text(
+                            'Our Partner',
+                            style: GoogleFonts.poppins(
+                                color: Color.fromRGBO(82, 82, 82, 1),
+                                fontWeight: FontWeight.w600,
+                                fontSize: isBigScreen == Metrics.isTablet(context) ? 15 : 20),
+                          ),
+                          Image.network(
+                            'https://s3-alpha-sig.figma.com/img/1364/4a39/74b868d76c02b2f0c4cba2cd0a186b74?Expires=1716163200&Key-Pair-Id=APKAQ4GOSFWCVNEHN3O4&Signature=pBo8US~JrwBJiB5UmjSfltQn1VG67G-3U01ocKNYRN64rcX~Zx9ZczKgPpg1ozXhy1pZVGD9Dk~RmncNVa1fleBj3PMWnxvf-lXobnfKMQ24CCZmc5ksYp9LM3NbeRSwI5-eDBQZ9pXeCm4By9vnok3FkL77DjRpL8qAC5ckBBURzz1Pszymrz7IOi21mhzcUTokp-~8jxbJJf4KEB~83EQBjxjiOha1QsScfltQjehpFkCeFdeH8WJN6KO4F1fn-ESYusA9pduUiEcafE440KWhWV2oRDhkcY215lu3Ay16Et~g~w-i9AtQMHFiZTLF1vWgCzPXp0iKTkK~eIHwSg__',
+                            width: isBigScreen == Metrics.isTablet(context) ? 40 : 70,
+                            height: isBigScreen == Metrics.isTablet(context) ? 40 : 70,
+                          ),
+                          Image.network(
+                            'https://s3-alpha-sig.figma.com/img/3bbb/75c2/faf15c463c09ad26929ddcbc325a963f?Expires=1716163200&Key-Pair-Id=APKAQ4GOSFWCVNEHN3O4&Signature=H43Y4JZqD4rt9xKcKvvKWHHu5Ag~2Y~4bFB4eBDDsNbTZxqpZ-61ijJ44Bqya52CrnCN45tTTo7Q4qKTgF5D4Js9kwAvK0eVIZj-8zaNVeikfQMThYMZjjY~Bbcnd-1PAoiqVmJGPLd6ZYi10aDqXrhWkmH600nxpHO2EAk38UrK~zc1yVvicMwBm-PBhfCKyv32PwZRO8mD0bodZoaLYkJza1XNW8jggdM1iCY8RQttRiIzc5gLLu7pPnJPozNUc4PzWcDd4JfmSODv2gZrsVZ0A6S0SV9~L7CkXW6XChFxT-IAzy2q91a5FraFQ-2dv9ezgSSCAjM3EbOrrh2ejw__',
+                            width: isBigScreen == Metrics.isTablet(context) ? 40 : 70,
+                            height: isBigScreen == Metrics.isTablet(context) ? 40 : 70,
+                          ),
+                          Image.network(
+                            'https://s3-alpha-sig.figma.com/img/bcc9/03b4/05cb5f5488e95194aea6b5e70a9ae844?Expires=1716768000&Key-Pair-Id=APKAQ4GOSFWCVNEHN3O4&Signature=OzWkroZx0RYgvPxX6igR1m5QMkEWvatodZgmUnutjqFq4PIY3hrTY~V-vp1VCOzBRedaOe8uQy-QNF31Z9fsERWkGFNMtQaGrBsnybwmmVjl1UTT6Jd8y4YVGb7WNM9p6lSvn8rNp03PejnwBq-6fBOpq5A3M3sGQ7tU5TOdk0WopqI5DFuF7ZuEPavD15I3SAxvndepRpQNaAVZQ2YrAJhkglVE0QPkw12nFOqZMg~10r0XCLZ5EnQoAo8OGoI9ZjZ2U5j3a8-nohcRPwUNmbdqwjV-qLWm9vpA~nd-FR-xfuHdG~nesIImJjzPRKqcCFd2IzV2XK47Q-tJgsid3Q__',
+                            width: isBigScreen == Metrics.isTablet(context) ? 40 : 70,
+                            height: isBigScreen == Metrics.isTablet(context) ? 40 : 70,
+                          ),
+                          Image.network(
+                            'https://s3-alpha-sig.figma.com/img/41d6/449e/c1260892f94e05edb74aff5285a7ad39?Expires=1716163200&Key-Pair-Id=APKAQ4GOSFWCVNEHN3O4&Signature=R6NH1yqKYC2gPDwk3bVxTYxCqpqWQ0rw3yw3vD4AKMnxQDQyHi6RoNOfOnrxnTWvB4LaRvFMElKzDeEvSpUgBJQr4JOET6vsYqQXGBkui-asrF-tEOjLTy7knciauSFHxoDO0x0U3~NMJciFBODdorY1NO4dWjNyl6Dpk7C4t9Zgl~BiLPhWlTNaVE7vqHEKNbusNLk4EHQ9TlCXREkS5WsA2smT5vev8dnXz4DXaBF63JZLq8Kfpn31tORTMIaxzROjX3qO9jJELIZAVNPMq~HnCo8YY-lpU40D9TcuRE1DK8UNmRIahFt7SG7wrgN8jQXyMG~9NxdHuCne4Xtq-w__',
+                            width: isBigScreen == Metrics.isTablet(context) ? 40 : 70,
+                            height: isBigScreen == Metrics.isTablet(context) ? 40 : 70,
+                          ),
+                        ],
+                      ),
+                    ))
             ],
           ),
+          const SizedBox(height: 40),
+          if (Metrics.isMobile(context))
+            Container(
+              padding: EdgeInsets.all(15),
+              margin: EdgeInsets.all(15),
+              decoration: BoxDecoration(color: white, borderRadius: BorderRadius.circular(20)),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Text(
+                    'Our Partner',
+                    style: GoogleFonts.poppins(
+                        color: Color.fromRGBO(82, 82, 82, 1),
+                        fontWeight: FontWeight.w600,
+                        fontSize: isBigScreen == Metrics.isTablet(context) ? 15 : 20),
+                  ),
+                  Image.network(
+                    'https://s3-alpha-sig.figma.com/img/1364/4a39/74b868d76c02b2f0c4cba2cd0a186b74?Expires=1716163200&Key-Pair-Id=APKAQ4GOSFWCVNEHN3O4&Signature=pBo8US~JrwBJiB5UmjSfltQn1VG67G-3U01ocKNYRN64rcX~Zx9ZczKgPpg1ozXhy1pZVGD9Dk~RmncNVa1fleBj3PMWnxvf-lXobnfKMQ24CCZmc5ksYp9LM3NbeRSwI5-eDBQZ9pXeCm4By9vnok3FkL77DjRpL8qAC5ckBBURzz1Pszymrz7IOi21mhzcUTokp-~8jxbJJf4KEB~83EQBjxjiOha1QsScfltQjehpFkCeFdeH8WJN6KO4F1fn-ESYusA9pduUiEcafE440KWhWV2oRDhkcY215lu3Ay16Et~g~w-i9AtQMHFiZTLF1vWgCzPXp0iKTkK~eIHwSg__',
+                    width: isBigScreen == Metrics.isTablet(context) ? 40 : 70,
+                    height: isBigScreen == Metrics.isTablet(context) ? 40 : 70,
+                  ),
+                  Image.network(
+                    'https://s3-alpha-sig.figma.com/img/3bbb/75c2/faf15c463c09ad26929ddcbc325a963f?Expires=1716163200&Key-Pair-Id=APKAQ4GOSFWCVNEHN3O4&Signature=H43Y4JZqD4rt9xKcKvvKWHHu5Ag~2Y~4bFB4eBDDsNbTZxqpZ-61ijJ44Bqya52CrnCN45tTTo7Q4qKTgF5D4Js9kwAvK0eVIZj-8zaNVeikfQMThYMZjjY~Bbcnd-1PAoiqVmJGPLd6ZYi10aDqXrhWkmH600nxpHO2EAk38UrK~zc1yVvicMwBm-PBhfCKyv32PwZRO8mD0bodZoaLYkJza1XNW8jggdM1iCY8RQttRiIzc5gLLu7pPnJPozNUc4PzWcDd4JfmSODv2gZrsVZ0A6S0SV9~L7CkXW6XChFxT-IAzy2q91a5FraFQ-2dv9ezgSSCAjM3EbOrrh2ejw__',
+                    width: isBigScreen == Metrics.isTablet(context) ? 40 : 70,
+                    height: isBigScreen == Metrics.isTablet(context) ? 40 : 70,
+                  ),
+                  Image.network(
+                    'https://s3-alpha-sig.figma.com/img/bcc9/03b4/05cb5f5488e95194aea6b5e70a9ae844?Expires=1716768000&Key-Pair-Id=APKAQ4GOSFWCVNEHN3O4&Signature=OzWkroZx0RYgvPxX6igR1m5QMkEWvatodZgmUnutjqFq4PIY3hrTY~V-vp1VCOzBRedaOe8uQy-QNF31Z9fsERWkGFNMtQaGrBsnybwmmVjl1UTT6Jd8y4YVGb7WNM9p6lSvn8rNp03PejnwBq-6fBOpq5A3M3sGQ7tU5TOdk0WopqI5DFuF7ZuEPavD15I3SAxvndepRpQNaAVZQ2YrAJhkglVE0QPkw12nFOqZMg~10r0XCLZ5EnQoAo8OGoI9ZjZ2U5j3a8-nohcRPwUNmbdqwjV-qLWm9vpA~nd-FR-xfuHdG~nesIImJjzPRKqcCFd2IzV2XK47Q-tJgsid3Q__',
+                    width: isBigScreen == Metrics.isTablet(context) ? 40 : 70,
+                    height: isBigScreen == Metrics.isTablet(context) ? 40 : 70,
+                  ),
+                  Image.network(
+                    'https://s3-alpha-sig.figma.com/img/41d6/449e/c1260892f94e05edb74aff5285a7ad39?Expires=1716163200&Key-Pair-Id=APKAQ4GOSFWCVNEHN3O4&Signature=R6NH1yqKYC2gPDwk3bVxTYxCqpqWQ0rw3yw3vD4AKMnxQDQyHi6RoNOfOnrxnTWvB4LaRvFMElKzDeEvSpUgBJQr4JOET6vsYqQXGBkui-asrF-tEOjLTy7knciauSFHxoDO0x0U3~NMJciFBODdorY1NO4dWjNyl6Dpk7C4t9Zgl~BiLPhWlTNaVE7vqHEKNbusNLk4EHQ9TlCXREkS5WsA2smT5vev8dnXz4DXaBF63JZLq8Kfpn31tORTMIaxzROjX3qO9jJELIZAVNPMq~HnCo8YY-lpU40D9TcuRE1DK8UNmRIahFt7SG7wrgN8jQXyMG~9NxdHuCne4Xtq-w__',
+                    width: isBigScreen == Metrics.isTablet(context) ? 40 : 70,
+                    height: isBigScreen == Metrics.isTablet(context) ? 40 : 70,
+                  ),
+                ],
+              ),
+            ),
           const SizedBox(height: 80),
         ],
       ),

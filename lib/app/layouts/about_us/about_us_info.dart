@@ -15,14 +15,13 @@ class AboutUsInfo extends StatelessWidget {
   Widget build(BuildContext context) {
     return BaseContainer(
       child: Column(
+        crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           const SizedBox(height: 80),
-          'NAINA ASSET'.poppins(color: white, fontSize: 52, fontWeight: FontWeight.w600),
+          'NAINA ASSET'.poppins(color: white, fontSize: 52, fontWeight: FontWeight.w600, textAlign: TextAlign.center),
           const SizedBox(height: 10),
-          'Professional Property Management Services'.poppins(
-            color: white,
-            fontSize: 25 + 4 * pad,
-          ),
+          'Professional Property Management Services'
+              .poppins(color: white, fontSize: 25 + 4 * pad, textAlign: TextAlign.center),
           const SizedBox(height: 40),
           if (!Metrics.isMobile(context))
             FractionallySizedBox(
@@ -44,6 +43,7 @@ class AboutUsInfo extends StatelessWidget {
               children: [
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     Expanded(
                       child: Padding(
@@ -52,6 +52,7 @@ class AboutUsInfo extends StatelessWidget {
                           textAlign: TextAlign.center,
                           fontSize: 44 + 20 * pad,
                           fontWeight: FontWeight.bold,
+                          
                         ),
                       ),
                     ),
@@ -60,6 +61,7 @@ class AboutUsInfo extends StatelessWidget {
                 const SizedBox(height: 16),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     Expanded(
                       child: Padding(

@@ -48,8 +48,7 @@ class _AssetAllState extends ConsumerState<AssetAll> {
 
 ///////----------------------------------------------->
   Future scrollToItem(GlobalKey key) async {
-    await Scrollable.ensureVisible(key.currentContext!,
-        duration: const Duration(milliseconds: 480));
+    await Scrollable.ensureVisible(key.currentContext!, duration: const Duration(milliseconds: 480));
   }
 
 ///////----------------------------------------------->
@@ -58,9 +57,7 @@ class _AssetAllState extends ConsumerState<AssetAll> {
     final pad = normalize(min: 576, max: 1440, data: Metrics.width(context));
 
     final isBigScreen = Metrics.isDesktop(context) || Metrics.isTablet(context);
-    final pad1 = isBigScreen
-        ? 0.0
-        : normalize(min: 576, max: 976, data: Metrics.width(context));
+    final pad1 = isBigScreen ? 0.0 : normalize(min: 576, max: 976, data: Metrics.width(context));
     return Scaffold(
       backgroundColor: white,
       body: SizedBox(
@@ -76,8 +73,7 @@ class _AssetAllState extends ConsumerState<AssetAll> {
                   const SizedBox(height: 80),
                   Align(
                     alignment: Alignment.center,
-                    child: 'Naina Asset: Professional Rental Property Manager'
-                        .poppins(
+                    child: 'Naina Asset: Professional Rental Property Manager'.poppins(
                       color: brown,
                       fontSize: 25 + 4 * pad,
                     ),
@@ -86,9 +82,7 @@ class _AssetAllState extends ConsumerState<AssetAll> {
                     padding: const EdgeInsets.all(8.0),
                     child: Align(
                       alignment: Alignment.center,
-                      child:
-                          '10+ years of experience in hospitality and real estate experience.'
-                              .poppinscenter(
+                      child: '10+ years of experience in hospitality and real estate experience.'.poppinscenter(
                         color: const Color(0xff896e57),
                         fontWeight: FontWeight.bold,
                         height: 1.5,
@@ -150,9 +144,8 @@ class _AssetAllState extends ConsumerState<AssetAll> {
                   const SizedBox(height: 80),
                   BaseContainer(
                       child: Column(
-                          crossAxisAlignment: Metrics.isMobile(context)
-                              ? CrossAxisAlignment.center
-                              : CrossAxisAlignment.start,
+                          crossAxisAlignment:
+                              Metrics.isMobile(context) ? CrossAxisAlignment.center : CrossAxisAlignment.start,
                           children: [Asset_Management()])),
                   // Container(
                   //     width: Metrics.width(context),

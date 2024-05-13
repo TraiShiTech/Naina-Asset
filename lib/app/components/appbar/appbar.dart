@@ -12,6 +12,7 @@ class Appbar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final bool isBigScreen = Metrics.isDesktop(context) || Metrics.isTablet(context);
     List<String> links = [
       // 'Rent',
       // 'Property Management Services',
@@ -30,8 +31,8 @@ class Appbar extends StatelessWidget {
                 Row(
                   children: [
                     Container(
-                      width: 80,
-                      height: 80,
+                      width: (Metrics.isDesktop(context) || Metrics.isTablet(context)) ? 80 : 60,
+                      height: (Metrics.isDesktop(context) || Metrics.isTablet(context)) ? 80 : 60,
                       decoration: const BoxDecoration(
                         image: DecorationImage(
                           image: NetworkImage(
@@ -52,7 +53,13 @@ class Appbar extends StatelessWidget {
                     //   filterQuality: FilterQuality.high,
                     //   isAntiAlias: true,
                     // ),
-                    const SizedBox(width: 16),
+                    SizedBox(
+                      width: isBigScreen == Metrics.isTablet(context)
+                          ? Metrics.isMobile(context)
+                              ? 0
+                              : 10
+                          : 16,
+                    ),
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       mainAxisAlignment: MainAxisAlignment.center,
@@ -61,13 +68,21 @@ class Appbar extends StatelessWidget {
                           color: white,
                           fontWeight: FontWeight.w600,
                           // fontWeight: FontWeight.bold,
-                          fontSize: 24,
+                          fontSize: (Metrics.isDesktop(context) || Metrics.isTablet(context))
+                              ? 16
+                              : Metrics.isMobile(context)
+                                  ? 10
+                                  : 24,
                           height: 1.5,
                         ),
                         'ในนา แอสเสท - บริการดูแลพร็อพเพอร์ตี้มืออาชีพ '.poppins(
                           color: white,
                           fontWeight: FontWeight.w100,
-                          fontSize: (Metrics.isDesktop(context) || Metrics.isTablet(context)) ? 14 : 12,
+                          fontSize: (Metrics.isDesktop(context) || Metrics.isTablet(context))
+                              ? 14
+                              : Metrics.isMobile(context)
+                                  ? 8
+                                  : 10,
                           height: 1.5,
                         ),
                       ],
@@ -169,7 +184,7 @@ class Appbar extends StatelessWidget {
                     InkWell(
                       onTap: () {},
                       child: Padding(
-                        padding: const EdgeInsets.all(8.0),
+                        padding: isBigScreen == Metrics.isTablet(context) ? EdgeInsets.all(4.0) : EdgeInsets.all(8.0),
                         child: Column(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [

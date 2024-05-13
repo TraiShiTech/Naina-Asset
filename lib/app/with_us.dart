@@ -937,6 +937,7 @@ class _WistUsState extends ConsumerState<WistUs> {
         ImageSliderController(
           currentPage: currentPage,
           images: imageUrls,
+          title: imageUrls,
           prev: currentPage != 0
               ? () {
                   _controller.animateToPage(
