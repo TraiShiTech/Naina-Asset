@@ -15,6 +15,7 @@ import 'layouts/custom_decoratives/custom_decoratives.dart';
 import 'layouts/footer/footer.dart';
 import 'layouts/header/header_rent.dart';
 import 'layouts/layouts.dart';
+import 'layouts/rent/rent_details.dart';
 
 class RentAll extends ConsumerStatefulWidget {
   const RentAll({Key? key}) : super(key: key);
@@ -197,12 +198,12 @@ class _RentAllState extends ConsumerState<RentAll> {
 
                                     return InkWell(
                                       onTap: () {
-                                        // Navigator.push(
-                                        //   context,
-                                        //   MaterialPageRoute(
-                                        //     builder: (context) => xxxx(),
-                                        //   ),
-                                        // );
+                                        Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                            builder: (context) => RentDetails(),
+                                          ),
+                                        );
                                       },
                                       child: MouseRegion(
                                           onEnter: (val) => setState(() =>

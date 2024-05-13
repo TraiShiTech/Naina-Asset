@@ -123,7 +123,7 @@ class Header_AssetAll extends StatelessWidget {
                                         final link = links[index];
 
                                         return Padding(
-                                          padding: EdgeInsets.only(
+                                          padding: EdgeInsets.only( 
                                               left: index != 0 ? 24 : 0),
                                           child: TextButton(
                                             onPressed: () {},

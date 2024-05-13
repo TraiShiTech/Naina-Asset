@@ -1,28 +1,33 @@
 import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:properties/core/core.dart';
 
-import '../../aboutus_all.dart';
-import '../../asset_all.dart';
-import '../../blog.dart';
-import '../../rent_all.dart';
+import '../../../core/theme/app_colors.dart';
+import '../../../core/utils/metrics.dart';
+import '../../components/appbar/appbar.dart';
 import '../../widgets/base_container.dart';
 import '../../widgets/icon_btn.dart';
-import '../../with_us.dart';
+import '../experiences/experiences_image.dart';
+import '../experiences/experiences_info.dart';
+import '../experiences/experiences_info_item.dart';
+import 'header_left.dart';
+import 'header_right.dart';
 
-class Appbar extends StatelessWidget {
-  const Appbar({
+class Header_Blog extends StatelessWidget {
+  const Header_Blog({
     Key? key,
-  }) : super(key: key);
+    required GlobalKey<State<StatefulWidget>> headerKey,
+  })  : _headerKey = headerKey,
+        super(key: key);
+
+  final GlobalKey<State<StatefulWidget>> _headerKey;
 
   @override
   Widget build(BuildContext context) {
     List<String> links = [
       'Rent',
-      'Property Management Services',
+      // 'Property Management Services',
       'List with Us',
       'About Us',
-      'Blogs',
       // 'Contact Us'
     ];
     return Column(
@@ -88,7 +93,7 @@ class Appbar extends StatelessWidget {
                       Container(
                         height: 30,
                         width: 3,
-                        color: white.withOpacity(0.5),
+                        color: greenBg.withOpacity(0.5),
                         margin: const EdgeInsets.symmetric(horizontal: 24),
                       ),
                     if (Metrics.isDesktop(context) || Metrics.isTablet(context))
@@ -98,54 +103,10 @@ class Appbar extends StatelessWidget {
                         return Padding(
                           padding: EdgeInsets.only(left: index != 0 ? 24 : 0),
                           child: TextButton(
-                            onPressed: () {
-                              // List<String> links = [
-                              //   'Rent',
-                              //   'Property Management Services',
-                              //   'List with Us',
-                              //   'About Us',
-                              //   // 'Contact Us'
-                              // ];
-                              if (index == 0) {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) => RentAll(),
-                                  ),
-                                );
-                              } else if (index == 1) {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) => AssetAll(),
-                                  ),
-                                );
-                              } else if (index == 2) {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) => WistUs(),
-                                  ),
-                                );
-                              } else if (index == 3) {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) => AboutUs_All(),
-                                  ),
-                                );
-                              } else if (index == 4) {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) => BlogAll(),
-                                  ),
-                                );
-                              }
-                            },
+                            onPressed: () {},
                             child: link.poppins(
                               fontWeight: FontWeight.w500,
-                              color: white,
+                              color: greenBg,
                               fontSize: 16,
                               height: 1.5,
                             ),
@@ -156,22 +117,17 @@ class Appbar extends StatelessWidget {
                       Container(
                         height: 30,
                         width: 3,
-                        color: white.withOpacity(0.5),
+                        color: greenBg.withOpacity(0.5),
                         margin: const EdgeInsets.symmetric(horizontal: 24),
                       ),
-                    IconBtn(
-                      icon: FontAwesomeIcons.bars,
-                      // icon: FontAwesomeIcons.magnifyingGlass,
-                      onTap: () {},
-                    ),
-                    // if (Metrics.isDesktop(context) || Metrics.isTablet(context))
-                    //   Padding(
-                    //     padding: const EdgeInsets.only(left: 8.0),
-                    //     child: IconBtn(
-                    //       icon: FontAwesomeIcons.bars,
-                    //       onTap: () {},
-                    //     ),
-                    //   ),
+                    IconButton(
+                        onPressed: () {
+                          Navigator.pop(context);
+                        },
+                        icon: Icon(
+                          Icons.arrow_back,
+                          color: greenBg,
+                        ))
                   ],
                 ),
               ],

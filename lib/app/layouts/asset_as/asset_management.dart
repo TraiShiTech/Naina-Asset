@@ -7,6 +7,7 @@ import '../about_us/image_clider_controller.dart';
 import '../brands.dart';
 import '../review/review.dart';
 import '../review/review_asset.dart';
+import 'asset_service_info.dart';
 
 class Asset_Management extends StatefulWidget {
   const Asset_Management({super.key});
@@ -22,7 +23,7 @@ class _Asset_ManagementState extends State<Asset_Management> {
 ///////----------------------------------------------->
   late PageController _controller;
   int currentPage = 1;
-///////----------------------------------------------->
+///////-----------------------------------------------> asset_service_info
   List<String> images = [
     'https://images.unsplash.com/photo-1579656592043-a20e25a4aa4b?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=774&q=80',
     'https://images.unsplash.com/photo-1618220179428-22790b461013?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=654&q=80',
@@ -377,12 +378,21 @@ class _Asset_ManagementState extends State<Asset_Management> {
                     ),
                   ),
                   Positioned(
-                    bottom: 100,
-                    child: '$img'.poppins(
-                      color: white,
-                      fontSize: 20 + 4 * pad,
-                    ),
-                  )
+                      bottom: 100,
+                      child: InkWell(
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => Asset_Service_Info(),
+                            ),
+                          );
+                        },
+                        child: '$img'.poppins(
+                          color: white,
+                          fontSize: 20 + 4 * pad,
+                        ),
+                      )),
                 ]),
               );
             },
