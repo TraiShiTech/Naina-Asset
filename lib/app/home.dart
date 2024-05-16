@@ -106,7 +106,9 @@ class _HomeState extends ConsumerState<Home> {
                       ],
                     ),
                   ),
-                  const Footer(),
+                  const Footer(
+                    bgcolor: Color.fromRGBO(241, 241, 241, 1),
+                  ),
                 ],
               ),
             ),

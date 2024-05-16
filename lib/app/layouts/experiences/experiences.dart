@@ -57,68 +57,71 @@ class Experiences extends StatelessWidget {
                   child: Column(
                     children: [
                       FractionallySizedBox(
-                        widthFactor: 0.7,
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceAround,
-                          children: [
-                            Expanded(
-                              // width: 400,
-                              child: Column(
-                                children: [
-                                  Padding(
-                                    padding: isBigScreen == Metrics.isTablet(context)
-                                        ? EdgeInsets.all(4.0)
-                                        : EdgeInsets.all(8.0),
-                                    child: AspectRatio(
-                                      aspectRatio: 4 / 2,
-                                      child: ClipRRect(
-                                        borderRadius: BorderRadius.circular(20),
-                                        child: Image.network(
-                                          'https://s3-alpha-sig.figma.com/img/caed/5dff/b7414305bcf9e8aafa9f45aa3badf0e7?Expires=1716163200&Key-Pair-Id=APKAQ4GOSFWCVNEHN3O4&Signature=GU6arKOElfm~sBP5E7c1F7nee9ceOUTgKDnK9-wk43vMe9BdLTKNySeeSIuaR-WuQ6DmHdSRMk~UkYaGoOiLBKG1xhewuNVX~jm8Cv72YHhtMs-hw0ufkhbLlzxsp96w0ADbFAjlE-6V84TBFoL-XepusgOA28PA70NqZsXQtbJemW6ilmbGCD7f5k-TWUE~iuyDV8vUbPN1EgU3DqGKVcf01IvhHm8Nal-f1RyIMDkOblhDfr5Jb-H7RPHfURXqBqGgyHi3J~wRlpqnL82azb4IT8kAmAkuAQ~yIFj2-sSxvIC~L3wVjlRaFyN3ZQZhdcM2X9rUbnds1ridhkcT9Q__',
-                                          fit: BoxFit.cover,
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                  Padding(
-                                    padding: isBigScreen == Metrics.isTablet(context)
-                                        ? EdgeInsets.all(4.0)
-                                        : EdgeInsets.all(8.0),
-                                    child: AspectRatio(
-                                      aspectRatio: 4 / 2,
-                                      child: ClipRRect(
-                                        borderRadius: BorderRadius.circular(20),
-                                        child: Image.network(
-                                          'https://s3-alpha-sig.figma.com/img/7421/1481/baa69c063899ed27ca89fac6650a969b?Expires=1716163200&Key-Pair-Id=APKAQ4GOSFWCVNEHN3O4&Signature=DeWnQA4C39OVuDak1l~XHBN1G-Yl2Q8YE7zqBkJwbONFV~O2f66uMXgkMG1KQLP2dnbXHhvEAHrw6zEP5GwN~eV-2qMypv59l59QQTqXEmlGJ7UB0lmMp~1~LvyzBDrzfABfX10xDTGtws5QWGuG0pawx271yFEUHIBNtOQmx3SkDhp1VT2Ld2o2uEAwL5R-ierQW6fHiTBcuhylWweSYIwhRB-~yd~eIaTOosHgiFSRLpw6PhrcXsTjQ9RJOifS4VWr7jVfzalwtwVi5Sonywjo4Y9RHLxics6HRErIFcKTlsDUVuDviFEB53yIA31qCm~QUxqKZhKEZSCnyI0ySA__',
-                                          fit: BoxFit.cover,
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                            if (isBigScreen != Metrics.isTablet(context))
+                        widthFactor: 0.6,
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(vertical: 20.0),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceAround,
+                            children: [
                               Expanded(
-                                  child: const Column(
-                                mainAxisAlignment: MainAxisAlignment.spaceAround,
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                children: [
-                                  statistics(
-                                    text1: '15',
-                                    text2: 'Years of Experiences in Real Estate Industry',
-                                  ),
-                                  statistics(
-                                    text1: '45%',
-                                    text2: 'Increase in booking from individual listing',
-                                  ),
-                                  statistics(
-                                    text1: '62%',
-                                    text2: 'Reduction in Fixed Costs by homeowners',
-                                  ),
-                                ],
-                              )),
-                          ],
+                                // width: 400,
+                                child: Column(
+                                  children: [
+                                    Padding(
+                                      padding: isBigScreen == Metrics.isTablet(context)
+                                          ? EdgeInsets.all(4.0)
+                                          : EdgeInsets.all(8.0),
+                                      child: AspectRatio(
+                                        aspectRatio: 4 / 2,
+                                        child: ClipRRect(
+                                          borderRadius: BorderRadius.circular(20),
+                                          child: Image.network(
+                                            'https://s3-alpha-sig.figma.com/img/caed/5dff/b7414305bcf9e8aafa9f45aa3badf0e7?Expires=1716163200&Key-Pair-Id=APKAQ4GOSFWCVNEHN3O4&Signature=GU6arKOElfm~sBP5E7c1F7nee9ceOUTgKDnK9-wk43vMe9BdLTKNySeeSIuaR-WuQ6DmHdSRMk~UkYaGoOiLBKG1xhewuNVX~jm8Cv72YHhtMs-hw0ufkhbLlzxsp96w0ADbFAjlE-6V84TBFoL-XepusgOA28PA70NqZsXQtbJemW6ilmbGCD7f5k-TWUE~iuyDV8vUbPN1EgU3DqGKVcf01IvhHm8Nal-f1RyIMDkOblhDfr5Jb-H7RPHfURXqBqGgyHi3J~wRlpqnL82azb4IT8kAmAkuAQ~yIFj2-sSxvIC~L3wVjlRaFyN3ZQZhdcM2X9rUbnds1ridhkcT9Q__',
+                                            fit: BoxFit.cover,
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                    Padding(
+                                      padding: isBigScreen == Metrics.isTablet(context)
+                                          ? EdgeInsets.all(4.0)
+                                          : EdgeInsets.all(8.0),
+                                      child: AspectRatio(
+                                        aspectRatio: 4 / 2,
+                                        child: ClipRRect(
+                                          borderRadius: BorderRadius.circular(20),
+                                          child: Image.network(
+                                            'https://s3-alpha-sig.figma.com/img/7421/1481/baa69c063899ed27ca89fac6650a969b?Expires=1716163200&Key-Pair-Id=APKAQ4GOSFWCVNEHN3O4&Signature=DeWnQA4C39OVuDak1l~XHBN1G-Yl2Q8YE7zqBkJwbONFV~O2f66uMXgkMG1KQLP2dnbXHhvEAHrw6zEP5GwN~eV-2qMypv59l59QQTqXEmlGJ7UB0lmMp~1~LvyzBDrzfABfX10xDTGtws5QWGuG0pawx271yFEUHIBNtOQmx3SkDhp1VT2Ld2o2uEAwL5R-ierQW6fHiTBcuhylWweSYIwhRB-~yd~eIaTOosHgiFSRLpw6PhrcXsTjQ9RJOifS4VWr7jVfzalwtwVi5Sonywjo4Y9RHLxics6HRErIFcKTlsDUVuDviFEB53yIA31qCm~QUxqKZhKEZSCnyI0ySA__',
+                                            fit: BoxFit.cover,
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              if (isBigScreen != Metrics.isTablet(context))
+                                Expanded(
+                                    child: const Column(
+                                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  children: [
+                                    statistics(
+                                      text1: '15',
+                                      text2: 'Years of Experiences in Real Estate Industry',
+                                    ),
+                                    statistics(
+                                      text1: '45%',
+                                      text2: 'Increase in booking from individual listing',
+                                    ),
+                                    statistics(
+                                      text1: '62%',
+                                      text2: 'Reduction in Fixed Costs by homeowners',
+                                    ),
+                                  ],
+                                )),
+                            ],
+                          ),
                         ),
                       ),
                       if (isBigScreen == Metrics.isTablet(context))
@@ -306,7 +309,7 @@ class statistics extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.all(8.0),
+      padding: const EdgeInsets.all(16.0),
       child: Container(
         child: Column(
           children: [

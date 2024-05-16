@@ -12,8 +12,9 @@ import 'footer_bottom_social_buttons.dart';
 class FooterBottom extends StatelessWidget {
   const FooterBottom({
     Key? key,
+    required this.bg,
   }) : super(key: key);
-
+  final Color bg;
   @override
   Widget build(BuildContext context) {
     final pad = normalize(min: 576, max: 1440, data: Metrics.width(context));
@@ -81,7 +82,7 @@ class FooterBottom extends StatelessWidget {
     //   ),
     // );
     return Container(
-      color: Color.fromRGBO(241, 241, 241, 1),
+      color: bg,
       padding: EdgeInsets.all(Metrics.isMobile(context) ? 25 : 50),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,

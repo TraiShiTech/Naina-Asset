@@ -199,7 +199,7 @@ class Appbar extends StatelessWidget {
                             Navigator.push(
                               context,
                               MaterialPageRoute(
-                                builder: (context) => RentAll(),
+                                builder: (context) => AssetAll(),
                               ),
                             );
                           },

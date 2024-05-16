@@ -15,7 +15,9 @@ import 'meter_item.dart';
 class Footer extends StatelessWidget {
   const Footer({
     Key? key,
+    required this.bgcolor,
   }) : super(key: key);
+  final Color bgcolor;
 
   @override
   Widget build(BuildContext context) {
@@ -117,7 +119,7 @@ class Footer extends StatelessWidget {
                 //     ],
                 //   ),
                 // ),
-                const FooterBottom(),
+                 FooterBottom(bg: bgcolor,),
                 // SizedBox(
                 //   height: 88,
                 //   child: Row(
