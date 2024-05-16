@@ -11,7 +11,7 @@ import 'app/home.dart';
 /// flutter run -d chrome  --no-sound-null-safety
 /// flutter run -d chrome --web-browser-flag "--disable-web-security" (แก้ปัญหา security  CORS (Cross-Origin Resource Sharing))
 /// flutter run -d web-server
-///----------------------------------------------------->4
+///----------------------------------------------------->4 rent_details
 /// flutter build web --web-renderer html --release
 ///  flutter build web --release --no-sound-null-safety
 /// flutter build web --web-renderer html --release --no-sound-null-safety

@@ -15,6 +15,7 @@ import 'layouts/custom_decoratives/custom_decoratives.dart';
 import 'layouts/footer/footer.dart';
 import 'layouts/header/header_rent.dart';
 import 'layouts/layouts.dart';
+import 'layouts/rent/rent_details.dart';
 
 class RentAll extends ConsumerStatefulWidget {
   const RentAll({Key? key}) : super(key: key);
@@ -132,7 +133,7 @@ class _RentAllState extends ConsumerState<RentAll> {
                   Align(
                     alignment: Alignment.center,
                     child: 'Our Properties'.poppins(
-                      color: brown,
+                      color: Color.fromRGBO(71, 69, 69, 1),
                       fontSize: 25 + 4 * pad,
                     ),
                   ),
@@ -141,7 +142,7 @@ class _RentAllState extends ConsumerState<RentAll> {
                     child: Align(
                       alignment: Alignment.center,
                       child: 'monthly & yearly rentals at prime locations in Chiang Mai, Thailand'.poppinscenter(
-                        color: const Color(0xff896e57),
+                        color: Color.fromRGBO(71, 69, 69, 1),
                         fontWeight: FontWeight.bold,
                         height: 1.5,
                         letterSpacing: 1,
@@ -159,8 +160,8 @@ class _RentAllState extends ConsumerState<RentAll> {
                               child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
                             Padding(
                               padding: EdgeInsets.all(8),
-                              child: '${links[index1]}'.toUpperCase().poppins(
-                                    color: black,
+                              child: '${links[index1]}'.poppins(
+                                    color: Color.fromRGBO(87, 87, 87, 1),
                                     fontWeight: FontWeight.bold,
                                     height: 1.5,
                                     letterSpacing: 1,
@@ -185,14 +186,15 @@ class _RentAllState extends ConsumerState<RentAll> {
                               itemBuilder: (context, index) {
                                 final gridItem = decorativeItems[index];
 
+// <<<<<<< HEAD
                                 return InkWell(
                                   onTap: () {
-                                    // Navigator.push(
-                                    //   context,
-                                    //   MaterialPageRoute(
-                                    //     builder: (context) => xxxx(),
-                                    //   ),
-                                    // );
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) => RentDetails(),
+                                      ),
+                                    );
                                   },
                                   child: MouseRegion(
                                       onEnter: (val) => setState(() => isHover[index1][index] = true),
@@ -211,6 +213,27 @@ class _RentAllState extends ConsumerState<RentAll> {
                                           ),
                                           boxShadow: [
                                             BoxShadow(
+// =======
+//                                     return InkWell(
+//                                       onTap: () {
+//                                         Navigator.push(
+//                                           context,
+//                                           MaterialPageRoute(
+//                                             builder: (context) => RentDetails(),
+//                                           ),
+//                                         );
+//                                       },
+//                                       child: MouseRegion(
+//                                           onEnter: (val) => setState(() =>
+//                                               isHover[index1][index] = true),
+//                                           onExit: (val) => setState(() =>
+//                                               isHover[index1][index] = false),
+//                                           child: AnimatedContainer(
+//                                             duration: const Duration(
+//                                                 milliseconds: 240),
+//                                             padding: const EdgeInsets.all(8),
+//                                             decoration: BoxDecoration(
+// >>>>>>> upstream/main
                                               color: isHover[index1][index]
                                                   ? textPrimary.withOpacity(0.15)
                                                   : textPrimary.withOpacity(0),

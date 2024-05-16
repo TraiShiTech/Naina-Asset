@@ -2,8 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:properties/core/core.dart';
 
+import '../../aboutus_all.dart';
+import '../../asset_all.dart';
+import '../../blog.dart';
+import '../../rent_all.dart';
 import '../../widgets/base_container.dart';
 import '../../widgets/icon_btn.dart';
+import '../../with_us.dart';
 
 class Appbar extends StatelessWidget {
   const Appbar({
@@ -18,6 +23,7 @@ class Appbar extends StatelessWidget {
       // 'Property Management Services',
       'List with Us',
       'About Us',
+      'Blogs',
       // 'Contact Us'
     ];
     return Column(
@@ -99,15 +105,82 @@ class Appbar extends StatelessWidget {
                         margin: const EdgeInsets.symmetric(horizontal: 20),
                       ),
                     if (Metrics.isDesktop(context) || Metrics.isTablet(context))
+// <<<<<<< HEAD
                       Padding(
                         padding: EdgeInsets.only(left: 0),
                         child: TextButton(
-                          onPressed: () {},
+                          onPressed: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => RentAll(),
+                              ),
+                            );
+                          },
                           child: 'Rent'.poppins(
                             fontWeight: FontWeight.w500,
                             color: white,
                             fontSize: 16,
                             height: 1.5,
+// =======
+//                       ...List.generate(links.length, (index) {
+//                         final link = links[index];
+
+//                         return Padding(
+//                           padding: EdgeInsets.only(left: index != 0 ? 24 : 0),
+//                           child: TextButton(
+//                             onPressed: () {
+//                               // List<String> links = [
+//                               //   'Rent',
+//                               //   'Property Management Services',
+//                               //   'List with Us',
+//                               //   'About Us',
+//                               //   // 'Contact Us'
+//                               // ];
+//                               if (index == 0) {
+//                                 Navigator.push(
+//                                   context,
+//                                   MaterialPageRoute(
+//                                     builder: (context) => RentAll(),
+//                                   ),
+//                                 );
+//                               } else if (index == 1) {
+//                                 Navigator.push(
+//                                   context,
+//                                   MaterialPageRoute(
+//                                     builder: (context) => AssetAll(),
+//                                   ),
+//                                 );
+//                               } else if (index == 2) {
+//                                 Navigator.push(
+//                                   context,
+//                                   MaterialPageRoute(
+//                                     builder: (context) => WistUs(),
+//                                   ),
+//                                 );
+//                               } else if (index == 3) {
+//                                 Navigator.push(
+//                                   context,
+//                                   MaterialPageRoute(
+//                                     builder: (context) => AboutUs_All(),
+//                                   ),
+//                                 );
+//                               } else if (index == 4) {
+//                                 Navigator.push(
+//                                   context,
+//                                   MaterialPageRoute(
+//                                     builder: (context) => BlogAll(),
+//                                   ),
+//                                 );
+//                               }
+//                             },
+//                             child: link.poppins(
+//                               fontWeight: FontWeight.w500,
+//                               color: white,
+//                               fontSize: 16,
+//                               height: 1.5,
+//                             ),
+// >>>>>>> upstream/main
                           ),
                         ),
                       ),
@@ -122,7 +195,14 @@ class Appbar extends StatelessWidget {
                       Padding(
                         padding: EdgeInsets.only(left: 0, right: 10),
                         child: TextButton(
-                          onPressed: () {},
+                          onPressed: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => RentAll(),
+                              ),
+                            );
+                          },
                           child: 'Property Management Services'.poppins(
                             fontWeight: FontWeight.w500,
                             color: white,
@@ -158,7 +238,30 @@ class Appbar extends StatelessWidget {
                                     borderRadius: BorderRadius.circular(50),
                                   ),
                                 )),
-                            onPressed: () {},
+                            onPressed: () {
+                              if (index == 0) {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => WistUs(),
+                                  ),
+                                );
+                              } else if (index == 1) {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => AboutUs_All(),
+                                  ),
+                                );
+                              } else if (index == 2) {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => BlogAll(),
+                                  ),
+                                );
+                              }
+                            },
                             child: link.poppins(
                               fontWeight: FontWeight.w500,
                               color: index == 0 ? white : Color.fromRGBO(77, 74, 74, 1),
