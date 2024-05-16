@@ -1,12 +1,20 @@
+import 'dart:convert';
+// import 'dart:ffi';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:properties/Constant/Myconstant.dart';
 import 'package:properties/app/layouts/header/header_asset_all.dart';
 import 'package:properties/app/widgets/base_container.dart';
 import 'package:properties/app/widgets/how_it_work_card_item.dart';
 import 'package:properties/core/core.dart';
+import 'package:properties/core/models/review_model.dart';
+import 'package:http/http.dart' as http;
+import 'package:properties/core/theme/app_colors.dart';
 
 import 'components/appbar/appbar.dart';
 import 'layouts/asset_as/asset_management.dart';
@@ -25,7 +33,7 @@ class _AssetAllState extends ConsumerState<AssetAll> {
   int endIndex = 0;
 ///////----------------------------------------------->
   late ScrollController _baseController;
-
+  List<reviewmodel> reviewmodels = [];
   final GlobalKey _headerKey = GlobalKey();
 
 ///////----------------------------------------------->
@@ -39,7 +47,7 @@ class _AssetAllState extends ConsumerState<AssetAll> {
         ref.read(scrollProvider.notifier).change(false);
       }
     });
-
+    read_GC_reviewmodels();
     super.initState();
   }
 
@@ -52,6 +60,34 @@ class _AssetAllState extends ConsumerState<AssetAll> {
 ///////----------------------------------------------->
   Future scrollToItem(GlobalKey key) async {
     await Scrollable.ensureVisible(key.currentContext!, duration: const Duration(milliseconds: 480));
+  }
+
+///////----------------------------------------------->
+  Future<Null> read_GC_reviewmodels() async {
+    if (reviewmodels.length != 0) {
+      reviewmodels.clear();
+    }
+
+    String url = '${MyConstant().domain}/GC_ReviewAll.php?isAdd=true';
+
+    try {
+      var response = await http.get(Uri.parse(url));
+
+      var result = json.decode(response.body);
+      // print(result);
+
+      for (var map in result) {
+        reviewmodel reviewmodelss = reviewmodel.fromJson(map);
+
+        setState(() {
+          reviewmodels.add(reviewmodelss);
+        });
+      }
+
+      // print(reviewmodels);
+      // read_isHover();
+      // Map assetlist = {};
+    } catch (e) {}
   }
 
 ///////----------------------------------------------->
@@ -817,104 +853,134 @@ class _AssetAllState extends ConsumerState<AssetAll> {
                                           textAlign: TextAlign.center),
                                       const SizedBox(height: 34),
                                       Container(
-                                        // height: 400,
+                                        height: 500,
                                         width: double.infinity,
                                         padding: EdgeInsets.only(left: 20.0 * pad, right: 20.0 * pad),
                                         // padding: const EdgeInsets.all(8.0),
-                                        child: GridView.builder(
-                                          // scrollDirection: Axis.horizontal,
-                                          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                                              crossAxisCount: Metrics.isMobile(context)
-                                                  ? 1
-                                                  : Metrics.isCompact(context)
-                                                      ? 1
-                                                      : Metrics.isTablet(context)
-                                                          ? 2
-                                                          : 2,
-                                              // crossAxisCount: gride_review.toInt(),
-                                              // crossAxisCount: 2,
-                                              childAspectRatio: 3 / 1,
-                                              crossAxisSpacing: 24,
-                                              mainAxisSpacing: 10,
-                                              mainAxisExtent: 200.0),
-                                          shrinkWrap: true,
-                                          physics: const NeverScrollableScrollPhysics(),
-                                          itemCount: 4,
-                                          itemBuilder: (context, index) {
-                                            // final gridItem = decorativeItems[index];
-                                            return Stack(
-                                              alignment: Alignment.centerLeft,
-                                              clipBehavior: Clip.none,
-                                              // alignment: Alignment.center,
-                                              children: [
-                                                Container(
-                                                  // width: 400,
-                                                  height: 200,
-                                                  margin: EdgeInsets.only(left: 50),
-                                                  padding: EdgeInsets.only(left: 70, right: 16, top: 16, bottom: 16),
-                                                  decoration: BoxDecoration(
-                                                    color: white,
-                                                    borderRadius: const BorderRadius.only(
-                                                      topLeft: Radius.circular(20),
-                                                      topRight: Radius.circular(20),
-                                                      bottomLeft: Radius.circular(20),
-                                                      bottomRight: Radius.circular(20),
-                                                    ),
-                                                    boxShadow: [
-                                                      BoxShadow(
-                                                        color: Colors.grey.withOpacity(0.25),
-                                                        offset: const Offset(0, 4),
-                                                        blurRadius: 4,
+                                        child: SingleChildScrollView(
+                                          scrollDirection: Axis.vertical,
+                                          child: GridView.builder(
+                                            // scrollDirection: Axis.vertical,
+                                            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                                                crossAxisCount: Metrics.isMobile(context)
+                                                    ? 1
+                                                    : Metrics.isCompact(context)
+                                                        ? 1
+                                                        : Metrics.isTablet(context)
+                                                            ? 2
+                                                            : 2,
+                                                // crossAxisCount: gride_review.toInt(),
+                                                // crossAxisCount: reviewmodels.length.toInt(),
+                                                childAspectRatio: 3 / 1,
+                                                crossAxisSpacing: 24,
+                                                mainAxisSpacing: 10,
+                                                mainAxisExtent: 200.0),
+                                            shrinkWrap: true,
+                                            physics: const NeverScrollableScrollPhysics(),
+                                            itemCount: reviewmodels.length,
+                                            itemBuilder: (context, index) {
+                                              // final gridItem = decorativeItems[index];
+                                              return Stack(
+                                                alignment: Alignment.centerLeft,
+                                                clipBehavior: Clip.none,
+                                                // alignment: Alignment.center,
+                                                children: [
+                                                  Container(
+                                                    width: double.infinity,
+                                                    height: 200,
+                                                    margin: EdgeInsets.only(left: 50),
+                                                    padding: EdgeInsets.only(left: 70, right: 16, top: 16, bottom: 16),
+                                                    decoration: BoxDecoration(
+                                                      color: white,
+                                                      borderRadius: const BorderRadius.only(
+                                                        topLeft: Radius.circular(20),
+                                                        topRight: Radius.circular(20),
+                                                        bottomLeft: Radius.circular(20),
+                                                        bottomRight: Radius.circular(20),
                                                       ),
-                                                    ],
+                                                      boxShadow: [
+                                                        BoxShadow(
+                                                          color: Colors.grey.withOpacity(0.25),
+                                                          offset: const Offset(0, 4),
+                                                          blurRadius: 4,
+                                                        ),
+                                                      ],
+                                                    ),
+                                                    child: Column(
+                                                      mainAxisAlignment: MainAxisAlignment.center,
+                                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                                      children: [
+                                                        Row(
+                                                          children: [
+                                                            Text('${reviewmodels[index].name}',
+                                                                style: GoogleFonts.poppins(
+                                                                  color: Color.fromRGBO(72, 72, 72, 1),
+                                                                  fontSize: 14 + 4 * pad,
+                                                                ),
+                                                                textAlign: TextAlign.start),
+                                                            RatingBar.builder(
+                                                              initialRating:
+                                                                  double.parse('${reviewmodels[index].poit_score}'),
+                                                              minRating: 1,
+                                                              direction: Axis.horizontal,
+                                                              allowHalfRating: true,
+                                                              itemCount: 5,
+                                                              itemSize: 20,
+                                                              itemPadding: const EdgeInsets.symmetric(horizontal: 4.0),
+                                                              unratedColor: Colors.grey.withOpacity(0.5),
+                                                              wrapAlignment: WrapAlignment.start,
+                                                              itemBuilder: (context, _) => const Icon(
+                                                                Icons.star,
+                                                                color: Colors.amber,
+                                                              ),
+                                                              onRatingUpdate: (rating) {
+                                                                print(rating);
+                                                              },
+                                                            ),
+                                                          ],
+                                                        ),
+                                                        Text('${reviewmodels[index].description}',
+                                                            style: GoogleFonts.poppins(
+                                                              color: Color.fromRGBO(72, 72, 72, 1),
+                                                              fontSize: 10 + 4 * pad,
+                                                            ),
+                                                            textAlign: TextAlign.start),
+                                                        // const SizedBox(height: 10),
+                                                      ],
+                                                    ),
                                                   ),
-                                                  child: Column(
-                                                    mainAxisAlignment: MainAxisAlignment.center,
-                                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                                    children: [
-                                                      Text(review[index][0],
-                                                          style: GoogleFonts.poppins(
-                                                            color: Color.fromRGBO(72, 72, 72, 1),
-                                                            fontSize: 14 + 4 * pad,
-                                                          ),
-                                                          textAlign: TextAlign.start),
-                                                      Text(review[index][1],
-                                                          style: GoogleFonts.poppins(
-                                                            color: Color.fromRGBO(72, 72, 72, 1),
-                                                            fontSize: 10 + 4 * pad,
-                                                          ),
-                                                          textAlign: TextAlign.start),
-                                                      // const SizedBox(height: 10),
-                                                    ],
-                                                  ),
-                                                ),
-                                                // AspectRatio(
-                                                //   aspectRatio: 2 / 1,
-                                                //   child: ClipRRect(
-                                                //     borderRadius: BorderRadius.circular(20),
-                                                //     child: Image.network(
-                                                //       'https://images.unsplash.com/photo-1611967164521-abae8fba4668?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=870&q=80',
-                                                //       fit: BoxFit.cover,
-                                                //     ),
-                                                //   ),
-                                                // ),
-                                                Positioned(
-                                                    // top: 25,
-                                                    width: 100,
-                                                    height: 100,
-                                                    // left: -12.5,
-                                                    child: CircleAvatar(
-                                                      backgroundColor: Color.fromRGBO(177, 170, 151, 1),
-                                                      radius: 50,
-                                                      // child: Image.asset(
-                                                      //   'Clock.png'.image,
-                                                      //   // width: 80,
-                                                      //   // height: 80,
-                                                      // ),
-                                                    )),
-                                              ],
-                                            );
-                                          },
+                                                  // AspectRatio(
+                                                  //   aspectRatio: 2 / 1,
+                                                  //   child: ClipRRect(
+                                                  //     borderRadius: BorderRadius.circular(20),
+                                                  //     child: Image.network(
+                                                  //       'https://images.unsplash.com/photo-1611967164521-abae8fba4668?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=870&q=80',
+                                                  //       fit: BoxFit.cover,
+                                                  //     ),
+                                                  //   ),
+                                                  // ),
+                                                  Positioned(
+                                                      // top: 25,
+                                                      width: 100,
+                                                      height: 100,
+                                                      // left: -12.5,
+                                                      child: CircleAvatar(
+                                                        backgroundColor: Color.fromRGBO(177, 170, 151, 1),
+                                                        radius: 50,
+                                                        child: Icon(
+                                                          Icons.home_rounded,
+                                                          color: white,
+                                                        ),
+                                                        // child: Image.asset(
+                                                        //   'Clock.png'.image, fit: BoxFit.cover,
+                                                        //   // width: 80,
+                                                        //   // height: 80,
+                                                        // ),
+                                                      )),
+                                                ],
+                                              );
+                                            },
+                                          ),
                                         ),
                                       ),
                                     ],
