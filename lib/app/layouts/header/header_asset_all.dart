@@ -90,14 +90,14 @@ class Header_AssetAll extends StatelessWidget {
                                             'Naina Asset'.poppins(
                                               color: greenBg,
                                               fontWeight: FontWeight.w600,
-                                              fontSize: 24,
+                                              fontSize:  (Metrics.isDesktop(context) || Metrics.isTablet(context)) ? 24 : 14,
                                               height: 1.5,
                                             ),
                                             'ในนา แอสเสท - บริการดูแลพร็อพเพอร์ตี้มืออาชีพ '.poppins(
                                               color: greenBg,
                                               fontWeight: FontWeight.w600,
                                               fontSize:
-                                                  (Metrics.isDesktop(context) || Metrics.isTablet(context)) ? 14 : 12,
+                                                  (Metrics.isDesktop(context) || Metrics.isTablet(context)) ? 14 : 10,
                                               height: 1.5,
                                             ),
                                           ],
@@ -257,13 +257,57 @@ class Header_AssetAll extends StatelessWidget {
                 child: FractionallySizedBox(
                   widthFactor: 0.9,
                   child: Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 40.0, horizontal: 40),
+                    padding: const EdgeInsets.symmetric(vertical: 20.0, horizontal: 40),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.center,
                       mainAxisAlignment: MainAxisAlignment.spaceAround,
                       children: [
-                        'Become stress-free by letting us look after your property and earn passive income!'
-                            .poppins(fontSize: 20, fontWeight: FontWeight.w600, color: white, letterSpacing: 1),
+                        Center(
+                          child: FractionallySizedBox(
+                            widthFactor: Metrics.isMobile(context) ? 1 : 0.6,
+                            child: Container(
+                              margin: EdgeInsets.only(bottom: 10),
+                              padding: EdgeInsets.all(20.0),
+                              decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(50), color: Color.fromRGBO(171, 141, 62, 1)),
+                              child: 'Have a Vacant Space in Chiang Mai?'.poppins(
+                                fontWeight: FontWeight.w600,
+                                color: white,
+                                fontSize: Metrics.isMobile(context) ? 20 : 30,
+                                textAlign: TextAlign.center,
+                              ),
+                            ),
+                          ),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: 'Become stress-free by letting us look after your property and earn passive income!'
+                              .poppins(
+                                  fontSize: 20,
+                                  fontWeight: FontWeight.w600,
+                                  color: white,
+                                  letterSpacing: 1,
+                                  textAlign: TextAlign.center),
+                        ),
+                        if (isBigScreen == Metrics.isTablet(context) || isBigScreen == Metrics.isMobile(context))
+                          const Column(
+                            mainAxisAlignment: MainAxisAlignment.spaceAround,
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              statistics(
+                                text1: '15',
+                                text2: 'Years of Experiences in Real Estate Industry',
+                              ),
+                              statistics(
+                                text1: '45%',
+                                text2: 'Increase in booking from individual listing',
+                              ),
+                              statistics(
+                                text1: '62%',
+                                text2: 'Reduction in Fixed Costs by homeowners',
+                              ),
+                            ],
+                          ),
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceAround,
                           children: [
@@ -492,24 +536,6 @@ class Header_AssetAll extends StatelessWidget {
           //     ],
           //   ),
           // )
-          Positioned(
-              child: Center(
-            child: FractionallySizedBox(
-              widthFactor: 0.6,
-              child: Container(
-                margin: EdgeInsets.only(bottom: 70),
-                padding: EdgeInsets.all(20.0),
-                decoration:
-                    BoxDecoration(borderRadius: BorderRadius.circular(50), color: Color.fromRGBO(171, 141, 62, 1)),
-                child: 'Have a Vacant Space in Chiang Mai?'.poppins(
-                  fontWeight: FontWeight.w600,
-                  color: white,
-                  fontSize: 30,
-                  textAlign: TextAlign.center,
-                ),
-              ),
-            ),
-          ))
         ],
       ),
     );

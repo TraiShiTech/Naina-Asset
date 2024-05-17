@@ -29,11 +29,8 @@ class Header_WithUs extends StatelessWidget {
       'Check out',
     ];
     final pad = normalize(min: 576, max: 1440, data: Metrics.width(context));
-    final bool isBigScreen =
-        Metrics.isDesktop(context) || Metrics.isTablet(context);
-    final pad1 = isBigScreen
-        ? 0.0
-        : normalize(min: 576, max: 976, data: Metrics.width(context));
+    final bool isBigScreen = Metrics.isDesktop(context) || Metrics.isTablet(context);
+    final pad1 = isBigScreen ? 0.0 : normalize(min: 576, max: 976, data: Metrics.width(context));
 
     return Container(
       child: Column(
@@ -80,26 +77,19 @@ class Header_WithUs extends StatelessWidget {
                                     ),
                                     const SizedBox(width: 16),
                                     Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.center,
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      mainAxisAlignment: MainAxisAlignment.center,
                                       children: [
                                         'Naina Asset'.poppins(
                                           color: greenBg,
                                           fontWeight: FontWeight.bold,
-                                          fontSize: 24,
+                                          fontSize: (Metrics.isDesktop(context) || Metrics.isTablet(context)) ? 24 : 14,
                                           height: 1.5,
                                         ),
-                                        'ในนา แอสเสท - บริการดูแลพร็อพเพอร์ตี้มืออาชีพ '
-                                            .poppins(
+                                        'ในนา แอสเสท - บริการดูแลพร็อพเพอร์ตี้มืออาชีพ '.poppins(
                                           color: greenBg,
                                           fontWeight: FontWeight.w600,
-                                          fontSize:
-                                              (Metrics.isDesktop(context) ||
-                                                      Metrics.isTablet(context))
-                                                  ? 14
-                                                  : 12,
+                                          fontSize: (Metrics.isDesktop(context) || Metrics.isTablet(context)) ? 14 : 10,
                                           height: 1.5,
                                         ),
                                       ],
@@ -108,23 +98,19 @@ class Header_WithUs extends StatelessWidget {
                                 ),
                                 Row(
                                   children: [
-                                    if (Metrics.isDesktop(context) ||
-                                        Metrics.isTablet(context))
+                                    if (Metrics.isDesktop(context) || Metrics.isTablet(context))
                                       Container(
                                         height: 30,
                                         width: 3,
                                         color: greenBg.withOpacity(0.5),
-                                        margin: const EdgeInsets.symmetric(
-                                            horizontal: 24),
+                                        margin: const EdgeInsets.symmetric(horizontal: 24),
                                       ),
-                                    if (Metrics.isDesktop(context) ||
-                                        Metrics.isTablet(context))
+                                    if (Metrics.isDesktop(context) || Metrics.isTablet(context))
                                       ...List.generate(links.length, (index) {
                                         final link = links[index];
 
                                         return Padding(
-                                          padding: EdgeInsets.only(
-                                              left: index != 0 ? 24 : 0),
+                                          padding: EdgeInsets.only(left: index != 0 ? 24 : 0),
                                           child: TextButton(
                                             onPressed: () {},
                                             child: link.poppins(
@@ -136,14 +122,12 @@ class Header_WithUs extends StatelessWidget {
                                           ),
                                         );
                                       }),
-                                    if (Metrics.isDesktop(context) ||
-                                        Metrics.isTablet(context))
+                                    if (Metrics.isDesktop(context) || Metrics.isTablet(context))
                                       Container(
                                         height: 30,
                                         width: 3,
                                         color: greenBg.withOpacity(0.5),
-                                        margin: const EdgeInsets.symmetric(
-                                            horizontal: 24),
+                                        margin: const EdgeInsets.symmetric(horizontal: 24),
                                       ),
                                     IconButton(
                                         onPressed: () {

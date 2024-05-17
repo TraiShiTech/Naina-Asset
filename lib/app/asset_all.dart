@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:js';
 // import 'dart:ffi';
 
 import 'package:flutter/cupertino.dart';
@@ -9,12 +10,15 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:properties/Constant/Myconstant.dart';
 import 'package:properties/app/layouts/header/header_asset_all.dart';
+import 'package:properties/app/layouts/how_it_works/how_it_works.dart';
 import 'package:properties/app/widgets/base_container.dart';
 import 'package:properties/app/widgets/how_it_work_card_item.dart';
 import 'package:properties/core/core.dart';
 import 'package:properties/core/models/review_model.dart';
 import 'package:http/http.dart' as http;
 import 'package:properties/core/theme/app_colors.dart';
+import 'package:properties/core/utils/metrics.dart';
+import 'package:properties/core/utils/utils.dart';
 
 import 'components/appbar/appbar.dart';
 import 'layouts/asset_as/asset_management.dart';
@@ -157,7 +161,10 @@ class _AssetAllState extends ConsumerState<AssetAll> {
                   Align(
                     alignment: Alignment.center,
                     child: 'Naina Asset: Professional Rental Property Manager'.poppins(
-                        color: Color.fromRGBO(72, 72, 72, 1), fontSize: 34 + 4 * pad, fontWeight: FontWeight.w600),
+                        color: Color.fromRGBO(72, 72, 72, 1),
+                        fontSize: 34 + 4 * pad,
+                        fontWeight: FontWeight.w600,
+                        textAlign: TextAlign.center),
                   ),
                   const Padding(
                     padding: const EdgeInsets.all(8.0),
@@ -172,170 +179,58 @@ class _AssetAllState extends ConsumerState<AssetAll> {
                             height: 1.5,
                             letterSpacing: 1,
                           ),
+                          textAlign: TextAlign.center,
                         )),
                   ),
                   const SizedBox(height: 48),
                   FractionallySizedBox(
                       widthFactor: 0.9,
-                      child: Row(
-                        children: [
-                          Expanded(
-                            child: Container(
-                              margin: EdgeInsets.all(8.0),
-                              // padding: EdgeInsets.all(8.0),
-                              clipBehavior: Clip.antiAlias,
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(10),
-                                color: white,
-                                boxShadow: [
-                                  BoxShadow(
-                                    color: textPrimary.withOpacity(0.15),
-                                    offset: const Offset(0, 6),
-                                    blurRadius: 10,
-                                  ),
-                                ],
-                              ),
-                              child: Row(
+                      child: Metrics.isMobile(context)
+                          ? const SizedBox(
+                              height: 500,
+                              child: Column(
                                 children: [
-                                  Container(
-                                    padding: EdgeInsets.all(20),
-                                    decoration: BoxDecoration(color: Color.fromRGBO(35, 66, 103, 1)),
-                                    child: Image.asset(
-                                      'images/82931e3de9e258f8d41ea43191d784c5s.png',
-                                      width: 40,
-                                      height: 40,
-                                      fit: BoxFit.cover,
-                                    ),
+                                  tag(
+                                    img: 'images/82931e3de9e258f8d41ea43191d784c5s.png',
+                                    title: 'Lease Out Your Property',
+                                    subtitle:
+                                        'Stay with us ease-free at our handpicked properties at prime locations in Chiang Mai, Thailand! ',
                                   ),
-                                  Expanded(
-                                    child: Padding(
-                                      padding: const EdgeInsets.all(8.0),
-                                      child: Column(
-                                        crossAxisAlignment: CrossAxisAlignment.center,
-                                        mainAxisAlignment: MainAxisAlignment.spaceAround,
-                                        children: [
-                                          'Lease Out Your Property'.poppins(
-                                              color: Color.fromRGBO(72, 72, 72, 1),
-                                              fontWeight: FontWeight.w600,
-                                              textAlign: TextAlign.start),
-                                          'Stay with us ease-free at our handpicked properties at prime locations in Chiang Mai, Thailand! '
-                                              .poppins(
-                                                  color: Color.fromRGBO(72, 72, 72, 1),
-                                                  fontWeight: FontWeight.w400,
-                                                  textAlign: TextAlign.start),
-                                        ],
-                                      ),
-                                    ),
+                                  tag(
+                                    img: 'images/82931e3de9e258f8d41ea43191d784c5d.png',
+                                    title: 'Maintenance Services',
+                                    subtitle: 'property listings, bookings, guest communications, full management',
+                                  ),
+                                  tag(
+                                    img: 'images/82931e3de9e258f8d41ea43191d784c5df.png',
+                                    title: 'Guest Communications',
+                                    subtitle:
+                                        'In need of property maintenance services i.e. repairs, cleanings, gardening ? We’re here to help!',
                                   ),
                                 ],
                               ),
-                            ),
-                          ),
-                          Expanded(
-                            child: Container(
-                              margin: EdgeInsets.all(8.0),
-                              // padding: EdgeInsets.all(8.0),
-                              clipBehavior: Clip.antiAlias,
-                              decoration: BoxDecoration(
-                                color: white,
-                                borderRadius: BorderRadius.circular(10),
-                                boxShadow: [
-                                  BoxShadow(
-                                    color: textPrimary.withOpacity(0.15),
-                                    offset: const Offset(0, 6),
-                                    blurRadius: 10,
-                                  ),
-                                ],
-                              ),
-                              child: Row(
-                                children: [
-                                  Container(
-                                    padding: EdgeInsets.all(20),
-                                    decoration: BoxDecoration(color: Color.fromRGBO(94, 106, 150, 1)),
-                                    child: Image.asset(
-                                      'images/82931e3de9e258f8d41ea43191d784c5d.png',
-                                      width: 40,
-                                      height: 40,
-                                      fit: BoxFit.cover,
-                                    ),
-                                  ),
-                                  Expanded(
-                                    child: Padding(
-                                      padding: const EdgeInsets.all(8.0),
-                                      child: Column(
-                                        crossAxisAlignment: CrossAxisAlignment.center,
-                                        mainAxisAlignment: MainAxisAlignment.spaceAround,
-                                        children: [
-                                          'Maintenance Services'.poppins(
-                                              color: Color.fromRGBO(72, 72, 72, 1),
-                                              fontWeight: FontWeight.w600,
-                                              textAlign: TextAlign.start),
-                                          'property listings, bookings, guest communications, full management'.poppins(
-                                              color: Color.fromRGBO(72, 72, 72, 1),
-                                              fontWeight: FontWeight.w400,
-                                              textAlign: TextAlign.start),
-                                        ],
-                                      ),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ),
-                          Expanded(
-                            child: Container(
-                              margin: EdgeInsets.all(8.0),
-                              // padding: EdgeInsets.all(8.0),
-                              clipBehavior: Clip.antiAlias,
-                              decoration: BoxDecoration(
-                                color: white,
-                                borderRadius: BorderRadius.circular(10),
-                                boxShadow: [
-                                  BoxShadow(
-                                    color: textPrimary.withOpacity(0.15),
-                                    offset: const Offset(0, 6),
-                                    blurRadius: 10,
-                                  ),
-                                ],
-                              ),
-                              child: Row(
-                                children: [
-                                  Container(
-                                    padding: EdgeInsets.all(20),
-                                    decoration: BoxDecoration(color: Color.fromRGBO(52, 41, 119, 1)),
-                                    child: Image.asset(
-                                      'images/82931e3de9e258f8d41ea43191d784c5df.png',
-                                      width: 40,
-                                      height: 40,
-                                      fit: BoxFit.cover,
-                                    ),
-                                  ),
-                                  Expanded(
-                                    child: Padding(
-                                      padding: const EdgeInsets.all(8.0),
-                                      child: Column(
-                                        crossAxisAlignment: CrossAxisAlignment.center,
-                                        mainAxisAlignment: MainAxisAlignment.spaceAround,
-                                        children: [
-                                          'Guest Communications'.poppins(
-                                              color: Color.fromRGBO(72, 72, 72, 1),
-                                              fontWeight: FontWeight.w600,
-                                              textAlign: TextAlign.start),
-                                          'In need of property maintenance services i.e. repairs, cleanings, gardening ? We’re here to help!'
-                                              .poppins(
-                                                  color: Color.fromRGBO(72, 72, 72, 1),
-                                                  fontWeight: FontWeight.w400,
-                                                  textAlign: TextAlign.start),
-                                        ],
-                                      ),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ),
-                        ],
-                      )
+                            )
+                          : const Row(
+                              children: [
+                                tag(
+                                  img: 'images/82931e3de9e258f8d41ea43191d784c5s.png',
+                                  title: 'Lease Out Your Property',
+                                  subtitle:
+                                      'Stay with us ease-free at our handpicked properties at prime locations in Chiang Mai, Thailand! ',
+                                ),
+                                tag(
+                                  img: 'images/82931e3de9e258f8d41ea43191d784c5d.png',
+                                  title: 'Maintenance Services',
+                                  subtitle: 'property listings, bookings, guest communications, full management',
+                                ),
+                                tag(
+                                  img: 'images/82931e3de9e258f8d41ea43191d784c5df.png',
+                                  title: 'Guest Communications',
+                                  subtitle:
+                                      'In need of property maintenance services i.e. repairs, cleanings, gardening ? We’re here to help!',
+                                ),
+                              ],
+                            )
                       // Column(
                       //   children: [
 
@@ -418,59 +313,114 @@ class _AssetAllState extends ConsumerState<AssetAll> {
                                         widthFactor: 0.9,
                                         child: Padding(
                                           padding: const EdgeInsets.symmetric(vertical: 10.0),
-                                          child: Row(
-                                            children: [
-                                              Padding(
-                                                padding: const EdgeInsets.all(40.0),
-                                                child: Column(
-                                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                                  mainAxisAlignment: MainAxisAlignment.center,
+                                          child: Metrics.isMobile(context)
+                                              ? Column(
                                                   children: [
-                                                    '35%'.poppins(
-                                                        fontSize: 40,
-                                                        fontWeight: FontWeight.bold,
-                                                        color: Color.fromRGBO(72, 72, 72, 1)),
-                                                    'Commission Fee'.poppins(
-                                                        fontSize: 20,
-                                                        fontWeight: FontWeight.bold,
-                                                        color: Color.fromRGBO(72, 72, 72, 1)),
-                                                    '+ Renovation Fee*'.poppins(
-                                                        fontSize: 18,
-                                                        fontWeight: FontWeight.w400,
-                                                        color: Color.fromRGBO(72, 72, 72, 1)),
+                                                    Padding(
+                                                      padding: const EdgeInsets.all(20.0),
+                                                      child: Column(
+                                                        crossAxisAlignment: CrossAxisAlignment.center,
+                                                        mainAxisAlignment: MainAxisAlignment.center,
+                                                        children: [
+                                                          '35%'.poppins(
+                                                              fontSize: 40,
+                                                              fontWeight: FontWeight.bold,
+                                                              color: Color.fromRGBO(72, 72, 72, 1),
+                                                              textAlign: TextAlign.center),
+                                                          'Commission Fee'.poppins(
+                                                              fontSize: 20,
+                                                              fontWeight: FontWeight.bold,
+                                                              color: Color.fromRGBO(72, 72, 72, 1),
+                                                              textAlign: TextAlign.center),
+                                                          '+ Renovation Fee*'.poppins(
+                                                              fontSize: 18,
+                                                              fontWeight: FontWeight.w400,
+                                                              color: Color.fromRGBO(72, 72, 72, 1),
+                                                              textAlign: TextAlign.center),
+                                                        ],
+                                                      ),
+                                                    ),
+                                                    Padding(
+                                                      padding: const EdgeInsets.all(8.0),
+                                                      child: Column(
+                                                        mainAxisAlignment: MainAxisAlignment.center,
+                                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                                        children: [
+                                                          Padding(
+                                                            padding: const EdgeInsets.symmetric(vertical: 16.0),
+                                                            child: 'Inclusive Services'.poppins(
+                                                                fontSize: 20,
+                                                                fontWeight: FontWeight.w600,
+                                                                color: Color.fromRGBO(72, 72, 72, 1)),
+                                                          ),
+                                                          Container(
+                                                            padding: const EdgeInsets.all(0.0),
+                                                            child:
+                                                                '    \n With over 10+ years of experience in real estate industry, we are a real estate development company, which achieves the maximum benefit by meeting the needs of customers and investors. We have a new generation team that understands market trends. When you need the help fornew investors, we have experts to guide you. Don\'t worry about contacting us. Because we always have good suggestions.'
+                                                                    .poppins(
+                                                                        fontSize: 18,
+                                                                        fontWeight: FontWeight.w400,
+                                                                        textAlign: TextAlign.center,
+                                                                        color: Color.fromRGBO(72, 72, 72, 1)),
+                                                          ),
+                                                        ],
+                                                      ),
+                                                    )
+                                                  ],
+                                                )
+                                              : Row(
+                                                  children: [
+                                                    Padding(
+                                                      padding: const EdgeInsets.all(40.0),
+                                                      child: Column(
+                                                        crossAxisAlignment: CrossAxisAlignment.center,
+                                                        mainAxisAlignment: MainAxisAlignment.center,
+                                                        children: [
+                                                          '35%'.poppins(
+                                                              fontSize: 40,
+                                                              fontWeight: FontWeight.bold,
+                                                              color: Color.fromRGBO(72, 72, 72, 1)),
+                                                          'Commission Fee'.poppins(
+                                                              fontSize: 20,
+                                                              fontWeight: FontWeight.bold,
+                                                              color: Color.fromRGBO(72, 72, 72, 1)),
+                                                          '+ Renovation Fee*'.poppins(
+                                                              fontSize: 18,
+                                                              fontWeight: FontWeight.w400,
+                                                              color: Color.fromRGBO(72, 72, 72, 1)),
+                                                        ],
+                                                      ),
+                                                    ),
+                                                    Expanded(
+                                                      child: Padding(
+                                                        padding: const EdgeInsets.all(8.0),
+                                                        child: Column(
+                                                          mainAxisAlignment: MainAxisAlignment.center,
+                                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                                          children: [
+                                                            Padding(
+                                                              padding: const EdgeInsets.symmetric(vertical: 16.0),
+                                                              child: 'Inclusive Services'.poppins(
+                                                                  fontSize: 20,
+                                                                  fontWeight: FontWeight.w600,
+                                                                  color: Color.fromRGBO(72, 72, 72, 1)),
+                                                            ),
+                                                            Container(
+                                                              padding: const EdgeInsets.all(16.0),
+                                                              child:
+                                                                  '    \n With over 10+ years of experience in real estate industry, we are a real estate development company, which achieves the maximum benefit by meeting the needs of customers and investors. We have a new generation team that understands market trends. When you need the help fornew investors, we have experts to guide you. Don\'t worry about contacting us. Because we always have good suggestions.'
+                                                                      .poppins(
+                                                                          fontSize: 18,
+                                                                          fontWeight: FontWeight.w400,
+                                                                          textAlign: TextAlign.justify,
+                                                                          color: Color.fromRGBO(72, 72, 72, 1)),
+                                                            ),
+                                                          ],
+                                                        ),
+                                                      ),
+                                                    )
                                                   ],
                                                 ),
-                                              ),
-                                              Expanded(
-                                                child: Padding(
-                                                  padding: const EdgeInsets.all(8.0),
-                                                  child: Column(
-                                                    mainAxisAlignment: MainAxisAlignment.center,
-                                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                                    children: [
-                                                      Padding(
-                                                        padding: const EdgeInsets.symmetric(vertical: 16.0),
-                                                        child: 'Inclusive Services'.poppins(
-                                                            fontSize: 20,
-                                                            fontWeight: FontWeight.w600,
-                                                            color: Color.fromRGBO(72, 72, 72, 1)),
-                                                      ),
-                                                      Container(
-                                                        padding: const EdgeInsets.all(16.0),
-                                                        child:
-                                                            '    \n With over 10+ years of experience in real estate industry, we are a real estate development company, which achieves the maximum benefit by meeting the needs of customers and investors. We have a new generation team that understands market trends. When you need the help fornew investors, we have experts to guide you. Don\'t worry about contacting us. Because we always have good suggestions.'
-                                                                .poppins(
-                                                                    fontSize: 18,
-                                                                    fontWeight: FontWeight.w400,
-                                                                    textAlign: TextAlign.justify,
-                                                                    color: Color.fromRGBO(72, 72, 72, 1)),
-                                                      ),
-                                                    ],
-                                                  ),
-                                                ),
-                                              )
-                                            ],
-                                          ),
                                         ),
                                       ),
                                       Center(
@@ -548,7 +498,9 @@ class _AssetAllState extends ConsumerState<AssetAll> {
                                 ],
                               ),
                               child: 'Full Management Scheme'.poppins(
-                                  fontSize: 30, color: Color.fromRGBO(61, 57, 57, 1), fontWeight: FontWeight.w600),
+                                  fontSize: Metrics.isMobile(context) ? 14 : 30,
+                                  color: Color.fromRGBO(61, 57, 57, 1),
+                                  fontWeight: FontWeight.w600),
                             )),
                           ],
                         ),
@@ -577,59 +529,114 @@ class _AssetAllState extends ConsumerState<AssetAll> {
                                         widthFactor: 0.9,
                                         child: Padding(
                                           padding: const EdgeInsets.symmetric(vertical: 10.0),
-                                          child: Row(
-                                            children: [
-                                              Padding(
-                                                padding: const EdgeInsets.all(40.0),
-                                                child: Column(
-                                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                                  mainAxisAlignment: MainAxisAlignment.center,
+                                          child: Metrics.isMobile(context)
+                                              ? Column(
                                                   children: [
-                                                    '25%'.poppins(
-                                                        fontSize: 40,
-                                                        fontWeight: FontWeight.bold,
-                                                        color: Color.fromRGBO(72, 72, 72, 1)),
-                                                    'Commission Fee'.poppins(
-                                                        fontSize: 20,
-                                                        fontWeight: FontWeight.bold,
-                                                        color: Color.fromRGBO(72, 72, 72, 1)),
-                                                    '+ Renovation Fee*'.poppins(
-                                                        fontSize: 18,
-                                                        fontWeight: FontWeight.w400,
-                                                        color: Color.fromRGBO(72, 72, 72, 1)),
+                                                    Padding(
+                                                      padding: const EdgeInsets.all(20.0),
+                                                      child: Column(
+                                                        crossAxisAlignment: CrossAxisAlignment.center,
+                                                        mainAxisAlignment: MainAxisAlignment.center,
+                                                        children: [
+                                                          '25%'.poppins(
+                                                              fontSize: 40,
+                                                              fontWeight: FontWeight.bold,
+                                                              color: Color.fromRGBO(72, 72, 72, 1),
+                                                              textAlign: TextAlign.center),
+                                                          'Commission Fee'.poppins(
+                                                              fontSize: 20,
+                                                              fontWeight: FontWeight.bold,
+                                                              color: Color.fromRGBO(72, 72, 72, 1),
+                                                              textAlign: TextAlign.center),
+                                                          '+ Renovation Fee*'.poppins(
+                                                              fontSize: 18,
+                                                              fontWeight: FontWeight.w400,
+                                                              color: Color.fromRGBO(72, 72, 72, 1),
+                                                              textAlign: TextAlign.center),
+                                                        ],
+                                                      ),
+                                                    ),
+                                                    Padding(
+                                                      padding: const EdgeInsets.all(8.0),
+                                                      child: Column(
+                                                        mainAxisAlignment: MainAxisAlignment.center,
+                                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                                        children: [
+                                                          Padding(
+                                                            padding: const EdgeInsets.symmetric(vertical: 8.0),
+                                                            child: 'Inclusive Services'.poppins(
+                                                                fontSize: 20,
+                                                                fontWeight: FontWeight.w600,
+                                                                color: Color.fromRGBO(72, 72, 72, 1)),
+                                                          ),
+                                                          Container(
+                                                            padding: const EdgeInsets.all(0.0),
+                                                            child:
+                                                                '    \n With over 10+ years of experience in real estate industry, we are a real estate development company, which achieves the maximum benefit by meeting the needs of customers and investors. We have a new generation team that understands market trends. When you need the help fornew investors, we have experts to guide you. Don\'t worry about contacting us. Because we always have good suggestions.'
+                                                                    .poppins(
+                                                                        fontSize: 18,
+                                                                        fontWeight: FontWeight.w400,
+                                                                        textAlign: TextAlign.center,
+                                                                        color: Color.fromRGBO(72, 72, 72, 1)),
+                                                          ),
+                                                        ],
+                                                      ),
+                                                    )
+                                                  ],
+                                                )
+                                              : Row(
+                                                  children: [
+                                                    Padding(
+                                                      padding: const EdgeInsets.all(40.0),
+                                                      child: Column(
+                                                        crossAxisAlignment: CrossAxisAlignment.center,
+                                                        mainAxisAlignment: MainAxisAlignment.center,
+                                                        children: [
+                                                          '25%'.poppins(
+                                                              fontSize: 40,
+                                                              fontWeight: FontWeight.bold,
+                                                              color: Color.fromRGBO(72, 72, 72, 1)),
+                                                          'Commission Fee'.poppins(
+                                                              fontSize: 20,
+                                                              fontWeight: FontWeight.bold,
+                                                              color: Color.fromRGBO(72, 72, 72, 1)),
+                                                          '+ Renovation Fee*'.poppins(
+                                                              fontSize: 18,
+                                                              fontWeight: FontWeight.w400,
+                                                              color: Color.fromRGBO(72, 72, 72, 1)),
+                                                        ],
+                                                      ),
+                                                    ),
+                                                    Expanded(
+                                                      child: Padding(
+                                                        padding: const EdgeInsets.all(8.0),
+                                                        child: Column(
+                                                          mainAxisAlignment: MainAxisAlignment.center,
+                                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                                          children: [
+                                                            Padding(
+                                                              padding: const EdgeInsets.symmetric(vertical: 16.0),
+                                                              child: 'Inclusive Services'.poppins(
+                                                                  fontSize: 20,
+                                                                  fontWeight: FontWeight.w600,
+                                                                  color: Color.fromRGBO(72, 72, 72, 1)),
+                                                            ),
+                                                            Container(
+                                                              padding: const EdgeInsets.all(16.0),
+                                                              child:
+                                                                  '    \n With over 10+ years of experience in real estate industry, we are a real estate development company, which achieves the maximum benefit by meeting the needs of customers and investors. We have a new generation team that understands market trends. When you need the help fornew investors, we have experts to guide you. Don\'t worry about contacting us. Because we always have good suggestions.'
+                                                                      .poppins(
+                                                                          fontSize: 18,
+                                                                          fontWeight: FontWeight.w400,
+                                                                          textAlign: TextAlign.justify,
+                                                                          color: Color.fromRGBO(72, 72, 72, 1)),
+                                                            ),
+                                                          ],
+                                                        ),
+                                                      ),
+                                                    )
                                                   ],
                                                 ),
-                                              ),
-                                              Expanded(
-                                                child: Padding(
-                                                  padding: const EdgeInsets.all(8.0),
-                                                  child: Column(
-                                                    mainAxisAlignment: MainAxisAlignment.center,
-                                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                                    children: [
-                                                      Padding(
-                                                        padding: const EdgeInsets.symmetric(vertical: 16.0),
-                                                        child: 'Inclusive Services'.poppins(
-                                                            fontSize: 20,
-                                                            fontWeight: FontWeight.w600,
-                                                            color: Color.fromRGBO(72, 72, 72, 1)),
-                                                      ),
-                                                      Container(
-                                                        padding: const EdgeInsets.all(16.0),
-                                                        child:
-                                                            '    \n With over 10+ years of experience in real estate industry, we are a real estate development company, which achieves the maximum benefit by meeting the needs of customers and investors. We have a new generation team that understands market trends. When you need the help fornew investors, we have experts to guide you. Don\'t worry about contacting us. Because we always have good suggestions.'
-                                                                .poppins(
-                                                                    fontSize: 18,
-                                                                    fontWeight: FontWeight.w400,
-                                                                    textAlign: TextAlign.justify,
-                                                                    color: Color.fromRGBO(72, 72, 72, 1)),
-                                                      ),
-                                                    ],
-                                                  ),
-                                                ),
-                                              )
-                                            ],
-                                          ),
                                         ),
                                       ),
                                       Center(
@@ -708,7 +715,9 @@ class _AssetAllState extends ConsumerState<AssetAll> {
                                 ],
                               ),
                               child: 'Partial Management Scheme'.poppins(
-                                  fontSize: 30, color: Color.fromRGBO(61, 57, 57, 1), fontWeight: FontWeight.w600),
+                                  fontSize: Metrics.isMobile(context) ? 14 : 30,
+                                  color: Color.fromRGBO(61, 57, 57, 1),
+                                  fontWeight: FontWeight.w600),
                             )),
                           ],
                         ),
@@ -719,110 +728,208 @@ class _AssetAllState extends ConsumerState<AssetAll> {
                               children: [
                                 'Or simply choose our one-off services:'.poppins(
                                     fontSize: 30, fontWeight: FontWeight.w600, color: Color.fromRGBO(72, 72, 72, 1)),
-                                Row(
-                                  children: [
-                                    Expanded(
-                                        child: AspectRatio(
-                                      aspectRatio: 9 / 12,
-                                      child: Container(
-                                        margin: EdgeInsets.all(40),
-                                        padding: EdgeInsets.symmetric(vertical: 40.0, horizontal: 20),
-                                        decoration: BoxDecoration(
-                                            borderRadius: BorderRadius.circular(20),
-                                            image: DecorationImage(
-                                                image: NetworkImage(
-                                                    'https://s3-alpha-sig.figma.com/img/a838/e9c2/8f148541f8f8674d41bc3d5e257446e1?Expires=1716768000&Key-Pair-Id=APKAQ4GOSFWCVNEHN3O4&Signature=qOOHsVO~90fn6fq6uxLMB556kF1eckFMkW3MHqHBcgEweDuFkKS44vWzepBoPB2iWWjBLPmwKlIqI04R-sFZyGjPKVO3OQiP7eDUTxNJxTpN0470yoyfESeKmPNcZTIosBdkmtxL6DmRL0cibKlYN3SzgptDvrLL43QmxKTKWPyWSsHtbTL07abQTzcSNnh7yWFJTeAB0ixchQ-O0dpOvKpTAQ-9jSai4ArUdX1W5-Wvu15FL4hkkpYhoulTRtfqkKQazMVvfqmhrgCd~X0ju2ZTVf9pX4rjrMiBsPJykAAMT89YP-pw83~eJzJpw1P-FEwcA2E-xnF9d~kyBePMxQ__'),
-                                                fit: BoxFit.cover,
-                                                alignment: Alignment.center)),
-                                        child: Column(
-                                          crossAxisAlignment: CrossAxisAlignment.start,
-                                          mainAxisAlignment: MainAxisAlignment.end,
-                                          children: [
-                                            'Repairs &\n Maintenance'
-                                                .poppins(fontWeight: FontWeight.bold, fontSize: 30, color: white),
-                                            Container(
-                                              padding: EdgeInsets.all(16.0),
-                                              decoration:
-                                                  BoxDecoration(borderRadius: BorderRadius.circular(8.0), color: white),
-                                              child: 'See more'.poppins(
-                                                  fontSize: 12,
-                                                  fontWeight: FontWeight.w400,
-                                                  color: Color.fromRGBO(55, 65, 81, 1)),
-                                            )
-                                          ],
-                                        ),
+                                Metrics.isMobile(context)
+                                    ? Column(
+                                        children: [
+                                          AspectRatio(
+                                            aspectRatio: 12 / 9,
+                                            child: Container(
+                                              margin: EdgeInsets.all(Metrics.isMobile(context) ? 10 : 40),
+                                              padding: EdgeInsets.symmetric(vertical: 40.0, horizontal: 20),
+                                              decoration: BoxDecoration(
+                                                  borderRadius: BorderRadius.circular(20),
+                                                  image: DecorationImage(
+                                                      image: NetworkImage(
+                                                          'https://s3-alpha-sig.figma.com/img/a838/e9c2/8f148541f8f8674d41bc3d5e257446e1?Expires=1716768000&Key-Pair-Id=APKAQ4GOSFWCVNEHN3O4&Signature=qOOHsVO~90fn6fq6uxLMB556kF1eckFMkW3MHqHBcgEweDuFkKS44vWzepBoPB2iWWjBLPmwKlIqI04R-sFZyGjPKVO3OQiP7eDUTxNJxTpN0470yoyfESeKmPNcZTIosBdkmtxL6DmRL0cibKlYN3SzgptDvrLL43QmxKTKWPyWSsHtbTL07abQTzcSNnh7yWFJTeAB0ixchQ-O0dpOvKpTAQ-9jSai4ArUdX1W5-Wvu15FL4hkkpYhoulTRtfqkKQazMVvfqmhrgCd~X0ju2ZTVf9pX4rjrMiBsPJykAAMT89YP-pw83~eJzJpw1P-FEwcA2E-xnF9d~kyBePMxQ__'),
+                                                      fit: BoxFit.cover,
+                                                      alignment: Alignment.center)),
+                                              child: Column(
+                                                crossAxisAlignment: CrossAxisAlignment.start,
+                                                mainAxisAlignment: MainAxisAlignment.end,
+                                                children: [
+                                                  'Repairs &\n Maintenance'
+                                                      .poppins(fontWeight: FontWeight.bold, fontSize: 20, color: white),
+                                                  Container(
+                                                    padding: EdgeInsets.all(16.0),
+                                                    decoration: BoxDecoration(
+                                                        borderRadius: BorderRadius.circular(8.0), color: white),
+                                                    child: 'See more'.poppins(
+                                                        fontSize: 12,
+                                                        fontWeight: FontWeight.w400,
+                                                        color: Color.fromRGBO(55, 65, 81, 1)),
+                                                  )
+                                                ],
+                                              ),
+                                            ),
+                                          ),
+                                          AspectRatio(
+                                            aspectRatio: 12 / 9,
+                                            child: Container(
+                                              margin: EdgeInsets.all(Metrics.isMobile(context) ? 10 : 40),
+                                              padding: EdgeInsets.symmetric(vertical: 40.0, horizontal: 20),
+                                              decoration: BoxDecoration(
+                                                  borderRadius: BorderRadius.circular(20),
+                                                  image: DecorationImage(
+                                                      image: NetworkImage(
+                                                          'https://s3-alpha-sig.figma.com/img/a889/8d75/e0ff3ee67194644a954dad74b688da4a?Expires=1716768000&Key-Pair-Id=APKAQ4GOSFWCVNEHN3O4&Signature=hIgJXAPNZXERhYrLrAEMR4JOiTR0Xlg2754Q0M2r4pFxTCo3c0l25KEdRHkhsQU0FJNAYypA2Zo-6XjCEfFiwbj534azGaAkmxyqXB7Y4sAWi6rwhva5D6U0Nthjtx0uBPpzsfXyb3LIbE-znFbT6wi0KhsFhIS7K89ommRyKxqZzgLBgEDPCmAE-dCycYI8Wjm2S59u9n3hdV65vxZkWRom0Y4vFks-yMNT3I0J64b5XMTfOzW63cU99Cre5x5sAoH27boMAQn0-eykRZK0P~yLn38KHOSb~7XjFQ67y3V4zJLXBQBa5mkqY7mETJHQhnxla8c7JPhF4G36Yp2vCg__'),
+                                                      fit: BoxFit.cover,
+                                                      alignment: Alignment.center)),
+                                              child: Column(
+                                                crossAxisAlignment: CrossAxisAlignment.start,
+                                                mainAxisAlignment: MainAxisAlignment.end,
+                                                children: [
+                                                  'House-\nkeeping'
+                                                      .poppins(fontWeight: FontWeight.bold, fontSize: 20, color: white),
+                                                  Container(
+                                                    padding: EdgeInsets.all(16.0),
+                                                    decoration: BoxDecoration(
+                                                        borderRadius: BorderRadius.circular(8.0), color: white),
+                                                    child: 'See more'.poppins(
+                                                        fontSize: 12,
+                                                        fontWeight: FontWeight.w400,
+                                                        color: Color.fromRGBO(55, 65, 81, 1)),
+                                                  )
+                                                ],
+                                              ),
+                                            ),
+                                          ),
+                                          AspectRatio(
+                                            aspectRatio: 12 / 9,
+                                            child: Container(
+                                              margin: EdgeInsets.all(Metrics.isMobile(context) ? 10 : 40),
+                                              padding: EdgeInsets.symmetric(vertical: 40.0, horizontal: 20),
+                                              decoration: BoxDecoration(
+                                                  borderRadius: BorderRadius.circular(20),
+                                                  image: DecorationImage(
+                                                      image: NetworkImage(
+                                                          'https://s3-alpha-sig.figma.com/img/a853/0d13/0fe0ddaeec703a316f384aee22d5ee51?Expires=1716768000&Key-Pair-Id=APKAQ4GOSFWCVNEHN3O4&Signature=H-z~ZD8sqTnLo~i5my5I5u7os5vdTQBV67Xc8kWmXDBR15e66CKfVSnIJ8WYe5z5lFyv2Pox-6h-ooWdV9a90wRtHj7eEGED2doY9gyWYmfBGK0YXpNka3uuLrwLD9VBliDunFYT5-twXp5MWBe9cKZ-EsC6Ryg7jo6O3PuJUdULUj9eDDrF8qg82FmE2NMooZFOETKhC5Z02Uf0uHOoqr36q2ce-BgwxrySB2IEEL8cW4peSoHlUyL-LCPTlegQ5y-OXIpIj6~MNueoj6NTVOewTYTceWkakCA3PQz5Mb0cdgbXHkKqUBB2W6q1EzjGUpOWT7bDIbastmrdvMSWNg__'),
+                                                      fit: BoxFit.cover,
+                                                      alignment: Alignment.center)),
+                                              child: Column(
+                                                crossAxisAlignment: CrossAxisAlignment.start,
+                                                mainAxisAlignment: MainAxisAlignment.end,
+                                                children: [
+                                                  'Gardening'
+                                                      .poppins(fontWeight: FontWeight.bold, fontSize: 20, color: white),
+                                                  Container(
+                                                    padding: EdgeInsets.all(16.0),
+                                                    decoration: BoxDecoration(
+                                                        borderRadius: BorderRadius.circular(8.0), color: white),
+                                                    child: 'See more'.poppins(
+                                                        fontSize: 12,
+                                                        fontWeight: FontWeight.w400,
+                                                        color: Color.fromRGBO(55, 65, 81, 1)),
+                                                  )
+                                                ],
+                                              ),
+                                            ),
+                                          )
+                                        ],
+                                      )
+                                    : Row(
+                                        children: [
+                                          Expanded(
+                                              child: AspectRatio(
+                                            aspectRatio: 9 / 12,
+                                            child: Container(
+                                              margin: EdgeInsets.all(40),
+                                              padding: EdgeInsets.symmetric(vertical: 40.0, horizontal: 20),
+                                              decoration: BoxDecoration(
+                                                  borderRadius: BorderRadius.circular(20),
+                                                  image: DecorationImage(
+                                                      image: NetworkImage(
+                                                          'https://s3-alpha-sig.figma.com/img/a838/e9c2/8f148541f8f8674d41bc3d5e257446e1?Expires=1716768000&Key-Pair-Id=APKAQ4GOSFWCVNEHN3O4&Signature=qOOHsVO~90fn6fq6uxLMB556kF1eckFMkW3MHqHBcgEweDuFkKS44vWzepBoPB2iWWjBLPmwKlIqI04R-sFZyGjPKVO3OQiP7eDUTxNJxTpN0470yoyfESeKmPNcZTIosBdkmtxL6DmRL0cibKlYN3SzgptDvrLL43QmxKTKWPyWSsHtbTL07abQTzcSNnh7yWFJTeAB0ixchQ-O0dpOvKpTAQ-9jSai4ArUdX1W5-Wvu15FL4hkkpYhoulTRtfqkKQazMVvfqmhrgCd~X0ju2ZTVf9pX4rjrMiBsPJykAAMT89YP-pw83~eJzJpw1P-FEwcA2E-xnF9d~kyBePMxQ__'),
+                                                      fit: BoxFit.cover,
+                                                      alignment: Alignment.center)),
+                                              child: Column(
+                                                crossAxisAlignment: CrossAxisAlignment.start,
+                                                mainAxisAlignment: MainAxisAlignment.end,
+                                                children: [
+                                                  'Repairs &\n Maintenance'
+                                                      .poppins(fontWeight: FontWeight.bold, fontSize: 30, color: white),
+                                                  Container(
+                                                    padding: EdgeInsets.all(16.0),
+                                                    decoration: BoxDecoration(
+                                                        borderRadius: BorderRadius.circular(8.0), color: white),
+                                                    child: 'See more'.poppins(
+                                                        fontSize: 12,
+                                                        fontWeight: FontWeight.w400,
+                                                        color: Color.fromRGBO(55, 65, 81, 1)),
+                                                  )
+                                                ],
+                                              ),
+                                            ),
+                                          )),
+                                          Expanded(
+                                              child: AspectRatio(
+                                            aspectRatio: 9 / 12,
+                                            child: Container(
+                                              margin: EdgeInsets.all(40),
+                                              padding: EdgeInsets.symmetric(vertical: 40.0, horizontal: 20),
+                                              decoration: BoxDecoration(
+                                                  borderRadius: BorderRadius.circular(20),
+                                                  image: DecorationImage(
+                                                      image: NetworkImage(
+                                                          'https://s3-alpha-sig.figma.com/img/a889/8d75/e0ff3ee67194644a954dad74b688da4a?Expires=1716768000&Key-Pair-Id=APKAQ4GOSFWCVNEHN3O4&Signature=hIgJXAPNZXERhYrLrAEMR4JOiTR0Xlg2754Q0M2r4pFxTCo3c0l25KEdRHkhsQU0FJNAYypA2Zo-6XjCEfFiwbj534azGaAkmxyqXB7Y4sAWi6rwhva5D6U0Nthjtx0uBPpzsfXyb3LIbE-znFbT6wi0KhsFhIS7K89ommRyKxqZzgLBgEDPCmAE-dCycYI8Wjm2S59u9n3hdV65vxZkWRom0Y4vFks-yMNT3I0J64b5XMTfOzW63cU99Cre5x5sAoH27boMAQn0-eykRZK0P~yLn38KHOSb~7XjFQ67y3V4zJLXBQBa5mkqY7mETJHQhnxla8c7JPhF4G36Yp2vCg__'),
+                                                      fit: BoxFit.cover,
+                                                      alignment: Alignment.center)),
+                                              child: Column(
+                                                crossAxisAlignment: CrossAxisAlignment.start,
+                                                mainAxisAlignment: MainAxisAlignment.end,
+                                                children: [
+                                                  'House-\nkeeping'
+                                                      .poppins(fontWeight: FontWeight.bold, fontSize: 30, color: white),
+                                                  Container(
+                                                    padding: EdgeInsets.all(16.0),
+                                                    decoration: BoxDecoration(
+                                                        borderRadius: BorderRadius.circular(8.0), color: white),
+                                                    child: 'See more'.poppins(
+                                                        fontSize: 12,
+                                                        fontWeight: FontWeight.w400,
+                                                        color: Color.fromRGBO(55, 65, 81, 1)),
+                                                  )
+                                                ],
+                                              ),
+                                            ),
+                                          )),
+                                          Expanded(
+                                              child: AspectRatio(
+                                            aspectRatio: 9 / 12,
+                                            child: Container(
+                                              margin: EdgeInsets.all(40),
+                                              padding: EdgeInsets.symmetric(vertical: 40.0, horizontal: 20),
+                                              decoration: BoxDecoration(
+                                                  borderRadius: BorderRadius.circular(20),
+                                                  image: DecorationImage(
+                                                      image: NetworkImage(
+                                                          'https://s3-alpha-sig.figma.com/img/a853/0d13/0fe0ddaeec703a316f384aee22d5ee51?Expires=1716768000&Key-Pair-Id=APKAQ4GOSFWCVNEHN3O4&Signature=H-z~ZD8sqTnLo~i5my5I5u7os5vdTQBV67Xc8kWmXDBR15e66CKfVSnIJ8WYe5z5lFyv2Pox-6h-ooWdV9a90wRtHj7eEGED2doY9gyWYmfBGK0YXpNka3uuLrwLD9VBliDunFYT5-twXp5MWBe9cKZ-EsC6Ryg7jo6O3PuJUdULUj9eDDrF8qg82FmE2NMooZFOETKhC5Z02Uf0uHOoqr36q2ce-BgwxrySB2IEEL8cW4peSoHlUyL-LCPTlegQ5y-OXIpIj6~MNueoj6NTVOewTYTceWkakCA3PQz5Mb0cdgbXHkKqUBB2W6q1EzjGUpOWT7bDIbastmrdvMSWNg__'),
+                                                      fit: BoxFit.cover,
+                                                      alignment: Alignment.center)),
+                                              child: Column(
+                                                crossAxisAlignment: CrossAxisAlignment.start,
+                                                mainAxisAlignment: MainAxisAlignment.end,
+                                                children: [
+                                                  'Gardening'
+                                                      .poppins(fontWeight: FontWeight.bold, fontSize: 30, color: white),
+                                                  Container(
+                                                    padding: EdgeInsets.all(16.0),
+                                                    decoration: BoxDecoration(
+                                                        borderRadius: BorderRadius.circular(8.0), color: white),
+                                                    child: 'See more'.poppins(
+                                                        fontSize: 12,
+                                                        fontWeight: FontWeight.w400,
+                                                        color: Color.fromRGBO(55, 65, 81, 1)),
+                                                  )
+                                                ],
+                                              ),
+                                            ),
+                                          ))
+                                        ],
                                       ),
-                                    )),
-                                    Expanded(
-                                        child: AspectRatio(
-                                      aspectRatio: 9 / 12,
-                                      child: Container(
-                                        margin: EdgeInsets.all(40),
-                                        padding: EdgeInsets.symmetric(vertical: 40.0, horizontal: 20),
-                                        decoration: BoxDecoration(
-                                            borderRadius: BorderRadius.circular(20),
-                                            image: DecorationImage(
-                                                image: NetworkImage(
-                                                    'https://s3-alpha-sig.figma.com/img/a889/8d75/e0ff3ee67194644a954dad74b688da4a?Expires=1716768000&Key-Pair-Id=APKAQ4GOSFWCVNEHN3O4&Signature=hIgJXAPNZXERhYrLrAEMR4JOiTR0Xlg2754Q0M2r4pFxTCo3c0l25KEdRHkhsQU0FJNAYypA2Zo-6XjCEfFiwbj534azGaAkmxyqXB7Y4sAWi6rwhva5D6U0Nthjtx0uBPpzsfXyb3LIbE-znFbT6wi0KhsFhIS7K89ommRyKxqZzgLBgEDPCmAE-dCycYI8Wjm2S59u9n3hdV65vxZkWRom0Y4vFks-yMNT3I0J64b5XMTfOzW63cU99Cre5x5sAoH27boMAQn0-eykRZK0P~yLn38KHOSb~7XjFQ67y3V4zJLXBQBa5mkqY7mETJHQhnxla8c7JPhF4G36Yp2vCg__'),
-                                                fit: BoxFit.cover,
-                                                alignment: Alignment.center)),
-                                        child: Column(
-                                          crossAxisAlignment: CrossAxisAlignment.start,
-                                          mainAxisAlignment: MainAxisAlignment.end,
-                                          children: [
-                                            'House-\nkeeping'
-                                                .poppins(fontWeight: FontWeight.bold, fontSize: 30, color: white),
-                                            Container(
-                                              padding: EdgeInsets.all(16.0),
-                                              decoration:
-                                                  BoxDecoration(borderRadius: BorderRadius.circular(8.0), color: white),
-                                              child: 'See more'.poppins(
-                                                  fontSize: 12,
-                                                  fontWeight: FontWeight.w400,
-                                                  color: Color.fromRGBO(55, 65, 81, 1)),
-                                            )
-                                          ],
-                                        ),
-                                      ),
-                                    )),
-                                    Expanded(
-                                        child: AspectRatio(
-                                      aspectRatio: 9 / 12,
-                                      child: Container(
-                                        margin: EdgeInsets.all(40),
-                                        padding: EdgeInsets.symmetric(vertical: 40.0, horizontal: 20),
-                                        decoration: BoxDecoration(
-                                            borderRadius: BorderRadius.circular(20),
-                                            image: DecorationImage(
-                                                image: NetworkImage(
-                                                    'https://s3-alpha-sig.figma.com/img/a853/0d13/0fe0ddaeec703a316f384aee22d5ee51?Expires=1716768000&Key-Pair-Id=APKAQ4GOSFWCVNEHN3O4&Signature=H-z~ZD8sqTnLo~i5my5I5u7os5vdTQBV67Xc8kWmXDBR15e66CKfVSnIJ8WYe5z5lFyv2Pox-6h-ooWdV9a90wRtHj7eEGED2doY9gyWYmfBGK0YXpNka3uuLrwLD9VBliDunFYT5-twXp5MWBe9cKZ-EsC6Ryg7jo6O3PuJUdULUj9eDDrF8qg82FmE2NMooZFOETKhC5Z02Uf0uHOoqr36q2ce-BgwxrySB2IEEL8cW4peSoHlUyL-LCPTlegQ5y-OXIpIj6~MNueoj6NTVOewTYTceWkakCA3PQz5Mb0cdgbXHkKqUBB2W6q1EzjGUpOWT7bDIbastmrdvMSWNg__'),
-                                                fit: BoxFit.cover,
-                                                alignment: Alignment.center)),
-                                        child: Column(
-                                          crossAxisAlignment: CrossAxisAlignment.start,
-                                          mainAxisAlignment: MainAxisAlignment.end,
-                                          children: [
-                                            'Gardening'
-                                                .poppins(fontWeight: FontWeight.bold, fontSize: 30, color: white),
-                                            Container(
-                                              padding: EdgeInsets.all(16.0),
-                                              decoration:
-                                                  BoxDecoration(borderRadius: BorderRadius.circular(8.0), color: white),
-                                              child: 'See more'.poppins(
-                                                  fontSize: 12,
-                                                  fontWeight: FontWeight.w400,
-                                                  color: Color.fromRGBO(55, 65, 81, 1)),
-                                            )
-                                          ],
-                                        ),
-                                      ),
-                                    ))
-                                  ],
-                                ),
                                 AspectRatio(
-                                  aspectRatio: 3 / 1,
+                                  aspectRatio: Metrics.isMobile(context) ? 4 / 3 : 3 / 1,
                                   child: Container(
-                                    margin: EdgeInsets.all(40),
+                                    margin: EdgeInsets.all(Metrics.isMobile(context) ? 20 : 40),
                                     padding: EdgeInsets.symmetric(vertical: 40.0, horizontal: 20),
                                     decoration: BoxDecoration(
                                         borderRadius: BorderRadius.circular(20),
@@ -832,11 +939,16 @@ class _AssetAllState extends ConsumerState<AssetAll> {
                                             fit: BoxFit.cover,
                                             alignment: Alignment.center)),
                                     child: Column(
-                                      crossAxisAlignment: CrossAxisAlignment.start,
-                                      mainAxisAlignment: MainAxisAlignment.end,
+                                      crossAxisAlignment: Metrics.isMobile(context)
+                                          ? CrossAxisAlignment.center
+                                          : CrossAxisAlignment.center,
+                                      mainAxisAlignment:
+                                          Metrics.isMobile(context) ? MainAxisAlignment.center : MainAxisAlignment.end,
                                       children: [
-                                        'Renovation Service'
-                                            .poppins(fontWeight: FontWeight.bold, fontSize: 40, color: white),
+                                        'Renovation Service'.poppins(
+                                            fontWeight: FontWeight.bold,
+                                            fontSize: Metrics.isMobile(context) ? 20 : 40,
+                                            color: white),
                                       ],
                                     ),
                                   ),
@@ -871,8 +983,8 @@ class _AssetAllState extends ConsumerState<AssetAll> {
                                                             : 2,
                                                 // crossAxisCount: gride_review.toInt(),
                                                 // crossAxisCount: reviewmodels.length.toInt(),
-                                                childAspectRatio: 3 / 1,
-                                                crossAxisSpacing: 24,
+                                                // childAspectRatio: 3 / 1,
+                                                crossAxisSpacing: 10,
                                                 mainAxisSpacing: 10,
                                                 mainAxisExtent: 200.0),
                                             shrinkWrap: true,
@@ -887,7 +999,7 @@ class _AssetAllState extends ConsumerState<AssetAll> {
                                                 children: [
                                                   Container(
                                                     width: double.infinity,
-                                                    height: 200,
+                                                    height: 150,
                                                     margin: EdgeInsets.only(left: 50),
                                                     padding: EdgeInsets.only(left: 70, right: 16, top: 16, bottom: 16),
                                                     decoration: BoxDecoration(
@@ -918,27 +1030,49 @@ class _AssetAllState extends ConsumerState<AssetAll> {
                                                                   fontSize: 14 + 4 * pad,
                                                                 ),
                                                                 textAlign: TextAlign.start),
-                                                            RatingBar.builder(
-                                                              initialRating:
-                                                                  double.parse('${reviewmodels[index].poit_score}'),
-                                                              minRating: 1,
-                                                              direction: Axis.horizontal,
-                                                              allowHalfRating: true,
-                                                              itemCount: 5,
-                                                              itemSize: 20,
-                                                              itemPadding: const EdgeInsets.symmetric(horizontal: 4.0),
-                                                              unratedColor: Colors.grey.withOpacity(0.5),
-                                                              wrapAlignment: WrapAlignment.start,
-                                                              itemBuilder: (context, _) => const Icon(
-                                                                Icons.star,
-                                                                color: Colors.amber,
+                                                            if (Metrics.isDesktop(context) || Metrics.isTablet(context))
+                                                              RatingBar.builder(
+                                                                initialRating:
+                                                                    double.parse('${reviewmodels[index].poit_score}'),
+                                                                minRating: 1,
+                                                                direction: Axis.horizontal,
+                                                                allowHalfRating: true,
+                                                                itemCount: 5,
+                                                                itemSize: 16,
+                                                                itemPadding:
+                                                                    const EdgeInsets.symmetric(horizontal: 4.0),
+                                                                unratedColor: Colors.grey.withOpacity(0.5),
+                                                                wrapAlignment: WrapAlignment.start,
+                                                                itemBuilder: (context, _) => const Icon(
+                                                                  Icons.star,
+                                                                  color: Colors.amber,
+                                                                ),
+                                                                onRatingUpdate: (rating) {
+                                                                  print(rating);
+                                                                },
                                                               ),
-                                                              onRatingUpdate: (rating) {
-                                                                print(rating);
-                                                              },
-                                                            ),
                                                           ],
                                                         ),
+                                                        if (Metrics.isMobile(context))
+                                                          RatingBar.builder(
+                                                            initialRating:
+                                                                double.parse('${reviewmodels[index].poit_score}'),
+                                                            minRating: 1,
+                                                            direction: Axis.horizontal,
+                                                            allowHalfRating: true,
+                                                            itemCount: 5,
+                                                            itemSize: 16,
+                                                            itemPadding: const EdgeInsets.symmetric(horizontal: 4.0),
+                                                            unratedColor: Colors.grey.withOpacity(0.5),
+                                                            wrapAlignment: WrapAlignment.start,
+                                                            itemBuilder: (context, _) => const Icon(
+                                                              Icons.star,
+                                                              color: Colors.amber,
+                                                            ),
+                                                            onRatingUpdate: (rating) {
+                                                              print(rating);
+                                                            },
+                                                          ),
                                                         Text('${reviewmodels[index].description}',
                                                             style: GoogleFonts.poppins(
                                                               color: Color.fromRGBO(72, 72, 72, 1),
@@ -1116,6 +1250,64 @@ class _AssetAllState extends ConsumerState<AssetAll> {
                     bgcolor: Colors.white,
                   ),
                 ],
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class tag extends StatelessWidget {
+  const tag({super.key, required this.img, required this.title, required this.subtitle});
+  final String img;
+  final String title;
+  final String subtitle;
+
+  @override
+  Widget build(BuildContext context) {
+    return Expanded(
+      child: Container(
+        margin: EdgeInsets.all(8.0),
+        // padding: EdgeInsets.all(0),
+        clipBehavior: Clip.antiAlias,
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(10),
+          color: white,
+          boxShadow: [
+            BoxShadow(
+              color: textPrimary.withOpacity(0.15),
+              offset: const Offset(0, 6),
+              blurRadius: 10,
+            ),
+          ],
+        ),
+        child: Row(
+          children: [
+            Container(
+              padding: EdgeInsets.all(30),
+              decoration: BoxDecoration(color: Color.fromRGBO(35, 66, 103, 1)),
+              child: Image.asset(
+                img,
+                width: 40,
+                height: 40,
+                fit: BoxFit.cover,
+              ),
+            ),
+            Expanded(
+              child: Padding(
+                padding: const EdgeInsets.symmetric(vertical: 20.0, horizontal: 8.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  children: [
+                    title.poppins(
+                        color: Color.fromRGBO(72, 72, 72, 1), fontWeight: FontWeight.w600, textAlign: TextAlign.start),
+                    subtitle.poppins(
+                        color: Color.fromRGBO(72, 72, 72, 1), fontWeight: FontWeight.w400, textAlign: TextAlign.start),
+                  ],
+                ),
               ),
             ),
           ],

@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:properties/app/aboutus_all.dart';
+import 'package:properties/app/rent_all.dart';
+import 'package:properties/app/with_us.dart';
 import 'package:properties/core/core.dart';
 
 import '../../../core/theme/app_colors.dart';
@@ -70,17 +73,13 @@ class Header_Rent extends StatelessWidget {
                         'Naina Asset'.poppins(
                           color: greenBg,
                           fontWeight: FontWeight.bold,
-                          fontSize: 24,
+                          fontSize: (Metrics.isDesktop(context) || Metrics.isTablet(context)) ? 24 : 14,
                           height: 1.5,
                         ),
-                        'ในนา แอสเสท - บริการดูแลพร็อพเพอร์ตี้มืออาชีพ '
-                            .poppins(
+                        'ในนา แอสเสท - บริการดูแลพร็อพเพอร์ตี้มืออาชีพ '.poppins(
                           color: greenBg,
                           fontWeight: FontWeight.w600,
-                          fontSize: (Metrics.isDesktop(context) ||
-                                  Metrics.isTablet(context))
-                              ? 14
-                              : 12,
+                          fontSize: (Metrics.isDesktop(context) || Metrics.isTablet(context)) ? 14 : 10,
                           height: 1.5,
                         ),
                       ],
@@ -103,7 +102,30 @@ class Header_Rent extends StatelessWidget {
                         return Padding(
                           padding: EdgeInsets.only(left: index != 0 ? 24 : 0),
                           child: TextButton(
-                            onPressed: () {},
+                            onPressed: () {
+                              if (index == 0) {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => RentAll(),
+                                  ),
+                                );
+                              } else if (index == 1) {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => WistUs(),
+                                  ),
+                                );
+                              } else if (index == 2) {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => AboutUs_All(),
+                                  ),
+                                );
+                              }
+                            },
                             child: link.poppins(
                               fontWeight: FontWeight.w500,
                               color: greenBg,

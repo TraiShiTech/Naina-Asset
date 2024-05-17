@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
@@ -7,7 +9,10 @@ import 'package:properties/app/layouts/header/header_asset_all.dart';
 import 'package:properties/app/widgets/base_container.dart';
 import 'package:properties/app/widgets/how_it_work_card_item.dart';
 import 'package:properties/core/core.dart';
-
+import 'package:http/http.dart' as http;
+import '../Constant/Myconstant.dart';
+import '../core/models/list_withUs_model.dart';
+import '../core/models/package_model.dart';
 import 'components/appbar/appbar.dart';
 import 'layouts/about_us/image_clider_controller.dart';
 import 'layouts/asset_as/asset_management.dart';
@@ -33,41 +38,10 @@ class _WistUsState extends ConsumerState<WistUs> {
 ///////----------------------------------------------->
   late PageController _controller;
   int currentPage = 1;
-///////----------------------------------------------->
-  List data_Service = [
-    {
-      'id': '1',
-      'imageUrl': '',
-      'name': 'Free',
-      'description': '{100 conversations p/m},{10 websites},{2 GB data storage}',
-      'descriptionSub': '{Chat widget},{Real time support}',
-      'pri': '0',
-    },
-    {
-      'id': '2',
-      'imageUrl': '',
-      'name': 'Essentials',
-      'description': '{100 conversations p/m},{10 websites},{2 GB data storage}',
-      'descriptionSub': '{Chat widget},{Real time support}',
-      'pri': '50',
-    },
-    {
-      'id': '3',
-      'imageUrl': '',
-      'name': 'Team',
-      'description': '{100 conversations p/m},{10 websites},{2 GB data storage}',
-      'descriptionSub': '{Chat widget},{Real time support}',
-      'pri': '90',
-    },
-    {
-      'id': '4',
-      'imageUrl': '',
-      'name': 'Enterprise',
-      'description': '{100 conversations p/m},{10 websites},{2 GB data storage}',
-      'descriptionSub': '{Chat widget},{Real time support}',
-      'pri': '160',
-    },
-  ];
+  ///////----------------------------------------------->
+  List<packagemodel> packagemodels = [];
+  List<ListWithUsModel> ListWithUsModels = [];
+  List<bool> isHover = [];
   List<String> gride_image = [
     'https://s3-alpha-sig.figma.com/img/9879/be65/cb78d9f230682212edb7f9f15137b65b?Expires=1716768000&Key-Pair-Id=APKAQ4GOSFWCVNEHN3O4&Signature=jMU29Pk~LhuZ5hxRlQpNF3UNjp~j2n5FgnUXX25zIYO~V3zdGdSwpbn-gQyBWGfH4MYH3D-cYz5A0MmIqq0WB6pePq~RlYPkZPDxKnB6qsvV8ofqbECcwi~hn7Kg6i0U7gQcWTOd8TiPTmIyEqMkjXo~raoMD-69adA8FCcplv-zQldleZkz1AyEV76W4ZvpFIsYhVHFo5ZENzIZcgK2dHLT8orFTUN4iT0pZfTWtRhb0SYbc-5NuWfOoi7~PJyf111FRT-mgCp8RNkojR27WpKbJ5ZA5QYqsXlFmmt8c0LfqL28XX0GUuLxAbLDlboPw11Jb5UBJ-hW70Wy9cr0kw__',
     'https://s3-alpha-sig.figma.com/img/e7e4/0206/2e74f45aa3e5b9aa0c38a030cee4959b?Expires=1716768000&Key-Pair-Id=APKAQ4GOSFWCVNEHN3O4&Signature=OmOjQCvQOX434-6Rux8tQzgc8Im~morWIeGy63AA5cFk4hH8d~DGafXWVGNf4WP~T3f2nCfaGM-5bLEk2uQWL3lJn~Ak6Rcqs2ssIx6~7UZriBm7SSagp2~FUdksaQfL7ygKz02m660U36Qp7EhQqrFJ94nOLCNMkcl1F9ewsUBE38ztRyHdzKpd5-Im7nxCP~gxYbUklzgH5fHwlpHXc2xLZ~CzFyKXyizDcuGmXu9lTm05bZIvFNBdhE6OKoSIZteCdXEfhIsWW5zeZbGO44ECd9YbjJ2G~22J3SJdSVquZYpRr4BwDuYGqLetC6gqxBxuybEY1pXhPc1Ff5iHxw__',
@@ -88,8 +62,8 @@ class _WistUsState extends ConsumerState<WistUs> {
     'Gardening',
     'Renovation &\nDecorations',
   ];
-
 ///////----------------------------------------------->
+
   @override
   void initState() {
     _baseController = ScrollController();
@@ -105,6 +79,8 @@ class _WistUsState extends ConsumerState<WistUs> {
       keepPage: false,
       viewportFraction: 0.25,
     );
+    read_GC_PackagAll();
+    read_GC_ListWithUsAll();
     super.initState();
   }
 
@@ -117,7 +93,67 @@ class _WistUsState extends ConsumerState<WistUs> {
 
 ///////----------------------------------------------->
   Future scrollToItem(GlobalKey key) async {
-    await Scrollable.ensureVisible(key.currentContext!, duration: const Duration(milliseconds: 480));
+    await Scrollable.ensureVisible(key.currentContext!,
+        duration: const Duration(milliseconds: 480));
+  }
+
+///////----------------------------------------------->
+  Future<Null> read_GC_ListWithUsAll() async {
+    if (ListWithUsModels.length != 0) {
+      ListWithUsModels.clear();
+    }
+
+    String url = '${MyConstant().domain}/GC_ListWithUs_All.php?isAdd=true';
+
+    try {
+      var response = await http.get(Uri.parse(url));
+
+      var result = json.decode(response.body);
+      // print(result);
+
+      for (var map in result) {
+        ListWithUsModel ListWithUsModelss = ListWithUsModel.fromJson(map);
+
+        setState(() {
+          ListWithUsModels.add(ListWithUsModelss);
+        });
+      }
+    } catch (e) {}
+  }
+
+///////----------------------------------------------->
+  Future<Null> read_GC_PackagAll() async {
+    if (packagemodels.length != 0) {
+      packagemodels.clear();
+    }
+
+    String url = '${MyConstant().domain}/GC_Package.php?isAdd=true';
+
+    try {
+      var response = await http.get(Uri.parse(url));
+
+      var result = json.decode(response.body);
+      // print(result);
+
+      for (var map in result) {
+        packagemodel packagemodelss = packagemodel.fromJson(map);
+
+        setState(() {
+          packagemodels.add(packagemodelss);
+        });
+      }
+      read_isHover();
+    } catch (e) {}
+  }
+
+///////----------------------------------------------->
+  Future<void> read_isHover() async {
+    setState(() {
+      isHover = List.generate(
+        packagemodels.length,
+        (index) => false,
+      );
+    });
   }
 
 ///////----------------------------------------------->
@@ -126,26 +162,19 @@ class _WistUsState extends ConsumerState<WistUs> {
     final pad = normalize(min: 576, max: 1440, data: Metrics.width(context));
 
     final isBigScreen = Metrics.isDesktop(context) || Metrics.isTablet(context);
-    final pad1 = isBigScreen ? 0.0 : normalize(min: 576, max: 976, data: Metrics.width(context));
-    double plus =
-        Metrics.isDesktop(context) ? 0 : (0.5 * (1 - normalize(min: 976, max: 1440, data: Metrics.width(context))));
+    final pad1 = isBigScreen
+        ? 0.0
+        : normalize(min: 576, max: 976, data: Metrics.width(context));
+    double plus = Metrics.isDesktop(context)
+        ? 0
+        : (0.5 *
+            (1 - normalize(min: 976, max: 1440, data: Metrics.width(context))));
     _controller = PageController(
       initialPage: currentPage,
       keepPage: false,
       viewportFraction: 0.25 + plus,
     );
-    List<String> description_List = [];
-    List<String> descriptionSub_List = [];
-    for (int index = 0; index < data_Service.length; index++) {
-      String trimmedData = data_Service[index]['description']
-          .toString()
-          .substring(1, data_Service[index]['description'].toString().length - 1);
-      String trimmedData_sub = data_Service[index]['descriptionSub']
-          .toString()
-          .substring(1, data_Service[index]['descriptionSub'].toString().length - 1);
-      description_List = trimmedData.split('},{');
-      descriptionSub_List = trimmedData_sub.split('},{');
-    }
+
     ///////-------------------------------------->
     return Scaffold(
       backgroundColor: white,
@@ -185,8 +214,9 @@ class _WistUsState extends ConsumerState<WistUs> {
                       child: FractionallySizedBox(
                     widthFactor: 0.7,
                     child: Column(
-                        crossAxisAlignment:
-                            Metrics.isMobile(context) ? CrossAxisAlignment.center : CrossAxisAlignment.center,
+                        crossAxisAlignment: Metrics.isMobile(context)
+                            ? CrossAxisAlignment.center
+                            : CrossAxisAlignment.center,
                         children: [
                           Stack(
                             children: [
@@ -211,12 +241,16 @@ class _WistUsState extends ConsumerState<WistUs> {
                                         color: white,
                                         boxShadow: [
                                           BoxShadow(
-                                            color: Colors.grey.withOpacity(0.25),
+                                            color:
+                                                Colors.grey.withOpacity(0.25),
                                             offset: const Offset(0, 4),
                                             blurRadius: 4,
                                           ),
                                         ],
-                                        border: Border.all(color: Color.fromARGB(255, 192, 189, 189), width: 1),
+                                        border: Border.all(
+                                            color: Color.fromARGB(
+                                                255, 192, 189, 189),
+                                            width: 1),
                                         // image: DecorationImage(
                                         //   image: AssetImage(
                                         //     'assets/property_service/11.jpg',
@@ -230,25 +264,45 @@ class _WistUsState extends ConsumerState<WistUs> {
                                               flex: 1,
                                               child: Container(
                                                 child: Column(
-                                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                                  crossAxisAlignment:
+                                                      CrossAxisAlignment.center,
                                                   children: [
                                                     const SizedBox(height: 20),
                                                     Align(
-                                                      alignment: Alignment.centerLeft,
+                                                      alignment:
+                                                          Alignment.centerLeft,
                                                       child: Padding(
-                                                        padding: const EdgeInsets.all(20.0),
+                                                        padding:
+                                                            const EdgeInsets
+                                                                .all(20.0),
                                                         child: Column(
-                                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                                          crossAxisAlignment:
+                                                              CrossAxisAlignment
+                                                                  .start,
                                                           children: [
-                                                            'Get in touch'.poppins(
-                                                              color: Color.fromRGBO(85, 82, 82, 1),
-                                                              fontWeight: FontWeight.bold,
-                                                              fontSize: 25 + 4 * pad,
+                                                            'Get in touch'
+                                                                .poppins(
+                                                              color: Color
+                                                                  .fromRGBO(
+                                                                      85,
+                                                                      82,
+                                                                      82,
+                                                                      1),
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .bold,
+                                                              fontSize:
+                                                                  25 + 4 * pad,
                                                             ),
                                                             Container(
                                                               height: 5,
                                                               width: 100,
-                                                              color: Color.fromRGBO(222, 110, 75, 1),
+                                                              color: Color
+                                                                  .fromRGBO(
+                                                                      222,
+                                                                      110,
+                                                                      75,
+                                                                      1),
                                                             )
                                                           ],
                                                         ),
@@ -259,39 +313,74 @@ class _WistUsState extends ConsumerState<WistUs> {
                                                       // width: 200,
                                                       height: 40,
                                                       // color: white,
-                                                      padding: EdgeInsets.only(left: 30.0 * pad, right: 30.0 * pad),
+                                                      padding: EdgeInsets.only(
+                                                          left: 30.0 * pad,
+                                                          right: 30.0 * pad),
                                                       child: Container(
                                                         color: white,
                                                         child: TextFormField(
-                                                          cursorColor: Colors.green,
-                                                          decoration: InputDecoration(
-                                                            fillColor: Colors.grey[200]!.withOpacity(0.5),
+                                                          cursorColor:
+                                                              Colors.green,
+                                                          decoration:
+                                                              InputDecoration(
+                                                            fillColor: Colors
+                                                                .grey[200]!
+                                                                .withOpacity(
+                                                                    0.5),
                                                             filled: true,
                                                             // prefixIcon:
                                                             //     const Icon(Icons.person, color: Colors.black),
                                                             // suffixIcon: Icon(Icons.clear, color: Colors.black),
-                                                            focusedBorder: const OutlineInputBorder(
-                                                              borderRadius: BorderRadius.only(
-                                                                topRight: Radius.circular(10),
-                                                                topLeft: Radius.circular(10),
-                                                                bottomRight: Radius.circular(10),
-                                                                bottomLeft: Radius.circular(10),
+                                                            focusedBorder:
+                                                                const OutlineInputBorder(
+                                                              borderRadius:
+                                                                  BorderRadius
+                                                                      .only(
+                                                                topRight: Radius
+                                                                    .circular(
+                                                                        10),
+                                                                topLeft: Radius
+                                                                    .circular(
+                                                                        10),
+                                                                bottomRight:
+                                                                    Radius
+                                                                        .circular(
+                                                                            10),
+                                                                bottomLeft: Radius
+                                                                    .circular(
+                                                                        10),
                                                               ),
-                                                              borderSide: BorderSide(
+                                                              borderSide:
+                                                                  BorderSide(
                                                                 width: 1,
-                                                                color: Colors.white,
+                                                                color: Colors
+                                                                    .white,
                                                               ),
                                                             ),
-                                                            enabledBorder: const OutlineInputBorder(
-                                                              borderRadius: BorderRadius.only(
-                                                                topRight: Radius.circular(10),
-                                                                topLeft: Radius.circular(10),
-                                                                bottomRight: Radius.circular(10),
-                                                                bottomLeft: Radius.circular(10),
+                                                            enabledBorder:
+                                                                const OutlineInputBorder(
+                                                              borderRadius:
+                                                                  BorderRadius
+                                                                      .only(
+                                                                topRight: Radius
+                                                                    .circular(
+                                                                        10),
+                                                                topLeft: Radius
+                                                                    .circular(
+                                                                        10),
+                                                                bottomRight:
+                                                                    Radius
+                                                                        .circular(
+                                                                            10),
+                                                                bottomLeft: Radius
+                                                                    .circular(
+                                                                        10),
                                                               ),
-                                                              borderSide: BorderSide(
+                                                              borderSide:
+                                                                  BorderSide(
                                                                 width: 1,
-                                                                color: Colors.white,
+                                                                color: Colors
+                                                                    .white,
                                                               ),
                                                             ),
                                                           ),
@@ -303,39 +392,74 @@ class _WistUsState extends ConsumerState<WistUs> {
                                                       // width: 200,
                                                       height: 40,
                                                       // color: white,
-                                                      padding: EdgeInsets.only(left: 30.0 * pad, right: 30.0 * pad),
+                                                      padding: EdgeInsets.only(
+                                                          left: 30.0 * pad,
+                                                          right: 30.0 * pad),
                                                       child: Container(
                                                         color: white,
                                                         child: TextFormField(
-                                                          cursorColor: Colors.green,
-                                                          decoration: InputDecoration(
-                                                            fillColor: Colors.grey[200]!.withOpacity(0.5),
+                                                          cursorColor:
+                                                              Colors.green,
+                                                          decoration:
+                                                              InputDecoration(
+                                                            fillColor: Colors
+                                                                .grey[200]!
+                                                                .withOpacity(
+                                                                    0.5),
                                                             filled: true,
                                                             // prefixIcon:
                                                             //     const Icon(Icons.person, color: Colors.black),
                                                             // suffixIcon: Icon(Icons.clear, color: Colors.black),
-                                                            focusedBorder: const OutlineInputBorder(
-                                                              borderRadius: BorderRadius.only(
-                                                                topRight: Radius.circular(10),
-                                                                topLeft: Radius.circular(10),
-                                                                bottomRight: Radius.circular(10),
-                                                                bottomLeft: Radius.circular(10),
+                                                            focusedBorder:
+                                                                const OutlineInputBorder(
+                                                              borderRadius:
+                                                                  BorderRadius
+                                                                      .only(
+                                                                topRight: Radius
+                                                                    .circular(
+                                                                        10),
+                                                                topLeft: Radius
+                                                                    .circular(
+                                                                        10),
+                                                                bottomRight:
+                                                                    Radius
+                                                                        .circular(
+                                                                            10),
+                                                                bottomLeft: Radius
+                                                                    .circular(
+                                                                        10),
                                                               ),
-                                                              borderSide: BorderSide(
+                                                              borderSide:
+                                                                  BorderSide(
                                                                 width: 1,
-                                                                color: Colors.white,
+                                                                color: Colors
+                                                                    .white,
                                                               ),
                                                             ),
-                                                            enabledBorder: const OutlineInputBorder(
-                                                              borderRadius: BorderRadius.only(
-                                                                topRight: Radius.circular(10),
-                                                                topLeft: Radius.circular(10),
-                                                                bottomRight: Radius.circular(10),
-                                                                bottomLeft: Radius.circular(10),
+                                                            enabledBorder:
+                                                                const OutlineInputBorder(
+                                                              borderRadius:
+                                                                  BorderRadius
+                                                                      .only(
+                                                                topRight: Radius
+                                                                    .circular(
+                                                                        10),
+                                                                topLeft: Radius
+                                                                    .circular(
+                                                                        10),
+                                                                bottomRight:
+                                                                    Radius
+                                                                        .circular(
+                                                                            10),
+                                                                bottomLeft: Radius
+                                                                    .circular(
+                                                                        10),
                                                               ),
-                                                              borderSide: BorderSide(
+                                                              borderSide:
+                                                                  BorderSide(
                                                                 width: 1,
-                                                                color: Colors.white,
+                                                                color: Colors
+                                                                    .white,
                                                               ),
                                                             ),
                                                           ),
@@ -346,44 +470,82 @@ class _WistUsState extends ConsumerState<WistUs> {
                                                     Expanded(
                                                       // flex: 3,
                                                       child: Align(
-                                                        alignment: Alignment.center,
+                                                        alignment:
+                                                            Alignment.center,
                                                         child: Container(
                                                           // height: 300,
-                                                          padding: EdgeInsets.only(left: 30.0 * pad, right: 30.0 * pad),
+                                                          padding:
+                                                              EdgeInsets.only(
+                                                                  left: 30.0 *
+                                                                      pad,
+                                                                  right: 30.0 *
+                                                                      pad),
                                                           color: white,
                                                           child: Center(
-                                                            child: TextFormField(
+                                                            child:
+                                                                TextFormField(
                                                               maxLines: 80,
                                                               // maxLength: 13,
-                                                              cursorColor: Colors.green,
-                                                              decoration: InputDecoration(
-                                                                fillColor: Colors.grey[200]!.withOpacity(0.5),
+                                                              cursorColor:
+                                                                  Colors.green,
+                                                              decoration:
+                                                                  InputDecoration(
+                                                                fillColor: Colors
+                                                                    .grey[200]!
+                                                                    .withOpacity(
+                                                                        0.5),
                                                                 filled: true,
                                                                 // prefixIcon:
                                                                 //     const Icon(Icons.person, color: Colors.black),
                                                                 // suffixIcon: Icon(Icons.clear, color: Colors.black),
-                                                                focusedBorder: const OutlineInputBorder(
-                                                                  borderRadius: BorderRadius.only(
-                                                                    topRight: Radius.circular(10),
-                                                                    topLeft: Radius.circular(10),
-                                                                    bottomRight: Radius.circular(10),
-                                                                    bottomLeft: Radius.circular(10),
+                                                                focusedBorder:
+                                                                    const OutlineInputBorder(
+                                                                  borderRadius:
+                                                                      BorderRadius
+                                                                          .only(
+                                                                    topRight: Radius
+                                                                        .circular(
+                                                                            10),
+                                                                    topLeft: Radius
+                                                                        .circular(
+                                                                            10),
+                                                                    bottomRight:
+                                                                        Radius.circular(
+                                                                            10),
+                                                                    bottomLeft:
+                                                                        Radius.circular(
+                                                                            10),
                                                                   ),
-                                                                  borderSide: BorderSide(
+                                                                  borderSide:
+                                                                      BorderSide(
                                                                     width: 1,
-                                                                    color: Colors.white,
+                                                                    color: Colors
+                                                                        .white,
                                                                   ),
                                                                 ),
-                                                                enabledBorder: const OutlineInputBorder(
-                                                                  borderRadius: BorderRadius.only(
-                                                                    topRight: Radius.circular(10),
-                                                                    topLeft: Radius.circular(10),
-                                                                    bottomRight: Radius.circular(10),
-                                                                    bottomLeft: Radius.circular(10),
+                                                                enabledBorder:
+                                                                    const OutlineInputBorder(
+                                                                  borderRadius:
+                                                                      BorderRadius
+                                                                          .only(
+                                                                    topRight: Radius
+                                                                        .circular(
+                                                                            10),
+                                                                    topLeft: Radius
+                                                                        .circular(
+                                                                            10),
+                                                                    bottomRight:
+                                                                        Radius.circular(
+                                                                            10),
+                                                                    bottomLeft:
+                                                                        Radius.circular(
+                                                                            10),
                                                                   ),
-                                                                  borderSide: BorderSide(
+                                                                  borderSide:
+                                                                      BorderSide(
                                                                     width: 1,
-                                                                    color: Colors.white,
+                                                                    color: Colors
+                                                                        .white,
                                                                   ),
                                                                 ),
                                                               ),
@@ -394,28 +556,50 @@ class _WistUsState extends ConsumerState<WistUs> {
                                                     ),
                                                     const SizedBox(height: 10),
                                                     Align(
-                                                      alignment: Alignment.centerLeft,
+                                                      alignment:
+                                                          Alignment.centerLeft,
                                                       child: Padding(
-                                                        padding: const EdgeInsets.all(20.0),
+                                                        padding:
+                                                            const EdgeInsets
+                                                                .all(20.0),
                                                         child: Container(
                                                           // height: 40,
                                                           // width: 120,
-                                                          decoration: BoxDecoration(
-                                                            borderRadius: const BorderRadius.only(
-                                                              topLeft: Radius.circular(8),
-                                                              topRight: Radius.circular(8),
-                                                              bottomLeft: Radius.circular(8),
-                                                              bottomRight: Radius.circular(8),
+                                                          decoration:
+                                                              const BoxDecoration(
+                                                            borderRadius:
+                                                                BorderRadius
+                                                                    .only(
+                                                              topLeft: Radius
+                                                                  .circular(8),
+                                                              topRight: Radius
+                                                                  .circular(8),
+                                                              bottomLeft: Radius
+                                                                  .circular(8),
+                                                              bottomRight:
+                                                                  Radius
+                                                                      .circular(
+                                                                          8),
                                                             ),
-                                                            color: Color.fromRGBO(154, 135, 129, 1),
+                                                            color:
+                                                                Color.fromRGBO(
+                                                                    154,
+                                                                    135,
+                                                                    129,
+                                                                    1),
                                                             // border: Border.all(
                                                             //     color: Color.fromARGB(255, 150, 148, 148), width: 2),
                                                           ),
-                                                          padding: const EdgeInsets.all(8.0),
-                                                          child: 'Submit'.poppins(
+                                                          padding:
+                                                              const EdgeInsets
+                                                                  .all(8.0),
+                                                          child:
+                                                              'Submit'.poppins(
                                                             color: white,
-                                                            fontWeight: FontWeight.w400,
-                                                            fontSize: 12 + 4 * pad,
+                                                            fontWeight:
+                                                                FontWeight.w400,
+                                                            fontSize:
+                                                                12 + 4 * pad,
                                                           ),
                                                         ),
                                                       ),
@@ -429,59 +613,27 @@ class _WistUsState extends ConsumerState<WistUs> {
                                             child: ClipPath(
                                                 child: Container(
                                               decoration: BoxDecoration(
-                                                borderRadius: const BorderRadius.only(
+                                                borderRadius:
+                                                    const BorderRadius.only(
                                                   topLeft: Radius.circular(0),
                                                   topRight: Radius.circular(20),
-                                                  bottomLeft: Radius.circular(0),
-                                                  bottomRight: Radius.circular(20),
+                                                  bottomLeft:
+                                                      Radius.circular(0),
+                                                  bottomRight:
+                                                      Radius.circular(20),
                                                 ),
                                                 image: DecorationImage(
                                                   // image: AssetImage(
                                                   //   'assets/property_service/11.jpg',
                                                   // ),
                                                   image: NetworkImage(
-                                                      'https://s3-alpha-sig.figma.com/img/5993/94e8/1681cc65a5b8be2e0731922bc96b6b39?Expires=1716768000&Key-Pair-Id=APKAQ4GOSFWCVNEHN3O4&Signature=N6tl5uWQXsaYvtiGhfaadSpo~h3l~0c1V1WK9GenL4Qnwd0bTLNyn-eOO09SC4G8qNGDVEa79bEh3J09Ejh7RqA1w9XIMqCUkn5qMworFJIiv1RULJpdPpYZT~bfOF9Kau-4Ws5ACMLm5PXI9Wua4~D3H5XjUO9oVgEWX-nszyWv4BVVJxBSfH5XFoughzDtUmzroj7gHycTZw8~QQhBPomiDCy8Hy-vHR-aJB39wTv6TCynsxo78ihgUfWIt64EnHCzKUdNvC2LIDujMOiqI0BC-iby~zLh5ch05upS7A37SOGYdb8jBAiw71zWk0lbMCWEZJeB3UD4EXpYr3lKaQ__'),
+                                                    '${ListWithUsModels[0].corver_img}',
+                                                  ),
+
                                                   fit: BoxFit.cover,
                                                 ),
                                               ),
                                             )),
-                                            // child: ClipPath(
-                                            //     clipper: TrapeziumClipper(),
-                                            //     child: Container(
-                                            //       decoration: BoxDecoration(
-                                            //         borderRadius: const BorderRadius.only(
-                                            //           topLeft: Radius.circular(0),
-                                            //           topRight: Radius.circular(20),
-                                            //           bottomLeft: Radius.circular(0),
-                                            //           bottomRight: Radius.circular(20),
-                                            //         ),
-                                            //         image: DecorationImage(
-                                            //           image: AssetImage(
-                                            //             'assets/property_service/11.jpg',
-                                            //           ),
-                                            //           fit: BoxFit.cover,
-                                            //         ),
-                                            //       ),
-                                            //     )),
-                                            // Container(
-                                            //   decoration: BoxDecoration(
-                                            //     borderRadius:
-                                            //         const BorderRadius.only(
-                                            //       topLeft: Radius.circular(0),
-                                            //       topRight: Radius.circular(20),
-                                            //       bottomLeft:
-                                            //           Radius.circular(0),
-                                            //       bottomRight:
-                                            //           Radius.circular(20),
-                                            //     ),
-                                            //     image: DecorationImage(
-                                            //       image: AssetImage(
-                                            //         'assets/property_service/11.jpg',
-                                            //       ),
-                                            //       fit: BoxFit.cover,
-                                            //     ),
-                                            //   ),
-                                            // )
                                           ),
                                         ],
                                       ))),
@@ -496,8 +648,7 @@ class _WistUsState extends ConsumerState<WistUs> {
                             ),
                           ),
                           const SizedBox(height: 34),
-                          "With over 10+ years of experience in real estate industry, we are a real estate development company, which achieves the maximum benefit by meeting the needs of customers and investors. We have a new generation team that understands market trends. When you need the help fornew investors, we have experts to guide you. Don't worry about contacting us. Because we always have good suggestions."
-                              .poppins(
+                          '${ListWithUsModels[0].content}'.poppins(
                             textAlign: TextAlign.center,
                             fontSize: 14 + 4 * pad,
                             fontWeight: FontWeight.w400,
@@ -506,160 +657,13 @@ class _WistUsState extends ConsumerState<WistUs> {
                         ]),
                   )),
                   const SizedBox(height: 34),
-                  Metrics.isMobile(context)
-                      ? service()
-                      : Row(
-                          children: [
-                            for (int index = 0; index < data_Service.length; index++)
-                              Expanded(
-                                  child: Padding(
-                                padding: const EdgeInsets.all(20.0),
-                                child: AspectRatio(
-                                  aspectRatio: 2 / 4,
-                                  child: Container(
-                                    decoration: BoxDecoration(
-                                      borderRadius: const BorderRadius.only(
-                                        topLeft: Radius.circular(20),
-                                        topRight: Radius.circular(20),
-                                        bottomLeft: Radius.circular(8),
-                                        bottomRight: Radius.circular(8),
-                                      ),
-                                      color: (data_Service[index]['name'].toString() == 'Free')
-                                          ? Color.fromRGBO(86, 230, 165, 1)
-                                          : white,
-                                      border: Border.all(color: Color.fromARGB(255, 216, 213, 213), width: 1),
-                                      boxShadow: [
-                                        BoxShadow(
-                                          color: const Color.fromARGB(255, 180, 175, 175).withOpacity(0.5),
-                                          spreadRadius: 3,
-                                          blurRadius: 4,
-                                          offset: Offset(0, 4), // changes position of shadow
-                                        ),
-                                      ],
-                                    ),
-                                    child: Padding(
-                                      padding: const EdgeInsets.all(8.0),
-                                      child: Column(
-                                        crossAxisAlignment: CrossAxisAlignment.center,
-                                        mainAxisAlignment: MainAxisAlignment.start,
-                                        children: [
-                                          Padding(
-                                            padding: const EdgeInsets.all(20.0),
-                                            child: Align(
-                                              alignment: Alignment.centerLeft,
-                                              child: data_Service[index]['name'].toString().poppins(
-                                                    fontWeight: FontWeight.w500,
-                                                    color: greenBg,
-                                                    fontSize: 25 + 4 * pad,
-                                                  ),
-                                            ),
-                                          ),
-                                          Padding(
-                                            padding: const EdgeInsets.all(20.0),
-                                            child: Align(
-                                              alignment: Alignment.centerLeft,
-                                              child: Column(
-                                                crossAxisAlignment: CrossAxisAlignment.start,
-                                                children: [
-                                                  '\$ ${data_Service[index]['pri'].toString()}'.poppins(
-                                                    color: greenBg,
-                                                    fontWeight: FontWeight.w500,
-                                                    fontSize: 25 + 4 * pad,
-                                                  ),
-                                                  'per month'.poppins(
-                                                      fontWeight: FontWeight.w300,
-                                                      fontSize: 10,
-                                                      color: Color.fromRGBO(97, 97, 99, 1)),
-                                                ],
-                                              ),
-                                            ),
-                                          ),
-                                          Padding(
-                                            padding: const EdgeInsets.all(8.0),
-                                            child: InkWell(
-                                              onTap: () async {},
-                                              child: Container(
-                                                // height: 40,
-                                                // width: 120,
-                                                decoration: BoxDecoration(
-                                                  borderRadius: const BorderRadius.only(
-                                                    topLeft: Radius.circular(8),
-                                                    topRight: Radius.circular(8),
-                                                    bottomLeft: Radius.circular(8),
-                                                    bottomRight: Radius.circular(8),
-                                                  ),
-                                                  color: (data_Service[index]['name'].toString() == 'Free')
-                                                      ? Colors.black
-                                                      : null,
-                                                  border: (data_Service[index]['name'].toString() == 'Free')
-                                                      ? null
-                                                      : Border.all(color: Colors.black, width: 1),
-                                                ),
-                                                padding: const EdgeInsets.all(8.0),
-                                                child: (data_Service[index]['name'].toString() == 'Free')
-                                                    ? 'Create an account'.poppins(
-                                                        color: white,
-                                                        fontWeight: FontWeight.w500,
-                                                        fontSize: 16 + 4 * pad,
-                                                      )
-                                                    : 'Request a demo'.poppins(
-                                                        color: black,
-                                                        fontWeight: FontWeight.w500,
-                                                        fontSize: 16 + 4 * pad,
-                                                      ),
-                                              ),
-                                            ),
-                                          ),
-                                          const SizedBox(
-                                            height: 20.0,
-                                          ),
-                                          for (int index2 = 0; index2 < description_List.length; index2++)
-                                            Padding(
-                                              padding: const EdgeInsets.all(4.0),
-                                              child: Align(
-                                                alignment: Alignment.centerLeft,
-                                                child: '🟢 ${description_List[index2].toString()}'.poppins(
-                                                  color: Color.fromRGBO(97, 97, 99, 1),
-                                                  fontWeight: FontWeight.w500,
-                                                  fontSize: 16 + 4 * pad,
-                                                ),
-                                              ),
-                                            ),
-                                          const SizedBox(
-                                            height: 20.0,
-                                          ),
-                                          const Divider(
-                                            color: Colors.grey,
-                                            height: 4.0,
-                                          ),
-                                          const SizedBox(
-                                            height: 10.0,
-                                          ),
-                                          for (int index3 = 0; index3 < descriptionSub_List.length; index3++)
-                                            Padding(
-                                              padding: const EdgeInsets.all(4.0),
-                                              child: Align(
-                                                alignment: Alignment.centerLeft,
-                                                child: '+ ${descriptionSub_List[index3].toString()}'.poppins(
-                                                  color: Color.fromRGBO(97, 97, 99, 1),
-                                                  fontWeight: FontWeight.w500,
-                                                  fontSize: 16 + 4 * pad,
-                                                ),
-                                              ),
-                                            ),
-                                        ],
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                              ))
-                          ],
-                        ),
+                  service(),
                   const SizedBox(height: 34),
                   BaseContainer(
                       child: Column(
-                          crossAxisAlignment:
-                              Metrics.isMobile(context) ? CrossAxisAlignment.center : CrossAxisAlignment.start,
+                          crossAxisAlignment: Metrics.isMobile(context)
+                              ? CrossAxisAlignment.center
+                              : CrossAxisAlignment.start,
                           children: [
                         Align(
                           alignment: Alignment.center,
@@ -673,8 +677,7 @@ class _WistUsState extends ConsumerState<WistUs> {
                           child: FractionallySizedBox(
                             widthFactor: 0.9,
                             child:
-                                'With over 10+ years of experience in real estate industry, we are a real estate development company, which achieves the maximum benefit by meeting the needs of customers and investors. We have a new generation team that understands market trends. When you need the help fornew investors, we have experts to guide you. Don\'t worry about contacting us. Because we always have good suggestions.'
-                                    .poppins(
+                                '${ListWithUsModels[0].content_sub1}'.poppins(
                               textAlign: TextAlign.center,
                               fontSize: 14 + 4 * pad,
                               fontWeight: FontWeight.w400,
@@ -688,7 +691,8 @@ class _WistUsState extends ConsumerState<WistUs> {
                             widthFactor: 0.9,
                             // height: 1440,
                             child: GridView.builder(
-                              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                              gridDelegate:
+                                  SliverGridDelegateWithFixedCrossAxisCount(
                                 crossAxisCount: Metrics.isMobile(context)
                                     ? 1
                                     : Metrics.isCompact(context)
@@ -696,7 +700,8 @@ class _WistUsState extends ConsumerState<WistUs> {
                                         : Metrics.isTablet(context)
                                             ? 2
                                             : 4,
-                                crossAxisSpacing: 45.0, // Spacing between columns
+                                crossAxisSpacing:
+                                    45.0, // Spacing between columns
                                 mainAxisSpacing: 45.0, // Spacing between rows
                                 childAspectRatio: 9 / (8),
                               ),
@@ -714,8 +719,12 @@ class _WistUsState extends ConsumerState<WistUs> {
                                       clipBehavior: Clip.antiAlias,
                                       padding: EdgeInsets.all(20),
                                       decoration: BoxDecoration(
-                                          image: DecorationImage(image: NetworkImage(img), fit: BoxFit.cover),
-                                          borderRadius: BorderRadius.circular(20)),
+                                          color: white.withOpacity(0.8),
+                                          image: DecorationImage(
+                                              image: NetworkImage(img),
+                                              fit: BoxFit.cover),
+                                          borderRadius:
+                                              BorderRadius.circular(20)),
                                       child: Text(
                                         title,
                                         style: GoogleFonts.poppins(
@@ -723,7 +732,10 @@ class _WistUsState extends ConsumerState<WistUs> {
                                             color: white,
                                             fontSize: 20,
                                             shadows: [
-                                              Shadow(blurRadius: 2, color: Colors.black38, offset: Offset(2, 2))
+                                              Shadow(
+                                                  blurRadius: 2,
+                                                  color: Colors.black38,
+                                                  offset: Offset(2, 2))
                                             ]),
                                       )),
                                 );
@@ -731,117 +743,6 @@ class _WistUsState extends ConsumerState<WistUs> {
                             ),
                           ),
                         ),
-                        // Container(
-                        //   padding: const EdgeInsets.all(8.0),
-                        //   child: GridView.builder(
-                        //     gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                        //       crossAxisCount: Metrics.isMobile(context)
-                        //           ? 1
-                        //           : Metrics.isCompact(context)
-                        //               ? 2
-                        //               : Metrics.isTablet(context)
-                        //                   ? 3
-                        //                   : 4,
-                        //       childAspectRatio: 285 / 185,
-                        //       crossAxisSpacing: 24,
-                        //       mainAxisSpacing: 0,
-                        //     ),
-                        //     shrinkWrap: true,
-                        //     physics: const NeverScrollableScrollPhysics(),
-                        //     itemCount: 7,
-                        //     itemBuilder: (context, index) {
-                        //       final gridItem = decorativeItems[index];
-
-                        //       return Center(
-                        //         child: InkWell(
-                        //           onTap: () {
-                        //             // Navigator.push(
-                        //             //   context,
-                        //             //   MaterialPageRoute(
-                        //             //     builder: (context) => AssetAll(),
-                        //             //   ),
-                        //             // );
-                        //             // Navigator.pushReplacement(
-                        //             //   context,
-                        //             //   MaterialPageRoute(
-                        //             //     builder: (context) => Rent(),
-                        //             //   ),
-                        //             // );
-                        //           },
-                        //           child: Container(
-                        //             margin: EdgeInsets.only(bottom: 12 + 12 * pad),
-                        //             decoration: BoxDecoration(
-                        //               color: white,
-                        //               borderRadius: const BorderRadius.only(
-                        //                 topLeft: Radius.circular(20),
-                        //                 topRight: Radius.circular(20),
-                        //                 bottomLeft: Radius.circular(20),
-                        //                 bottomRight: Radius.circular(20),
-                        //               ),
-                        //               boxShadow: [
-                        //                 BoxShadow(
-                        //                   color: Colors.grey.withOpacity(0.25),
-                        //                   offset: const Offset(0, 4),
-                        //                   blurRadius: 4,
-                        //                 ),
-                        //               ],
-                        //             ),
-                        //             child: Column(
-                        //               crossAxisAlignment: CrossAxisAlignment.stretch,
-                        //               children: [
-                        //                 Stack(
-                        //                   children: [
-                        //                     AspectRatio(
-                        //                       aspectRatio: 265 / 150,
-                        //                       child: ClipRRect(
-                        //                         borderRadius: BorderRadius.circular(20),
-                        //                         child: Image.network(
-                        //                           gridItem.imgPath,
-                        //                           fit: BoxFit.cover,
-                        //                         ),
-                        //                       ),
-                        //                     ),
-                        //                     Positioned(
-                        //                       bottom: 10,
-                        //                       left: 20,
-                        //                       child: Container(
-                        //                         // width: 150,
-                        //                         // height: 70,
-                        //                         decoration: BoxDecoration(
-                        //                           color: white,
-                        //                           borderRadius: const BorderRadius.only(
-                        //                             topLeft: Radius.circular(15),
-                        //                             topRight: Radius.circular(15),
-                        //                             bottomLeft: Radius.circular(15),
-                        //                             bottomRight: Radius.circular(15),
-                        //                           ),
-                        //                           boxShadow: [
-                        //                             BoxShadow(
-                        //                               color: Colors.grey.withOpacity(0.25),
-                        //                               offset: const Offset(0, 4),
-                        //                               blurRadius: 4,
-                        //                             ),
-                        //                           ],
-                        //                         ),
-                        //                         padding: const EdgeInsets.all(4),
-                        //                         child: Center(
-                        //                           child: ' Guest favourite'.poppins(
-                        //                             color: greenBg,
-                        //                             fontSize: 15 + 4 * pad,
-                        //                           ),
-                        //                         ),
-                        //                       ),
-                        //                     ),
-                        //                   ],
-                        //                 ),
-                        //               ],
-                        //             ),
-                        //           ),
-                        //         ),
-                        //       );
-                        //     },
-                        //   ),
-                        // ),
                       ])),
                   const SizedBox(height: 90),
                   const Footer(
@@ -858,7 +759,8 @@ class _WistUsState extends ConsumerState<WistUs> {
 
 ////---------------------------------------->
   Widget service() {
-    List<String> imageUrls = data_Service.map((data) => data['imageUrl'].toString()).toList();
+    List<String> imageUrls =
+        packagemodels.map((data) => data.img.toString()).toList();
     final pad = normalize(min: 576, max: 1440, data: Metrics.width(context));
     return Column(
       children: [
@@ -868,21 +770,25 @@ class _WistUsState extends ConsumerState<WistUs> {
           child: PageView.builder(
             controller: _controller,
             onPageChanged: (val) => setState(() => currentPage = val),
-            itemCount: data_Service.length,
+            itemCount: packagemodels.length,
             // physics: const NeverScrollableScrollPhysics(),
             itemBuilder: (context, index) {
-              // Remove the curly braces
-              String trimmedData = data_Service[index]['description']
+              String trimmedData = packagemodels[index]
+                  .description
                   .toString()
-                  .substring(1, data_Service[index]['description'].toString().length - 1);
-              String trimmedData_sub = data_Service[index]['descriptionSub']
+                  .substring(1,
+                      packagemodels[index].description.toString().length - 1);
+              String trimmedData_sub = packagemodels[index]
+                  .descriptionSub
                   .toString()
-                  .substring(1, data_Service[index]['descriptionSub'].toString().length - 1);
+                  .substring(
+                      1,
+                      packagemodels[index].descriptionSub.toString().length -
+                          1);
 
               // Split the string into a list
-              List<String> description_List = trimmedData.split('},{');
-              List<String> descriptionSub_List = trimmedData_sub.split('},{');
-
+              List<String> description_List = trimmedData.split('],[');
+              List<String> descriptionSub_List = trimmedData_sub.split('],[');
               return Padding(
                 padding: EdgeInsets.only(left: 36 * pad, right: 36 * pad),
                 child: AnimatedScale(
@@ -896,10 +802,12 @@ class _WistUsState extends ConsumerState<WistUs> {
                           bottomLeft: Radius.circular(8),
                           bottomRight: Radius.circular(8),
                         ),
-                        color: (data_Service[index]['name'].toString() == 'Free')
+                        color: (packagemodels[index].name.toString() == 'Free')
                             ? Color.fromRGBO(86, 230, 165, 1)
                             : white,
-                        border: Border.all(color: Color.fromARGB(255, 216, 213, 213), width: 1),
+                        border: Border.all(
+                            color: Color.fromARGB(255, 216, 213, 213),
+                            width: 1),
                         // gradient:
                         //     (data_Service[index]['name'].toString() == 'Free')
                         //         ? LinearGradient(
@@ -916,7 +824,8 @@ class _WistUsState extends ConsumerState<WistUs> {
                         //         : null,
                         boxShadow: [
                           BoxShadow(
-                            color: const Color.fromARGB(255, 180, 175, 175).withOpacity(0.5),
+                            color: const Color.fromARGB(255, 180, 175, 175)
+                                .withOpacity(0.5),
                             spreadRadius: 3,
                             blurRadius: 4,
                             offset: Offset(0, 4), // changes position of shadow
@@ -930,7 +839,9 @@ class _WistUsState extends ConsumerState<WistUs> {
                             padding: const EdgeInsets.all(20.0),
                             child: Align(
                               alignment: Alignment.centerLeft,
-                              child: data_Service[index]['name'].toString().poppins(
+                              child: '${packagemodels[index].name}'
+                                  .toString()
+                                  .poppins(
                                     fontWeight: FontWeight.w500,
                                     color: greenBg,
                                     fontSize: 25 + 4 * pad,
@@ -941,7 +852,7 @@ class _WistUsState extends ConsumerState<WistUs> {
                             padding: const EdgeInsets.all(4.0),
                             child: Align(
                               alignment: Alignment.centerLeft,
-                              child: '\$ ${data_Service[index]['pri'].toString()}'.poppins(
+                              child: '\$ ${packagemodels[index].pri}'.poppins(
                                 color: greenBg,
                                 fontWeight: FontWeight.w500,
                                 fontSize: 25 + 4 * pad,
@@ -962,12 +873,22 @@ class _WistUsState extends ConsumerState<WistUs> {
                                     bottomLeft: Radius.circular(8),
                                     bottomRight: Radius.circular(8),
                                   ),
-                                  color: (data_Service[index]['name'].toString() == 'Free') ? Colors.brown : null,
-                                  border: Border.all(color: Color.fromARGB(255, 150, 148, 148), width: 2),
+                                  color:
+                                      (packagemodels[index].name.toString() ==
+                                              'Free')
+                                          ? Colors.brown
+                                          : null,
+                                  border: Border.all(
+                                      color: Color.fromARGB(255, 150, 148, 148),
+                                      width: 2),
                                 ),
                                 padding: const EdgeInsets.all(8.0),
                                 child: 'Request a demo'.poppins(
-                                  color: (data_Service[index]['name'].toString() == 'Free') ? white : greenBg,
+                                  color:
+                                      (packagemodels[index].name.toString() ==
+                                              'Free')
+                                          ? white
+                                          : greenBg,
                                   fontWeight: FontWeight.w500,
                                   fontSize: 16 + 4 * pad,
                                 ),
@@ -977,12 +898,16 @@ class _WistUsState extends ConsumerState<WistUs> {
                           const SizedBox(
                             height: 20.0,
                           ),
-                          for (int index2 = 0; index2 < description_List.length; index2++)
+                          for (int index2 = 0;
+                              index2 < description_List.length;
+                              index2++)
                             Padding(
                               padding: const EdgeInsets.all(4.0),
                               child: Align(
                                 alignment: Alignment.centerLeft,
-                                child: '🟢 ${description_List[index2].toString()}'.poppins(
+                                child:
+                                    '🟢 ${description_List[index2].toString()}'
+                                        .poppins(
                                   color: greenBg,
                                   fontWeight: FontWeight.w500,
                                   fontSize: 16 + 4 * pad,
@@ -999,12 +924,16 @@ class _WistUsState extends ConsumerState<WistUs> {
                           const SizedBox(
                             height: 10.0,
                           ),
-                          for (int index3 = 0; index3 < descriptionSub_List.length; index3++)
+                          for (int index3 = 0;
+                              index3 < descriptionSub_List.length;
+                              index3++)
                             Padding(
                               padding: const EdgeInsets.all(4.0),
                               child: Align(
                                 alignment: Alignment.centerLeft,
-                                child: '+ ${descriptionSub_List[index3].toString()}'.poppins(
+                                child:
+                                    '+ ${descriptionSub_List[index3].toString()}'
+                                        .poppins(
                                   color: greenBg,
                                   fontWeight: FontWeight.w500,
                                   fontSize: 16 + 4 * pad,
@@ -1019,28 +948,34 @@ class _WistUsState extends ConsumerState<WistUs> {
           ),
         ),
         const SizedBox(height: 34),
-        ImageSliderController(
-          currentPage: currentPage,
-          images: imageUrls,
-          title: imageUrls,
-          prev: currentPage != 0
-              ? () {
-                  _controller.animateToPage(
-                    currentPage - 1,
-                    duration: const Duration(milliseconds: 240),
-                    curve: Curves.linear,
-                  );
-                }
-              : null,
-          next: (currentPage != data_Service.length - 1)
-              ? () {
-                  _controller.animateToPage(
-                    currentPage + 1,
-                    duration: const Duration(milliseconds: 240),
-                    curve: Curves.linear,
-                  );
-                }
-              : null,
+        Align(
+          alignment: Alignment.topRight,
+          child: Container(
+            width: 300,
+            child: ImageSliderController(
+              currentPage: currentPage,
+              images: imageUrls,
+              prev: currentPage != 0
+                  ? () {
+                      _controller.animateToPage(
+                        currentPage - 1,
+                        duration: const Duration(milliseconds: 240),
+                        curve: Curves.linear,
+                      );
+                    }
+                  : null,
+              next: (currentPage != imageUrls.length - 1)
+                  ? () {
+                      _controller.animateToPage(
+                        currentPage + 1,
+                        duration: const Duration(milliseconds: 240),
+                        curve: Curves.linear,
+                      );
+                    }
+                  : null,
+              title: [],
+            ),
+          ),
         ),
       ],
     );

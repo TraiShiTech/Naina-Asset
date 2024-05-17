@@ -109,7 +109,7 @@ class Appbar extends StatelessWidget {
                       Padding(
                         padding: EdgeInsets.only(left: 0),
                         child: TextButton(
-                          onPressed: () {
+                          onPressed: () async {
                             Navigator.push(
                               context,
                               MaterialPageRoute(

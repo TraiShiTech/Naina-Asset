@@ -34,6 +34,7 @@ class _RentAllState extends ConsumerState<RentAll> {
   int limit = 2; // The maximum number of items you want
   int offset = 0; // The starting index of items you want
   int endIndex = 0;
+  int count = 0;
 ///////----------------------------------------------->
   late ScrollController _baseController;
 
@@ -94,6 +95,9 @@ class _RentAllState extends ConsumerState<RentAll> {
           assetTypemodels.add(assetTypemodelss);
         });
       }
+      Future.delayed(const Duration(milliseconds: 300), () {
+        read_GC_Asset();
+      });
     } catch (e) {}
   }
 
@@ -118,7 +122,6 @@ class _RentAllState extends ConsumerState<RentAll> {
           assetmodels.add(assetmodelss);
         });
       }
-
       // print(assetlist);
       read_isHover();
       // Map assetlist = {};
@@ -126,54 +129,58 @@ class _RentAllState extends ConsumerState<RentAll> {
   }
 
   Future<void> read_isHover() async {
-    setState(() {
-      isHover = List.generate(
-        assetTypemodels.length,
-        (index) => List<bool>.filled(assetmodels.length, false),
-      );
-      // isHover = List.generate(
-      //   assetTypemodels.length,
-      //   (index) => List<bool>.filled(assetmodels.length, false),
-      // );
-      int num = 0;
-      for (int index1 = 0; index1 < assetTypemodels.length; index1++) {
-        Map assmap = {};
-        int count = 0;
-
-        for (int index = 0; index < assetmodels.length; index++) {
-          if (assetmodels[index].typeSer == assetTypemodels[index1].ser) {
-            assmap[count] = {
-              'corverImg': '${assetmodels[index].corverImg}',
-              'name_th': '${assetmodels[index].name_th}',
-              'addr': '${assetmodels[index].addr}',
-              's_datex': '${assetmodels[index].s_datex}',
-              'l_datex': '${assetmodels[index].l_datex}',
-              'total': '${assetmodels[index].total}',
-              'hover': false,
-            };
-            count = count + 1;
-          }
-        }
-        num = num + 1;
-        assetlist[index1] = {
-          'name': '${assetTypemodels[index1].name} -${assetTypemodels[index1].name_th}',
-          'assets': assmap,
-          'count': count,
-        } as Map;
-      }
-    });
+    if (isHover.length != 0) {
+      isHover.clear();
+    } else {
+      setState(() {
+        isHover = List.generate(
+          assetTypemodels.length,
+          (index) => List<bool>.filled(assetmodels.length, false),
+        );
+        // isHover.removeWhere((list) => list.isEmpty);
+        // print('$isHover-${assetTypemodels.length}');
+        // isHover = List.generate(
+        //   assetTypemodels.length,
+        //   (index) => List<bool>.filled(assetmodels.length, false),
+        // );
+      });
+    }
   }
 
 ///////----------------------------------------------->
   @override
   Widget build(BuildContext context) {
     final pad = normalize(min: 576, max: 1440, data: Metrics.width(context));
-
     // final isBigScreen = Metrics.isDesktop(context) || Metrics.isTablet(context);
     // final pad1 = isBigScreen ? 0.0 : normalize(min: 576, max: 976, data: Metrics.width(context));
     // print(isHover);
     // read_isHover();
-
+    // int num = 0;
+    // for (int index1 = 0; index1 < assetTypemodels.length; index1++) {
+    //   Map assmap = {};
+    //   int count = 0;
+    //   // print(assetmodels.where((value) => value.typeSer == assetTypemodels[index1].ser).length);
+    //   for (int index = 0; index < assetmodels.length; index++) {
+    //     if (assetmodels[index].typeSer == assetTypemodels[index1].ser) {
+    //       assmap[count] = {
+    //         'corverImg': '${assetmodels[index].corverImg}',
+    //         'name_th': '${assetmodels[index].name_th}',
+    //         'addr': '${assetmodels[index].addr}',
+    //         's_datex': '${assetmodels[index].s_datex}',
+    //         'l_datex': '${assetmodels[index].l_datex}',
+    //         'total': '${assetmodels[index].total}',
+    //         'hover': false,
+    //       };
+    //       count = count + 1;
+    //     }
+    //   }
+    //   num = num + 1;
+    //   assetlist[index1] = {
+    //     'name': '${assetTypemodels[index1].name} -${assetTypemodels[index1].name_th}',
+    //     'assets': assmap,
+    //     'count': count,
+    //   } as Map;
+    // }
     return Scaffold(
       backgroundColor: white,
       body: SizedBox(
@@ -216,12 +223,13 @@ class _RentAllState extends ConsumerState<RentAll> {
                           crossAxisAlignment:
                               Metrics.isMobile(context) ? CrossAxisAlignment.center : CrossAxisAlignment.start,
                           children: [
-                        for (int index1 = 0; index1 < assetlist.length; index1++)
+                        for (int index1 = 0; index1 < assetTypemodels.length; index1++)
+                          // if (assetmodels.where((value) => value.typeSer == assetTypemodels[index1].ser).length != 0)
                           SizedBox(
                               child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
                             Padding(
                               padding: EdgeInsets.all(8),
-                              child: '${assetlist[index1]['name']}'.poppins(
+                              child: '${assetTypemodels[index1].name}-${assetTypemodels[index1].name_th}'.poppins(
                                 color: Color.fromRGBO(87, 87, 87, 1),
                                 fontWeight: FontWeight.w600,
                                 height: 1.5,
@@ -243,324 +251,334 @@ class _RentAllState extends ConsumerState<RentAll> {
                                 ),
                                 shrinkWrap: true,
                                 physics: const NeverScrollableScrollPhysics(),
-                                itemCount: assetlist[index1]['count'],
+                                itemCount:
+                                    assetmodels.where((value) => value.typeSer == assetTypemodels[index1].ser).length,
                                 itemBuilder: (context, index) {
-                                  final ass = assetlist[index1]['assets'];
-                                  return InkWell(
-                                    onTap: () {
-                                      Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                          builder: (context) => RentDetails(),
-                                        ),
-                                      );
-                                    },
-                                    child: MouseRegion(
-                                        onEnter: (val) => setState(() {
-                                              ass[index]['hover'] = true;
-                                              // print(true);
-                                            }),
-                                        onExit: (val) => setState(() {
-                                              ass[index]['hover'] = false;
-                                              // print(false);
-                                            }),
-                                        child: AnimatedContainer(
-                                          duration: const Duration(milliseconds: 240),
-                                          padding: const EdgeInsets.all(8),
-                                          decoration: BoxDecoration(
-                                            // color: isHover[index1][index] ? Colors.grey[100] : white.withOpacity(0),
-                                            color: white,
-                                            borderRadius: const BorderRadius.only(
-                                              topLeft: Radius.circular(20),
-                                              topRight: Radius.circular(20),
-                                              bottomLeft: Radius.circular(8),
-                                              bottomRight: Radius.circular(8),
-                                            ),
-                                            boxShadow: [
-                                              BoxShadow(
-                                                color: ass[index]['hover'] == true
-                                                    ? textPrimary.withOpacity(0.15)
-                                                    : textPrimary.withOpacity(0),
-                                                offset: const Offset(0, 6),
-                                                blurRadius: 10,
-                                              ),
-                                            ],
-                                          ),
-                                          child: Container(
-                                            margin: EdgeInsets.only(bottom: 12 + 12 * pad),
-                                            decoration: BoxDecoration(
-                                              color: white,
-                                              borderRadius: BorderRadius.circular(20),
-                                              // boxShadow: [
-                                              //   BoxShadow(
-                                              //     color: Colors.grey.withOpacity(0.25),
-                                              //     offset: const Offset(0, 4),
-                                              //     blurRadius: 4,
-                                              //   ),
-                                              // ],
-                                            ),
-                                            child: Column(
-                                              crossAxisAlignment: CrossAxisAlignment.stretch,
-                                              children: [
-                                                // Stack(
-                                                //   children: [
-                                                //     AspectRatio(
-                                                //       aspectRatio: 285 / 230,
-                                                //       child: ClipRRect(
-                                                //         borderRadius:
-                                                //             BorderRadius
-                                                //                 .circular(20),
-                                                //         child: Image.network(
-                                                //           gridItem.imgPath,
-                                                //           fit: BoxFit.cover,
-                                                //         ),
-                                                //       ),
-                                                //     ),
-                                                //     Positioned(
-                                                //       top: 10,
-                                                //       left: 20,
-                                                //       child: Container(
-                                                //         // width: 150,
-                                                //         // height: 70,
-                                                //         decoration:
-                                                //             BoxDecoration(
-                                                //           color: white,
-                                                //           borderRadius:
-                                                //               const BorderRadius
-                                                //                   .only(
-                                                //             topLeft: Radius
-                                                //                 .circular(15),
-                                                //             topRight: Radius
-                                                //                 .circular(15),
-                                                //             bottomLeft: Radius
-                                                //                 .circular(15),
-                                                //             bottomRight:
-                                                //                 Radius
-                                                //                     .circular(
-                                                //                         15),
-                                                //           ),
-                                                //           boxShadow: [
-                                                //             BoxShadow(
-                                                //               color: Colors
-                                                //                   .grey
-                                                //                   .withOpacity(
-                                                //                       0.25),
-                                                //               offset:
-                                                //                   const Offset(
-                                                //                       0, 4),
-                                                //               blurRadius: 4,
-                                                //             ),
-                                                //           ],
-                                                //         ),
-                                                //         padding:
-                                                //             const EdgeInsets
-                                                //                 .all(4),
-                                                //         child: Center(
-                                                //           child:
-                                                //               ' Guest favourite'
-                                                //                   .poppins(
-                                                //             color: greenBg,
-                                                //             fontSize:
-                                                //                 15 + 4 * pad,
-                                                //           ),
-                                                //         ),
-                                                //       ),
-                                                //     ),
-                                                //     Positioned(
-                                                //         top: 10,
-                                                //         right: 20,
-                                                //         child: IconButton(
-                                                //           onPressed: () {},
-                                                //           icon: Icon(
-                                                //             Icons.favorite,
-                                                //             color: white,
-                                                //           ),
-                                                //         ))
-                                                //   ],
-                                                // ),
-                                                // Expanded(
-                                                //   child: Padding(
-                                                //     padding:
-                                                //         const EdgeInsets.all(
-                                                //             24),
-                                                //     child: Column(
-                                                //       crossAxisAlignment:
-                                                //           CrossAxisAlignment
-                                                //               .start,
-                                                //       mainAxisAlignment:
-                                                //           MainAxisAlignment
-                                                //               .spaceBetween,
-                                                //       children: [
-                                                //         gridItem.title
-                                                //             .poppins(
-                                                //           fontWeight:
-                                                //               FontWeight.bold,
-                                                //           fontSize: 18,
-                                                //         ),
-                                                //         Row(
-                                                //           mainAxisAlignment:
-                                                //               MainAxisAlignment
-                                                //                   .spaceBetween,
-                                                //           children: [
-                                                //             gridItem.subtitle
-                                                //                 .poppins(
-                                                //               fontSize: 18,
-                                                //             ),
-                                                //             gridItem.price
-                                                //                 .poppins(
-                                                //               fontSize: 18,
-                                                //               fontWeight:
-                                                //                   FontWeight
-                                                //                       .bold,
-                                                //             ),
-                                                //           ],
-                                                //         ),
-                                                //         Row(
-                                                //           mainAxisAlignment:
-                                                //               MainAxisAlignment
-                                                //                   .spaceBetween,
-                                                //           children: [
-                                                //             gridItem.subtitle
-                                                //                 .poppins(
-                                                //               fontSize: 18,
-                                                //             ),
-                                                //             gridItem.price
-                                                //                 .poppins(
-                                                //               fontSize: 18,
-                                                //               fontWeight:
-                                                //                   FontWeight
-                                                //                       .bold,
-                                                //             ),
-                                                //           ],
-                                                //         ),
-                                                //         Padding(
-                                                //           padding:
-                                                //               const EdgeInsets
-                                                //                       .fromLTRB(
-                                                //                   0, 4, 0, 4),
-                                                //           child: gridItem
-                                                //               .title
-                                                //               .poppins(
-                                                //             fontWeight:
-                                                //                 FontWeight
-                                                //                     .bold,
-                                                //             fontSize: 18,
-                                                //           ),
-                                                //         ),
-                                                //         Row(
-                                                //           mainAxisAlignment:
-                                                //               MainAxisAlignment
-                                                //                   .spaceBetween,
-                                                //           children: [
-                                                //             gridItem.subtitle
-                                                //                 .poppins(
-                                                //               fontSize: 18,
-                                                //             ),
-                                                //             gridItem.price
-                                                //                 .poppins(
-                                                //               fontSize: 18,
-                                                //               fontWeight:
-                                                //                   FontWeight
-                                                //                       .bold,
-                                                //             ),
-                                                //           ],
-                                                //         ),
-                                                //       ],
-                                                //     ),
-                                                //   ),
-                                                // ),
+                                  // if (assetmodels[index].typeSer == assetTypemodels[index1].ser) {
 
-                                                Stack(
-                                                  children: [
-                                                    AspectRatio(
-                                                      aspectRatio: 150 / 150,
-                                                      child: ClipRRect(
-                                                        borderRadius: BorderRadius.circular(20),
-                                                        child: Image.network(
-                                                          '${ass[index]['corverImg']}',
-                                                          fit: BoxFit.cover,
-                                                          alignment: Alignment.center,
-                                                        ),
-                                                      ),
-                                                    ),
-                                                    Positioned(
-                                                      top: 10,
-                                                      left: 20,
-                                                      child: Container(
-                                                        // width: 150,
-                                                        // height: 70,
-                                                        decoration: BoxDecoration(
-                                                          color: white,
-                                                          borderRadius: const BorderRadius.only(
-                                                            topLeft: Radius.circular(15),
-                                                            topRight: Radius.circular(15),
-                                                            bottomLeft: Radius.circular(15),
-                                                            bottomRight: Radius.circular(15),
-                                                          ),
-                                                          boxShadow: [
-                                                            BoxShadow(
-                                                              color: Colors.grey.withOpacity(0.25),
-                                                              offset: const Offset(0, 4),
-                                                              blurRadius: 4,
-                                                            ),
-                                                          ],
-                                                        ),
-                                                        padding: const EdgeInsets.all(4),
-                                                        child: Center(
-                                                          child: ' Guest favourite'.poppins(
-                                                            color: greenBg,
-                                                            fontSize: 13 + 4 * pad,
-                                                          ),
-                                                        ),
-                                                      ),
-                                                    ),
-                                                    Positioned(
-                                                        top: 10,
-                                                        right: 20,
-                                                        child: IconButton(
-                                                          onPressed: () {},
-                                                          icon: Icon(
-                                                            Icons.favorite_border,
-                                                            color: white,
-                                                          ),
-                                                        ))
-                                                  ],
+                                  final ass = assetmodels
+                                      .where((value) => value.typeSer == assetTypemodels[index1].ser)
+                                      .toList();
+                                  // print(isHover[index1][index]);
+
+                                  if (ass.isNotEmpty) {
+                                    return InkWell(
+                                      onTap: () {
+                                        Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                            builder: (context) => RentDetails(ass[index].ser.toString()),
+                                          ),
+                                        );
+                                      },
+                                      child: MouseRegion(
+                                          onEnter: (val) => setState(() {
+                                                isHover[index1][index] = true;
+                                                // print(true);
+                                              }),
+                                          onExit: (val) => setState(() {
+                                                isHover[index1][index] = false;
+                                                // print(false);
+                                              }),
+                                          child: AnimatedContainer(
+                                            duration: const Duration(milliseconds: 240),
+                                            padding: const EdgeInsets.all(8),
+                                            decoration: BoxDecoration(
+                                              // color: isHover[index1][index] ? Colors.grey[100] : white.withOpacity(0),
+                                              color: white,
+                                              borderRadius: const BorderRadius.only(
+                                                topLeft: Radius.circular(20),
+                                                topRight: Radius.circular(20),
+                                                bottomLeft: Radius.circular(8),
+                                                bottomRight: Radius.circular(8),
+                                              ),
+                                              boxShadow: [
+                                                BoxShadow(
+                                                  color: isHover[index1][index] == true
+                                                      ? textPrimary.withOpacity(0.15)
+                                                      : textPrimary.withOpacity(0),
+                                                  offset: const Offset(0, 6),
+                                                  blurRadius: 10,
                                                 ),
-                                                Expanded(
-                                                  child: Padding(
-                                                    padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 6),
-                                                    child: Column(
-                                                      crossAxisAlignment: CrossAxisAlignment.start,
-                                                      mainAxisAlignment: MainAxisAlignment.spaceAround,
-                                                      children: [
-                                                        '${ass[index]['name_th']}'.poppins(
-                                                          fontWeight: FontWeight.w600,
-                                                          fontSize: 16,
+                                              ],
+                                            ),
+                                            child: Container(
+                                              margin: EdgeInsets.only(bottom: 12 + 12 * pad),
+                                              decoration: BoxDecoration(
+                                                color: white,
+                                                borderRadius: BorderRadius.circular(20),
+                                                // boxShadow: [
+                                                //   BoxShadow(
+                                                //     color: Colors.grey.withOpacity(0.25),
+                                                //     offset: const Offset(0, 4),
+                                                //     blurRadius: 4,
+                                                //   ),
+                                                // ],
+                                              ),
+                                              child: Column(
+                                                crossAxisAlignment: CrossAxisAlignment.stretch,
+                                                children: [
+                                                  // Stack(
+                                                  //   children: [
+                                                  //     AspectRatio(
+                                                  //       aspectRatio: 285 / 230,
+                                                  //       child: ClipRRect(
+                                                  //         borderRadius:
+                                                  //             BorderRadius
+                                                  //                 .circular(20),
+                                                  //         child: Image.network(
+                                                  //           gridItem.imgPath,
+                                                  //           fit: BoxFit.cover,
+                                                  //         ),
+                                                  //       ),
+                                                  //     ),
+                                                  //     Positioned(
+                                                  //       top: 10,
+                                                  //       left: 20,
+                                                  //       child: Container(
+                                                  //         // width: 150,
+                                                  //         // height: 70,
+                                                  //         decoration:
+                                                  //             BoxDecoration(
+                                                  //           color: white,
+                                                  //           borderRadius:
+                                                  //               const BorderRadius
+                                                  //                   .only(
+                                                  //             topLeft: Radius
+                                                  //                 .circular(15),
+                                                  //             topRight: Radius
+                                                  //                 .circular(15),
+                                                  //             bottomLeft: Radius
+                                                  //                 .circular(15),
+                                                  //             bottomRight:
+                                                  //                 Radius
+                                                  //                     .circular(
+                                                  //                         15),
+                                                  //           ),
+                                                  //           boxShadow: [
+                                                  //             BoxShadow(
+                                                  //               color: Colors
+                                                  //                   .grey
+                                                  //                   .withOpacity(
+                                                  //                       0.25),
+                                                  //               offset:
+                                                  //                   const Offset(
+                                                  //                       0, 4),
+                                                  //               blurRadius: 4,
+                                                  //             ),
+                                                  //           ],
+                                                  //         ),
+                                                  //         padding:
+                                                  //             const EdgeInsets
+                                                  //                 .all(4),
+                                                  //         child: Center(
+                                                  //           child:
+                                                  //               ' Guest favourite'
+                                                  //                   .poppins(
+                                                  //             color: greenBg,
+                                                  //             fontSize:
+                                                  //                 15 + 4 * pad,
+                                                  //           ),
+                                                  //         ),
+                                                  //       ),
+                                                  //     ),
+                                                  //     Positioned(
+                                                  //         top: 10,
+                                                  //         right: 20,
+                                                  //         child: IconButton(
+                                                  //           onPressed: () {},
+                                                  //           icon: Icon(
+                                                  //             Icons.favorite,
+                                                  //             color: white,
+                                                  //           ),
+                                                  //         ))
+                                                  //   ],
+                                                  // ),
+                                                  // Expanded(
+                                                  //   child: Padding(
+                                                  //     padding:
+                                                  //         const EdgeInsets.all(
+                                                  //             24),
+                                                  //     child: Column(
+                                                  //       crossAxisAlignment:
+                                                  //           CrossAxisAlignment
+                                                  //               .start,
+                                                  //       mainAxisAlignment:
+                                                  //           MainAxisAlignment
+                                                  //               .spaceBetween,
+                                                  //       children: [
+                                                  //         gridItem.title
+                                                  //             .poppins(
+                                                  //           fontWeight:
+                                                  //               FontWeight.bold,
+                                                  //           fontSize: 18,
+                                                  //         ),
+                                                  //         Row(
+                                                  //           mainAxisAlignment:
+                                                  //               MainAxisAlignment
+                                                  //                   .spaceBetween,
+                                                  //           children: [
+                                                  //             gridItem.subtitle
+                                                  //                 .poppins(
+                                                  //               fontSize: 18,
+                                                  //             ),
+                                                  //             gridItem.price
+                                                  //                 .poppins(
+                                                  //               fontSize: 18,
+                                                  //               fontWeight:
+                                                  //                   FontWeight
+                                                  //                       .bold,
+                                                  //             ),
+                                                  //           ],
+                                                  //         ),
+                                                  //         Row(
+                                                  //           mainAxisAlignment:
+                                                  //               MainAxisAlignment
+                                                  //                   .spaceBetween,
+                                                  //           children: [
+                                                  //             gridItem.subtitle
+                                                  //                 .poppins(
+                                                  //               fontSize: 18,
+                                                  //             ),
+                                                  //             gridItem.price
+                                                  //                 .poppins(
+                                                  //               fontSize: 18,
+                                                  //               fontWeight:
+                                                  //                   FontWeight
+                                                  //                       .bold,
+                                                  //             ),
+                                                  //           ],
+                                                  //         ),
+                                                  //         Padding(
+                                                  //           padding:
+                                                  //               const EdgeInsets
+                                                  //                       .fromLTRB(
+                                                  //                   0, 4, 0, 4),
+                                                  //           child: gridItem
+                                                  //               .title
+                                                  //               .poppins(
+                                                  //             fontWeight:
+                                                  //                 FontWeight
+                                                  //                     .bold,
+                                                  //             fontSize: 18,
+                                                  //           ),
+                                                  //         ),
+                                                  //         Row(
+                                                  //           mainAxisAlignment:
+                                                  //               MainAxisAlignment
+                                                  //                   .spaceBetween,
+                                                  //           children: [
+                                                  //             gridItem.subtitle
+                                                  //                 .poppins(
+                                                  //               fontSize: 18,
+                                                  //             ),
+                                                  //             gridItem.price
+                                                  //                 .poppins(
+                                                  //               fontSize: 18,
+                                                  //               fontWeight:
+                                                  //                   FontWeight
+                                                  //                       .bold,
+                                                  //             ),
+                                                  //           ],
+                                                  //         ),
+                                                  //       ],
+                                                  //     ),
+                                                  //   ),
+                                                  // ),
+
+                                                  Stack(
+                                                    children: [
+                                                      AspectRatio(
+                                                        aspectRatio: 150 / 150,
+                                                        child: ClipRRect(
+                                                          borderRadius: BorderRadius.circular(20),
+                                                          child: Image.network(
+                                                            '${ass[index].corverImg}',
+                                                            fit: BoxFit.cover,
+                                                            alignment: Alignment.center,
+                                                          ),
                                                         ),
-                                                        '${ass[index]['addr']}'
-                                                            .poppins(fontSize: 12, fontWeight: FontWeight.w400),
-                                                        '${ass[index]['s_datex']}-${ass[index]['l_datex']}'.poppins(
-                                                          fontSize: 12,
-                                                          fontWeight: FontWeight.w400,
+                                                      ),
+                                                      Positioned(
+                                                        top: 10,
+                                                        left: 20,
+                                                        child: Container(
+                                                          // width: 150,
+                                                          // height: 70,
+                                                          decoration: BoxDecoration(
+                                                            color: white,
+                                                            borderRadius: const BorderRadius.only(
+                                                              topLeft: Radius.circular(15),
+                                                              topRight: Radius.circular(15),
+                                                              bottomLeft: Radius.circular(15),
+                                                              bottomRight: Radius.circular(15),
+                                                            ),
+                                                            boxShadow: [
+                                                              BoxShadow(
+                                                                color: Colors.grey.withOpacity(0.25),
+                                                                offset: const Offset(0, 4),
+                                                                blurRadius: 4,
+                                                              ),
+                                                            ],
+                                                          ),
+                                                          padding: const EdgeInsets.all(4),
+                                                          child: Center(
+                                                            child: ' Guest favourite'.poppins(
+                                                              color: greenBg,
+                                                              fontSize: 13 + 4 * pad,
+                                                            ),
+                                                          ),
                                                         ),
-                                                        '฿${ass[index]['total']}'.poppins(
-                                                          fontSize: 16,
-                                                          fontWeight: FontWeight.w600,
-                                                        )
-//                                                       '${assetmodels[index].addr}'.poppins(
+                                                      ),
+                                                      Positioned(
+                                                          top: 10,
+                                                          right: 20,
+                                                          child: IconButton(
+                                                            onPressed: () {},
+                                                            icon: Icon(
+                                                              Icons.favorite_border,
+                                                              color: white,
+                                                            ),
+                                                          ))
+                                                    ],
+                                                  ),
+                                                  Expanded(
+                                                    child: Padding(
+                                                      padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 6),
+                                                      child: Column(
+                                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                                        mainAxisAlignment: MainAxisAlignment.spaceAround,
+                                                        children: [
+                                                          '${ass[index].name_th}'.poppins(
+                                                            fontWeight: FontWeight.w600,
+                                                            fontSize: 16,
+                                                          ),
+                                                          '${ass[index].addr}'
+                                                              .poppins(fontSize: 12, fontWeight: FontWeight.w400),
+                                                          '${ass[index].s_datex}-${ass[index].l_datex}'.poppins(
+                                                            fontSize: 12,
+                                                            fontWeight: FontWeight.w400,
+                                                          ),
+                                                          '฿${ass[index].total}'.poppins(
+                                                            fontSize: 16,
+                                                            fontWeight: FontWeight.w600,
+                                                          )
+//                                                       '${ass[index].addr}'.poppins(
 //                                                         fontWeight: FontWeight.w400,
 //                                                         fontSize: 12,
 // // >>>>>>> main-nav
 //                                                       ),
-                                                      ],
+                                                        ],
+                                                      ),
                                                     ),
                                                   ),
-                                                ),
-                                              ],
+                                                ],
+                                              ),
                                             ),
-                                          ),
-                                        )),
-                                  );
+                                          )),
+                                    );
+                                  }
+                                  // }
                                 }),
                           ]))
                       ])),

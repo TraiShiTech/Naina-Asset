@@ -1,4 +1,4 @@
-import 'dart:html';
+import 'dart:convert';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -8,15 +8,23 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:properties/app/widgets/base_container.dart';
 import 'package:properties/app/with_us.dart';
 import 'package:properties/core/core.dart';
-import 'package:properties/core/theme/app_colors.dart';
-
+import 'package:http/http.dart' as http;
+import '../../../Constant/Myconstant.dart';
+import '../../../core/models/assetDetails_model.dart';
+import '../../../core/models/asset_model.dart';
+import '../../../core/models/img_assetAll_model.dart';
+import '../../../core/models/places_type_model.dart';
+import '../../../core/models/specialknow_model.dart';
+import '../../../core/models/thingsknowType_model.dart';
+import '../../../core/models/thingsknow_model.dart';
 import '../about_us/image_clider_controller.dart';
 
 import '../footer/footer.dart';
 import '../header/header_rent.dart';
 
 class RentDetails extends ConsumerStatefulWidget {
-  const RentDetails({Key? key}) : super(key: key);
+  final ser_asset;
+  const RentDetails(this.ser_asset, {Key? key}) : super(key: key);
 
   @override
   ConsumerState<ConsumerStatefulWidget> createState() => _RentDetailsState();
@@ -27,6 +35,8 @@ class _RentDetailsState extends ConsumerState<RentDetails> {
   int offset = 0; // The starting index of items you want
   int endIndex = 0;
   int index_imgPath = 0;
+  int index_asset = 0;
+
 ///////----------------------------------------------->
   late PageController _controller;
   int currentPage = 1;
@@ -35,117 +45,24 @@ class _RentDetailsState extends ConsumerState<RentDetails> {
 
   final GlobalKey _headerKey = GlobalKey();
   ///////----------------------------------------------->
-
-  List<String> title = [
-    'Decorations &\n Renovations',
-    'Photography &\n Listing',
-    'Guest \n Communications',
-    'Cleaning &\n Maintenance',
-  ];
-  List<String> images = [
-    'https://s3-alpha-sig.figma.com/img/f477/4294/2841c937d8b24966c3412826595763f2?Expires=1716163200&Key-Pair-Id=APKAQ4GOSFWCVNEHN3O4&Signature=oawp-dyDFaADsZLx9dKvWaB3MjbTbuWdTKH2GnWFrl~VxDFKborw3zV96wjilbmdJPnx4~R4wO9ya5dL~f2G5n0DZKdIZvpt9GV2IAWJxVq4CgfFHsrekkQrVTeWoc6TvlKtvr2qkzyZQ2t-9AhEpXUypNSsbfXUXIB73WzrOzICaSEJ8hsug4Nx71xHbEaZZS1guLHv~qlFNi19LloRIHSBUaavkz3TGILRpCDoUflZZCL40uR60p4db12EsnAQngDZmPm6bvTyc5h5cndza0SjwShbOC6sEgt2G0N~eLTLU7wEp6oOG-lZVnwxUj7T2mJu5A0CpQckgPOHuV0~Rg__',
-    'https://s3-alpha-sig.figma.com/img/7bda/143f/e5a98a6fe7b614f448514de91a6f75c2?Expires=1716163200&Key-Pair-Id=APKAQ4GOSFWCVNEHN3O4&Signature=S6m2PtH5ICHxiyhq6pYhNbxQUHVUWnkaHH0K3hYoUs3Jr4AJVxs4fFZZLQd4ZyO056wVNR0aXUWqpXcHCMxLvnurLZN3cVnMv-Ud7V~oL5X7R6QSzFlXl7URGE9meZf7M89NTfFUKowtjXxoFv0NH23bEPdKFMnK7eo5xtnPwnM5~SS0ftoG3JAb4FV~21WS9N7X7ZK7NjEFuY5MpsOUU2LNRAWc4uwUy4R0lShaGqqsOkIDe23lmls34dvmhBXbPg-dWraPzCdrPAMsVh6vV7QFnRYbYjmx57i06kF7IeORq9HD6GsocO96b3RGtEGn0a3jW0w790g1q8pSHPYLCg__',
-    'https://s3-alpha-sig.figma.com/img/5e7a/95c4/8a9dd8afc379f258b23cc4fc928b75c0?Expires=1716163200&Key-Pair-Id=APKAQ4GOSFWCVNEHN3O4&Signature=X9g~6TCf1mu4~dyXOMaQJfF3ic8ce6ezQCRRN6~w2Q-EdaJ0gqrEpVuWkJu86k9XysWA61ZuinqApq7AiU~HwZSy6Pcp5A7aUnjUbvS0Y1dhtGx7DZ1R9Te~K4CeJkHGBG0UNl1U30JiiLXyzxHovQSdnbmsLX6vClU-kgyOVruEgHm1Sgz6XfzPN3uMfeH~Nxt92TCOpg99D6ZRxhXPrDodntQDPpWZ5vneCKMf1re2p1nY24wWwEkYhF2g4-kk8c3QN9FKwCuJ-jIt-Q9JPQECEb45Uytr1Au1NaHnH-cXvKg6DPnFZJoSR~HG7-mzkuDkqmktOkaWYV7-zhUj3w__',
-    'https://s3-alpha-sig.figma.com/img/248c/9403/08be956057a64cc8e78ca17e8bb7dd0d?Expires=1716163200&Key-Pair-Id=APKAQ4GOSFWCVNEHN3O4&Signature=Jrj48c60uvOZQFA1wZZtAMlI41-m6yCRMcHgsdlQlAAglcJO3V3nwAVuMv3iFrstUns~xabHhdnbrB2sf1En7Gk4vvTQfrIamU-gy8MVcrbt3djVwb1DTWNDyBs~MyNFOlOkWg5SKMKAu-XAl6f3~KCbkzExhcFDz3xUh8CTmQ3rcaj-nLm4EHBeE8OAHPFTVKyiQtKv-rfaHbEkrRM2LjllXR0cEoFhzatk0qo3Zc91y1hzKuLKeVBHPgACQQK3cdFi00l9FNHK57Mm0o-N1jhAWfT4hynF~GXu3QtNW7tRffh7aU5cB8-kJtDRfb4yp5HeazlJrEiXJcJ2IDjBXA__',
-  ];
-
-  List<String> limitedList_links = [];
-  List<String> links = [
-    'Homes',
-    'Condominium',
-    'Commercial Buildings',
-    'Others',
-  ];
+  List<placestype_model> placestype_models = [];
+  List<assetdetails_model> assetmodels = [];
+  List<imgassetAllmodel> imgassetAllmodels = [];
+  List<placestype_model> place_list = [];
+  List<ThingsknowType_model> ThingsknowType_models = [];
+  List<Thingsknow_model> Thingsknow_models = [];
+  List<Specialknow_model> specialknow_models = [];
 ///////----------------------------------------------->
-  List data_place = [
-    {
-      'id': '1',
-      'imageUrl': '',
-      'name': 'Garden view',
-      'description': '{100 conversations p/m},{10 websites},{2 GB data storage}',
-      'descriptionSub': '{Chat widget},{Real time support}',
-      'pri': '0',
-      'icons': '0xe744',
-    },
-    {
-      'id': '2',
-      'imageUrl': '',
-      'name': 'Kitchen',
-      'description': '{100 conversations p/m},{10 websites},{2 GB data storage}',
-      'descriptionSub': '{Chat widget},{Real time support}',
-      'pri': '50',
-      'icons': '0xe055',
-    },
-    {
-      'id': '3',
-      'imageUrl': '',
-      'name': 'Wifi',
-      'description': '{100 conversations p/m},{10 websites},{2 GB data storage}',
-      'descriptionSub': '{Chat widget},{Real time support}',
-      'pri': '90',
-      'icons': '0xe05c',
-    },
-    {
-      'id': '4',
-      'imageUrl': '',
-      'name': 'Pets allowed',
-      'description': '{100 conversations p/m},{10 websites},{2 GB data storage}',
-      'descriptionSub': '{Chat widget},{Real time support}',
-      'pri': '160',
-      'icons': '0xf04b8',
-    },
-    {
-      'id': '5',
-      'imageUrl': '',
-      'name': 'Free washer - in building',
-      'description': '{100 conversations p/m},{10 websites},{2 GB data storage}',
-      'descriptionSub': '{Chat widget},{Real time support}',
-      'pri': '160',
-      'icons': '0xe063',
-    },
-  ];
-  List type_Things = [
-    {
-      'type_id': '1',
-      'type': 'House rules',
-    },
-    {
-      'type_id': '2',
-      'type': 'Health & safety',
-    },
-    {
-      'type_id': '3',
-      'type': 'Cancellation policy',
-    },
-  ];
-  List data_Things = [
-    for (int index = 0; index < 3; index++)
-      {
-        'type_id': '1',
-        'imageUrl': '',
-        'type': 'House rules',
-        'name': 'Check-in: After 4:00 PM',
-        'icons': '0xe73c',
-      },
-    for (int index = 0; index < 5; index++)
-      {
-        'type_id': '2',
-        'imageUrl': '',
-        'type': 'Health & safety',
-        'name': 'Committed to Airbnb\'s enhanced cleaning process.',
-        'icons': '0xe055',
-      },
-    {
-      'type_id': '3',
-      'imageUrl': '',
-      'type': 'Cancellation policy',
-      'name': 'Free cancellation before Feb 14',
-      'icons': '0xf522',
-    },
-  ];
+  String? corver_Img;
 ///////----------------------------------------------->
   @override
   void initState() {
+    read_GC_PlacesType();
+    read_GC_ThingsknowType();
+    read_GC_Asset_Details();
+    read_GC_Specialknow();
+    read_GC_Thingsknow();
+
     _baseController = ScrollController();
     _baseController.addListener(() {
       if (_baseController.offset > 500) {
@@ -159,6 +76,7 @@ class _RentDetailsState extends ConsumerState<RentDetails> {
       keepPage: false,
       viewportFraction: 0.25,
     );
+
     super.initState();
   }
 
@@ -175,7 +93,203 @@ class _RentDetailsState extends ConsumerState<RentDetails> {
   }
 
 ///////----------------------------------------------->
+  Future<Null> read_GC_PlacesType() async {
+    if (placestype_models.length != 0) {
+      placestype_models.clear();
+    }
 
+    String url = '${MyConstant().domain}/GC_Places_Type.php?isAdd=true';
+
+    try {
+      var response = await http.get(Uri.parse(url));
+
+      var result = json.decode(response.body);
+      // print(result);
+
+      for (var map in result) {
+        placestype_model placestype_modelss = placestype_model.fromJson(map);
+
+        setState(() {
+          placestype_models.add(placestype_modelss);
+        });
+      }
+    } catch (e) {}
+  }
+
+///////----------------------------------------------->
+  Future<Null> read_GC_ThingsknowType() async {
+    if (ThingsknowType_models.length != 0) {
+      ThingsknowType_models.clear();
+    }
+
+    String url = '${MyConstant().domain}/GC_Thingsknow_Type.php?isAdd=true';
+
+    try {
+      var response = await http.get(Uri.parse(url));
+
+      var result = json.decode(response.body);
+      // print(result);
+
+      for (var map in result) {
+        ThingsknowType_model ThingsknowType_modelss = ThingsknowType_model.fromJson(map);
+
+        setState(() {
+          ThingsknowType_models.add(ThingsknowType_modelss);
+        });
+      }
+    } catch (e) {}
+  }
+  ///////----------------------------------------------->(ข้อมูลอื่นๆ)
+
+  Future<Null> read_GC_Asset_Details() async {
+    String? places;
+    var ser_asset = widget.ser_asset.toString();
+
+    if (assetmodels.length != 0) {
+      assetmodels.clear();
+    }
+
+    String url = '${MyConstant().domain}/GC_Rent_AssetDetails.php?isAdd=true&serasset=$ser_asset';
+
+    try {
+      var response = await http.get(Uri.parse(url));
+
+      var result = json.decode(response.body);
+      // print(result);
+
+      for (var map in result) {
+        assetdetails_model assetmodelss = assetdetails_model.fromJson(map);
+
+        setState(() {
+          assetmodels.add(assetmodelss);
+          places = assetmodelss.place.toString().trim();
+          corver_Img = assetmodelss.corver_img.toString().trim();
+        });
+      }
+      check_add_places(places);
+      read_GC_AssetImg_Details();
+    } catch (e) {}
+  }
+
+  Future<Null> check_add_places(places) async {
+    setState(() {
+      place_list.clear();
+    });
+    List<int> dataList = places.toString().split(',').map(int.parse).toList();
+    /////////------------------>
+    ///
+    for (int index_add = 0; index_add < dataList.length; index_add++) {
+      Map<String, dynamic> map = Map();
+      map['ser'] =
+          '${placestype_models.where((model) => model.ser == '${dataList[index_add]}').map((model) => model.ser).join(', ')}';
+      map['datex'] =
+          '${placestype_models.where((model) => model.ser == '${dataList[index_add]}').map((model) => model.datex).join(', ')}';
+      map['timex'] =
+          '${placestype_models.where((model) => model.ser == '${dataList[index_add]}').map((model) => model.timex).join(', ')}';
+      map['user'] =
+          '${placestype_models.where((model) => model.ser == '${dataList[index_add]}').map((model) => model.user).join(', ')}';
+      map['name'] =
+          '${placestype_models.where((model) => model.ser == '${dataList[index_add]}').map((model) => model.name).join(', ')}';
+      map['icon'] =
+          '${placestype_models.where((model) => model.ser == '${dataList[index_add]}').map((model) => model.icon).join(', ')}';
+      map['st'] =
+          '${placestype_models.where((model) => model.ser == '${dataList[index_add]}').map((model) => model.st).join(', ')}';
+      map['dataUpdate'] =
+          '${placestype_models.where((model) => model.ser == '${dataList[index_add]}').map((model) => model.dataUpdate).join(', ')}';
+
+      placestype_model placestypemodelss = placestype_model.fromJson(map);
+
+      setState(() {
+        place_list.add(placestypemodelss);
+      });
+    }
+  }
+
+  ///////----------------------------------------------->(รูปอื่นๆ) about_us
+  Future<Null> read_GC_AssetImg_Details() async {
+    var ser_asset = widget.ser_asset.toString();
+    if (imgassetAllmodels.length != 0) {
+      imgassetAllmodels.clear();
+    }
+
+    String url = '${MyConstant().domain}/GC_Asset_Img.php?isAdd=true&serasset=$ser_asset';
+
+    try {
+      var response = await http.get(Uri.parse(url));
+
+      var result = json.decode(response.body);
+      // print(result);
+
+      for (var map in result) {
+        imgassetAllmodel imgassetAllmodelss = imgassetAllmodel.fromJson(map);
+
+        setState(() {
+          imgassetAllmodels.add(imgassetAllmodelss);
+        });
+      }
+      if (corver_Img != null) {
+        Map<String, dynamic> map = Map();
+        map['img'] = '${corver_Img}';
+        imgassetAllmodel imgassetAllmodelss = imgassetAllmodel.fromJson(map);
+
+        setState(() {
+          imgassetAllmodels.add(imgassetAllmodelss);
+        });
+      }
+    } catch (e) {}
+  }
+
+///////----------------------------------------------->
+  Future<Null> read_GC_Thingsknow() async {
+    var ser_asset = widget.ser_asset.toString();
+    if (Thingsknow_models.length != 0) {
+      Thingsknow_models.clear();
+    }
+
+    String url = '${MyConstant().domain}/GC_Asset_Thingsknow.php?isAdd=true&serasset=$ser_asset';
+
+    try {
+      var response = await http.get(Uri.parse(url));
+
+      var result = json.decode(response.body);
+      // print(result);
+
+      for (var map in result) {
+        Thingsknow_model Thingsknow_modelss = Thingsknow_model.fromJson(map);
+
+        setState(() {
+          Thingsknow_models.add(Thingsknow_modelss);
+        });
+      }
+    } catch (e) {}
+  }
+
+///////----------------------------------------------->
+  Future<Null> read_GC_Specialknow() async {
+    var ser_asset = widget.ser_asset.toString();
+    if (specialknow_models.length != 0) {
+      specialknow_models.clear();
+    }
+
+    String url = '${MyConstant().domain}/GC_Asset_SpecialKnow.php?isAdd=true&serasset=$ser_asset';
+
+    try {
+      var response = await http.get(Uri.parse(url));
+
+      var result = json.decode(response.body);
+      // print(result);
+
+      for (var map in result) {
+        Specialknow_model specialknow_modelss = Specialknow_model.fromJson(map);
+
+        setState(() {
+          specialknow_models.add(specialknow_modelss);
+        });
+      }
+    } catch (e) {}
+  }
+
+  String main_img = '';
 ///////----------------------------------------------->
   @override
   Widget build(BuildContext context) {
@@ -220,15 +334,14 @@ class _RentDetailsState extends ConsumerState<RentDetails> {
                       children: [
                         Align(
                           alignment: Alignment.centerLeft,
-                          child: 'Bordeaux Getaway'.poppins(
+                          child: '${assetmodels[0].name_en} - ${assetmodels[0].name_th}'.poppins(
                             color: black,
                             fontSize: 25 + 4 * pad,
                           ),
                         ),
                         Align(
                           alignment: Alignment.centerLeft,
-                          child:
-                              'Location address: 22 Moo 3 Tumbon Changpuak Amphor Muang Chiang Mai 50300'.poppinscenter(
+                          child: '${assetmodels[0].addr}'.poppinscenter(
                             color: Color.fromRGBO(69, 69, 69, 1),
                             fontWeight: FontWeight.bold,
                             height: 1.5,
@@ -440,7 +553,7 @@ class _RentDetailsState extends ConsumerState<RentDetails> {
                         //     ],
                         //   ),
                         // ),
-                        const SizedBox(height: 60),
+                        const SizedBox(height: 30),
                         Column(
                           crossAxisAlignment: CrossAxisAlignment.center,
                           children: [
@@ -455,88 +568,72 @@ class _RentDetailsState extends ConsumerState<RentDetails> {
                                     child: Row(
                                       children: [
                                         Expanded(
-                                            child: Image.network(
-                                          'https://s3-alpha-sig.figma.com/img/33e7/8912/bbfb42ca5051f5492bcbda4a216dccc6?Expires=1716768000&Key-Pair-Id=APKAQ4GOSFWCVNEHN3O4&Signature=hddtucuDPySfPy9TYtKRK-kcquj4x-19PrT84oV8tG84ldiFB3wtiqQdl7voK7S~vvLzbZavsvfyQXI5pg1e-9rzfMdlDcqgF17hkx59LGstr~LX2LwQfLuM-~5ZVZlmPjjMTddvMPGwIf-FMv7Cmck9GfCZuJsSUlnFqVONYngvyl85BS-it8MJwknzLeKxa10QmTsl6j9IbPr~45NsfHmntsSRJFRal6KzKRnZZVXcC8EgNXwGWMBGzsNJUoGcmilKNJATJjds0z5MsSEV285RJqMJb1eApzgURLX0HwoYxvb0HT0buqRFepSKADJmlOhRLyLXA19XqjhEuhOsew__',
-                                          fit: BoxFit.cover,
-                                          alignment: Alignment.center,
-                                        )),
+                                          // child: Container(),
+                                          child: Container(
+                                            alignment: Alignment.topRight,
+                                            padding: EdgeInsets.all(20),
+                                            decoration: BoxDecoration(
+                                                image: DecorationImage(
+                                                    fit: BoxFit.cover,
+                                                    image: NetworkImage(
+                                                      main_img == '' ? '${assetmodels[0].corver_img}' : '$main_img',
+                                                    ))),
+                                            child: main_img == ''
+                                                ? Container()
+                                                : InkWell(
+                                                    onTap: () {
+                                                      setState(() {
+                                                        main_img = '';
+                                                      });
+                                                    },
+                                                    child: Icon(Icons.cancel_rounded,color: Colors.black54,),
+                                                   ),
+                                          ),
+                                          // Image.network(
+                                          //   main_img == '' ? '${assetmodels[0].corver_img}' : main_img,
+                                          //   // 'https://s3-alpha-sig.figma.com/img/33e7/8912/bbfb42ca5051f5492bcbda4a216dccc6?Expires=1716768000&Key-Pair-Id=APKAQ4GOSFWCVNEHN3O4&Signature=hddtucuDPySfPy9TYtKRK-kcquj4x-19PrT84oV8tG84ldiFB3wtiqQdl7voK7S~vvLzbZavsvfyQXI5pg1e-9rzfMdlDcqgF17hkx59LGstr~LX2LwQfLuM-~5ZVZlmPjjMTddvMPGwIf-FMv7Cmck9GfCZuJsSUlnFqVONYngvyl85BS-it8MJwknzLeKxa10QmTsl6j9IbPr~45NsfHmntsSRJFRal6KzKRnZZVXcC8EgNXwGWMBGzsNJUoGcmilKNJATJjds0z5MsSEV285RJqMJb1eApzgURLX0HwoYxvb0HT0buqRFepSKADJmlOhRLyLXA19XqjhEuhOsew__',
+                                          //   fit: BoxFit.cover,
+                                          //   alignment: Alignment.center,
+                                          // ),
+                                        ),
                                         SizedBox(
                                           width: 10,
                                         ),
                                         Expanded(
-                                            child: Column(
-                                          children: [
-                                            Expanded(
-                                              child: Row(
-                                                children: [
-                                                  Expanded(
-                                                    child: Image.network(
-                                                      'https://s3-alpha-sig.figma.com/img/7e95/b547/ccb35f41cb8bca5561addab0467b9ce5?Expires=1716768000&Key-Pair-Id=APKAQ4GOSFWCVNEHN3O4&Signature=M46LnKoZ2MYCj98yo9muCed7i9apYw1AJakRNLfHXXOiaSInvt7v5vvWCAoFeZBlBiZazOKh3cEt~BAxUcsPqBCK6F2TU8JTtI~vOsmQ~rC4zwbStcVJIisZCOjPdZzUzYly9S0zM7HH51GCq0U6KvFj8vzFRdp8zE42o8TxqwJzRT6tENaU02WS8jhm4vDEyOdhp82II86rwtEHEvjWwTdMj62WQXFIn0gBEVfRH06ZneSvmY9r6hXiNzU2DcFZwH2F-2-o0nWY90xT6XMGOCO4dxedc0pIS4gBukZeSSPZgal1syCFLX8dBaRVfiF7bUkMJIiBEf3UZyYQFpj9KQ__',
-                                                      fit: BoxFit.cover,
-                                                      alignment: Alignment.center,
-                                                    ),
-                                                  ),
-                                                  SizedBox(
-                                                    width: 10,
-                                                  ),
-                                                  Expanded(
-                                                    child: Image.network(
-                                                      'https://s3-alpha-sig.figma.com/img/9c03/7428/fcc8ee64fe9d947569d78c1eb2e26259?Expires=1716768000&Key-Pair-Id=APKAQ4GOSFWCVNEHN3O4&Signature=eMsXC2OpkDSiWH~SjNfXRhCldp~xLhqNKxUh3I7KzaFKoLgCvUIlOkZumXymm82a1hJD0tjpDqeVTC-NoP-l7Rsqkwknd5dIeaGYa9Sv04eOSPGWk8lOKiMyV1NExbcLqyIGChsfwktByxljWQ-Ui3fMsSmBg0uX1JAyOrvxYRPft1MZyAe6l-jsxC6j9zmONdpHuULu118J7Og4TeFuWVPyoWAOMD~EqNEiJviar8XqAFWykJP~xpuBbyAv5DLIi-cTTk6lBVM-jcSIALx62wuqxJR1lfhf8~rbmwH6JJLu0cVtubrffyXkXV3~xD12WVUGlxUtS1WGq6YLIJ~YnQ__',
-                                                      fit: BoxFit.cover,
-                                                      alignment: Alignment.center,
-                                                    ),
-                                                  ),
-                                                ],
-                                              ),
-                                            ),
-                                            SizedBox(
-                                              height: 10,
-                                            ),
-                                            Expanded(
-                                              child: Row(
-                                                children: [
-                                                  Expanded(
-                                                    child: Image.network(
-                                                      'https://s3-alpha-sig.figma.com/img/079e/23bf/4bb90ff22235b7665fc3ca85d2c34b28?Expires=1716768000&Key-Pair-Id=APKAQ4GOSFWCVNEHN3O4&Signature=lqvfOssU6vi4SmjXqoX2f5gYEOAvYEqIbZTjSWXBu1oOaKq0sS68p~tIs3jjGS-h-CBk9WFB~gBJO8EWsUKxMVu9jqxTS5Se4Q-TvwkFQolI2vqDbFeyfwOcCQFoxrEURnLumQMKzlRxRbOUEpSsnO4Wr7f4P9zxgm1TTfwTWY2WrTeJ96t9xU5CNGf5To2dDIvFzecUEuvgOAd0OroHQuwQ628daC7mj5OYMSobwbFGiVjVuo4adW56yMsEKLChL1fqFZ9NkwM7iILXnLOt9I~GERRbXGV0cegIJXUWcPPCkMXtHou5mOLCPeiOEU7DyXvnY5krpcebDNXcVpFafA__',
-                                                      fit: BoxFit.cover,
-                                                      alignment: Alignment.center,
-                                                    ),
-                                                  ),
-                                                  SizedBox(
-                                                    width: 10,
-                                                  ),
-                                                  Expanded(
-                                                    child:
-                                                        // Container(
-                                                        //     padding: EdgeInsets.all(10),
-                                                        //     decoration: BoxDecoration(
-                                                        //         image: DecorationImage(
-                                                        //       image: NetworkImage(
-                                                        //           'https://s3-alpha-sig.figma.com/img/5297/e89b/bda05c1478e165e64250f76d43531d98?Expires=1716768000&Key-Pair-Id=APKAQ4GOSFWCVNEHN3O4&Signature=mx3lJSakSQOUoaNcb5~fok0YiVuP1R2-1TtdzWhf0gbraL4qRO-JztGB2PH3fDUJf6UNlyhQZ0E~DedPI-wyhYb0OgLrAFjLIgcMTKtd91LXdYys8OPPcRAPq-cT8AUWNpCxCRkWnGvLJjTjdf5JONOyRqLtM5oZvhCLHWvHLlWD-sS1O2HZSKagOyL8zcB5ixakywktEw19GwpAKFJfwNBiQPStpfmzjrY-VQXwsrGKlZE1gWi9Ir95i7nD75px-GhPz2NpR7fvuQoQnx-saNTnKc8RNafno~W7gYUsGREDzFjogDk-sL2NWbdAfIlBhylc~Eu9Pvd9QkLBSRuTaw__'),
-                                                        //       fit: BoxFit.cover,
-                                                        //       alignment: Alignment.center,
-                                                        //     )),
-                                                        //     child: Container(
-                                                        //       decoration: BoxDecoration(
-                                                        //           color: white, borderRadius: BorderRadius.circular(10)),
-                                                        //       child: Row(
-                                                        //         children: [
-                                                        //           Icon(Icons.auto_awesome_mosaic_outlined),
-                                                        //           'Show all photo'.poppins(fontWeight: FontWeight.w600)
-                                                        //         ],
-                                                        //       ),
-                                                        //     )),
-                                                        Image.network(
-                                                      'https://s3-alpha-sig.figma.com/img/5297/e89b/bda05c1478e165e64250f76d43531d98?Expires=1716768000&Key-Pair-Id=APKAQ4GOSFWCVNEHN3O4&Signature=mx3lJSakSQOUoaNcb5~fok0YiVuP1R2-1TtdzWhf0gbraL4qRO-JztGB2PH3fDUJf6UNlyhQZ0E~DedPI-wyhYb0OgLrAFjLIgcMTKtd91LXdYys8OPPcRAPq-cT8AUWNpCxCRkWnGvLJjTjdf5JONOyRqLtM5oZvhCLHWvHLlWD-sS1O2HZSKagOyL8zcB5ixakywktEw19GwpAKFJfwNBiQPStpfmzjrY-VQXwsrGKlZE1gWi9Ir95i7nD75px-GhPz2NpR7fvuQoQnx-saNTnKc8RNafno~W7gYUsGREDzFjogDk-sL2NWbdAfIlBhylc~Eu9Pvd9QkLBSRuTaw__',
-                                                      fit: BoxFit.cover,
-                                                      alignment: Alignment.center,
-                                                    ),
-                                                  ),
-                                                ],
-                                              ),
-                                            )
-                                          ],
-                                        ))
+                                          child: SingleChildScrollView(
+                                            scrollDirection: Axis.vertical,
+                                            child: GridView.builder(
+                                                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                                                  // crossAxisCount: Metrics.isMobile(context)
+                                                  //     ? 1
+                                                  //     : Metrics.isCompact(context)
+                                                  //         ? 2
+                                                  //         : Metrics.isTablet(context)
+                                                  //             ? 3
+                                                  //             : 4,
+                                                  crossAxisCount: 2,
+                                                  // childAspectRatio: 1 / (1),
+                                                  crossAxisSpacing: 5,
+                                                  mainAxisSpacing: 5,
+                                                ),
+                                                shrinkWrap: true,
+                                                physics: const NeverScrollableScrollPhysics(),
+                                                itemCount: imgassetAllmodels.length,
+                                                itemBuilder: (context, index) {
+                                                  return InkWell(
+                                                      onTap: () async {
+                                                        setState(() {
+                                                          main_img = '${imgassetAllmodels[index].img}';
+                                                        });
+                                                      },
+                                                      child: Image(
+                                                        image: NetworkImage('${imgassetAllmodels[index].img}'),
+                                                        fit: BoxFit.cover,
+                                                      ));
+                                                  // }
+                                                }),
+                                          ),
+                                        )
                                       ],
                                     ),
                                   ),
@@ -570,7 +667,8 @@ class _RentDetailsState extends ConsumerState<RentDetails> {
                                                 children: [
                                                   Padding(
                                                     padding: const EdgeInsets.all(8.0),
-                                                    child: '2 guests'.poppins(fontWeight: FontWeight.w500),
+                                                    child: '${assetmodels[0].guests} guests'
+                                                        .poppins(fontWeight: FontWeight.w500),
                                                   ),
                                                   Icon(
                                                     Icons.circle,
@@ -578,7 +676,8 @@ class _RentDetailsState extends ConsumerState<RentDetails> {
                                                   ),
                                                   Padding(
                                                     padding: const EdgeInsets.all(8.0),
-                                                    child: '1 bedroom'.poppins(fontWeight: FontWeight.w500),
+                                                    child: '${assetmodels[0].bedroom} bedroom'
+                                                        .poppins(fontWeight: FontWeight.w500),
                                                   ),
                                                   Icon(
                                                     Icons.circle,
@@ -586,7 +685,8 @@ class _RentDetailsState extends ConsumerState<RentDetails> {
                                                   ),
                                                   Padding(
                                                     padding: const EdgeInsets.all(8.0),
-                                                    child: '1 bed'.poppins(fontWeight: FontWeight.w500),
+                                                    child: '${assetmodels[0].bed} bed'
+                                                        .poppins(fontWeight: FontWeight.w500),
                                                   ),
                                                   Icon(
                                                     Icons.circle,
@@ -594,7 +694,8 @@ class _RentDetailsState extends ConsumerState<RentDetails> {
                                                   ),
                                                   Padding(
                                                     padding: const EdgeInsets.all(8.0),
-                                                    child: '1 bath'.poppins(fontWeight: FontWeight.w500),
+                                                    child: '${assetmodels[0].bathroom} bath'
+                                                        .poppins(fontWeight: FontWeight.w500),
                                                   ),
                                                 ],
                                               ),
@@ -603,119 +704,130 @@ class _RentDetailsState extends ConsumerState<RentDetails> {
                                                 height: 1,
                                                 color: Colors.grey,
                                               ),
-                                              Padding(
-                                                padding: const EdgeInsets.symmetric(vertical: 8.0),
-                                                child: Row(
-                                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                                  mainAxisAlignment: MainAxisAlignment.start,
-                                                  children: [
+                                              Column(
+                                                children: [
+                                                  for (int index_special = 0;
+                                                      index_special < specialknow_models.length;
+                                                      index_special++)
                                                     Padding(
-                                                      padding: const EdgeInsets.all(16.0),
-                                                      child: Icon(
-                                                        Icons.home_filled,
-                                                        color: black,
-                                                        size: 30,
-                                                      ),
-                                                    ),
-                                                    Expanded(
-                                                      child: Column(
-                                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                                      padding: const EdgeInsets.symmetric(vertical: 8.0),
+                                                      child: Row(
+                                                        crossAxisAlignment: CrossAxisAlignment.center,
+                                                        mainAxisAlignment: MainAxisAlignment.start,
                                                         children: [
-                                                          'Entire home'.poppins(
-                                                              fontSize: 16,
-                                                              fontWeight: FontWeight.w600,
-                                                              textAlign: TextAlign.start),
                                                           Padding(
-                                                            padding: const EdgeInsets.symmetric(vertical: 6.0),
-                                                            child: 'You’ll have the apartment to yourself'.poppins(
-                                                              color: Color.fromRGBO(107, 114, 128, 1),
-                                                              textAlign: TextAlign.start,
+                                                            padding: const EdgeInsets.all(16.0),
+                                                            child: Icon(
+                                                              IconData(
+                                                                  int.parse(
+                                                                      '${specialknow_models[index_special].icon}'),
+                                                                  fontFamily: 'MaterialIcons'),
+                                                              color: black,
+                                                              size: 30,
                                                             ),
-                                                          )
+                                                          ),
+                                                          Expanded(
+                                                            child: Column(
+                                                              crossAxisAlignment: CrossAxisAlignment.start,
+                                                              children: [
+                                                                '${specialknow_models[index_special].name}'.poppins(
+                                                                    fontSize: 16,
+                                                                    fontWeight: FontWeight.w600,
+                                                                    textAlign: TextAlign.start),
+                                                                Padding(
+                                                                  padding: const EdgeInsets.symmetric(vertical: 6.0),
+                                                                  child: '${specialknow_models[index_special].content}'
+                                                                      .poppins(
+                                                                    color: Color.fromRGBO(107, 114, 128, 1),
+                                                                    textAlign: TextAlign.start,
+                                                                  ),
+                                                                )
+                                                              ],
+                                                            ),
+                                                          ),
                                                         ],
                                                       ),
                                                     ),
-                                                  ],
-                                                ),
+                                                ],
                                               ),
-                                              Padding(
-                                                padding: const EdgeInsets.symmetric(vertical: 8.0),
-                                                child: Row(
-                                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                                  mainAxisAlignment: MainAxisAlignment.start,
-                                                  children: [
-                                                    Padding(
-                                                      padding: const EdgeInsets.all(16.0),
-                                                      child: Icon(
-                                                        Icons.auto_awesome_outlined,
-                                                        color: black,
-                                                        size: 30,
-                                                      ),
-                                                    ),
-                                                    Expanded(
-                                                      child: Column(
-                                                        crossAxisAlignment: CrossAxisAlignment.start,
-                                                        children: [
-                                                          'Enhanced Clean'.poppins(
-                                                              fontSize: 16,
-                                                              fontWeight: FontWeight.w600,
-                                                              textAlign: TextAlign.start),
-                                                          Padding(
-                                                            padding: const EdgeInsets.symmetric(vertical: 6.0),
-                                                            child:
-                                                                'This Host committed to Airbnb’s 5-step enhanced cleaning process. Show more'
-                                                                    .poppins(
-                                                              color: Color.fromRGBO(107, 114, 128, 1),
-                                                              textAlign: TextAlign.start,
-                                                            ),
-                                                          )
-                                                        ],
-                                                      ),
-                                                    ),
-                                                  ],
-                                                ),
-                                              ),
-                                              Padding(
-                                                padding: const EdgeInsets.symmetric(vertical: 8.0),
-                                                child: Row(
-                                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                                  mainAxisAlignment: MainAxisAlignment.start,
-                                                  children: [
-                                                    Padding(
-                                                      padding: const EdgeInsets.all(16.0),
-                                                      child: Icon(
-                                                        Icons.door_back_door_outlined,
-                                                        color: black,
-                                                        size: 30,
-                                                      ),
-                                                    ),
-                                                    Expanded(
-                                                      child: Column(
-                                                        crossAxisAlignment: CrossAxisAlignment.start,
-                                                        children: [
-                                                          'Self check-in'.poppins(
-                                                              fontSize: 16,
-                                                              fontWeight: FontWeight.w600,
-                                                              textAlign: TextAlign.start),
-                                                          Padding(
-                                                            padding: const EdgeInsets.symmetric(vertical: 6.0),
-                                                            child: 'Check yourself in with the keypad.'.poppins(
-                                                              color: Color.fromRGBO(107, 114, 128, 1),
-                                                              textAlign: TextAlign.start,
-                                                            ),
-                                                          )
-                                                        ],
-                                                      ),
-                                                    ),
-                                                  ],
-                                                ),
-                                              ),
+                                              // Padding(
+                                              //   padding: const EdgeInsets.symmetric(vertical: 8.0),
+                                              //   child: Row(
+                                              //     crossAxisAlignment: CrossAxisAlignment.center,
+                                              //     mainAxisAlignment: MainAxisAlignment.start,
+                                              //     children: [
+                                              //       Padding(
+                                              //         padding: const EdgeInsets.all(16.0),
+                                              //         child: Icon(
+                                              //           Icons.auto_awesome_outlined,
+                                              //           color: black,
+                                              //           size: 30,
+                                              //         ),
+                                              //       ),
+                                              //       Expanded(
+                                              //         child: Column(
+                                              //           crossAxisAlignment: CrossAxisAlignment.start,
+                                              //           children: [
+                                              //             'Enhanced Clean'.poppins(
+                                              //                 fontSize: 16,
+                                              //                 fontWeight: FontWeight.w600,
+                                              //                 textAlign: TextAlign.start),
+                                              //             Padding(
+                                              //               padding: const EdgeInsets.symmetric(vertical: 6.0),
+                                              //               child:
+                                              //                   'This Host committed to Airbnb’s 5-step enhanced cleaning process. Show more'
+                                              //                       .poppins(
+                                              //                 color: Color.fromRGBO(107, 114, 128, 1),
+                                              //                 textAlign: TextAlign.start,
+                                              //               ),
+                                              //             )
+                                              //           ],
+                                              //         ),
+                                              //       ),
+                                              //     ],
+                                              //   ),
+                                              // ),
+                                              // Padding(
+                                              //   padding: const EdgeInsets.symmetric(vertical: 8.0),
+                                              //   child: Row(
+                                              //     crossAxisAlignment: CrossAxisAlignment.center,
+                                              //     mainAxisAlignment: MainAxisAlignment.start,
+                                              //     children: [
+                                              //       Padding(
+                                              //         padding: const EdgeInsets.all(16.0),
+                                              //         child: Icon(
+                                              //           Icons.door_back_door_outlined,
+                                              //           color: black,
+                                              //           size: 30,
+                                              //         ),
+                                              //       ),
+                                              //       Expanded(
+                                              //         child: Column(
+                                              //           crossAxisAlignment: CrossAxisAlignment.start,
+                                              //           children: [
+                                              //             'Self check-in'.poppins(
+                                              //                 fontSize: 16,
+                                              //                 fontWeight: FontWeight.w600,
+                                              //                 textAlign: TextAlign.start),
+                                              //             Padding(
+                                              //               padding: const EdgeInsets.symmetric(vertical: 6.0),
+                                              //               child: 'Check yourself in with the keypad.'.poppins(
+                                              //                 color: Color.fromRGBO(107, 114, 128, 1),
+                                              //                 textAlign: TextAlign.start,
+                                              //               ),
+                                              //             )
+                                              //           ],
+                                              //         ),
+                                              //       ),
+                                              //     ],
+                                              //   ),
+                                              // ),
                                               Container(
                                                 margin: EdgeInsets.symmetric(vertical: 20),
                                                 height: 1,
                                                 color: Colors.grey,
                                               ),
-                                              "Come and stay in this superb duplex T2, in the heart of the historic center of Bordeaux.Spacious and bright, in a real Bordeaux building in exposed stone, you will enjoy all the charms of the city thanks to its ideal location. Close to many shops, bars and restaurants, you can access the apartment by tram A and C and bus routes 27 and 44...."
+                                              '${assetmodels[0].content}'
                                                   .poppins(textAlign: TextAlign.justify, fontWeight: FontWeight.w400),
                                               Padding(
                                                 padding: const EdgeInsets.symmetric(vertical: 8.0),
@@ -750,129 +862,142 @@ class _RentDetailsState extends ConsumerState<RentDetails> {
                                                     crossAxisAlignment: CrossAxisAlignment.start,
                                                     mainAxisAlignment: MainAxisAlignment.spaceAround,
                                                     children: [
-                                                      Row(
-                                                        mainAxisAlignment: MainAxisAlignment.start,
-                                                        children: [
-                                                          Padding(
-                                                            padding: const EdgeInsets.all(8.0),
-                                                            child: Icon(Icons.grass_sharp),
-                                                          ),
-                                                          'Garden view'.poppins(fontSize: 12)
-                                                        ],
-                                                      ),
-                                                      Row(
-                                                        mainAxisAlignment: MainAxisAlignment.start,
-                                                        children: [
-                                                          Padding(
-                                                            padding: const EdgeInsets.all(8.0),
-                                                            child: Icon(Icons.wifi),
-                                                          ),
-                                                          'Wifi'.poppins(fontSize: 12)
-                                                        ],
-                                                      ),
-                                                      Row(
-                                                        mainAxisAlignment: MainAxisAlignment.start,
-                                                        children: [
-                                                          Padding(
-                                                            padding: const EdgeInsets.all(8.0),
-                                                            child: Icon(Icons.adjust_sharp),
-                                                          ),
-                                                          'Free washer - in building'.poppins(fontSize: 12)
-                                                        ],
-                                                      ),
-                                                      Row(
-                                                        mainAxisAlignment: MainAxisAlignment.start,
-                                                        children: [
-                                                          Padding(
-                                                            padding: const EdgeInsets.all(8.0),
-                                                            child: Icon(Icons.air),
-                                                          ),
-                                                          'Central air conditioning'.poppins(fontSize: 12)
-                                                        ],
-                                                      ),
-                                                      Row(
-                                                        mainAxisAlignment: MainAxisAlignment.start,
-                                                        children: [
-                                                          Padding(
-                                                            padding: const EdgeInsets.all(8.0),
-                                                            child: Icon(Icons.kitchen_outlined),
-                                                          ),
-                                                          'Refrigerator'.poppins(fontSize: 12)
-                                                        ],
-                                                      ),
+                                                      for (int index = 0; index < place_list.length; index++)
+                                                        Row(
+                                                          mainAxisAlignment: MainAxisAlignment.start,
+                                                          children: [
+                                                            Padding(
+                                                              padding: const EdgeInsets.all(8.0),
+                                                              child: Icon(IconData(
+                                                                  int.parse('${place_list[index].icon}'),
+                                                                  fontFamily: 'MaterialIcons')),
+                                                            ),
+                                                            '${place_list[index].name}'.poppins(fontSize: 12)
+                                                          ],
+                                                        ),
+                                                      // Row(
+                                                      //   mainAxisAlignment: MainAxisAlignment.start,
+                                                      //   children: [
+                                                      //     Padding(
+                                                      //       padding: const EdgeInsets.all(8.0),
+                                                      //       child: Icon(Icons.grass_sharp),
+                                                      //     ),
+                                                      //     'Garden view'.poppins(fontSize: 12)
+                                                      //   ],
+                                                      // ),
+                                                      // Row(
+                                                      //   mainAxisAlignment: MainAxisAlignment.start,
+                                                      //   children: [
+                                                      //     Padding(
+                                                      //       padding: const EdgeInsets.all(8.0),
+                                                      //       child: Icon(Icons.wifi),
+                                                      //     ),
+                                                      //     'Wifi'.poppins(fontSize: 12)
+                                                      //   ],
+                                                      // ),
+                                                      // Row(
+                                                      //   mainAxisAlignment: MainAxisAlignment.start,
+                                                      //   children: [
+                                                      //     Padding(
+                                                      //       padding: const EdgeInsets.all(8.0),
+                                                      //       child: Icon(Icons.adjust_sharp),
+                                                      //     ),
+                                                      //     'Free washer - in building'.poppins(fontSize: 12)
+                                                      //   ],
+                                                      // ),
+                                                      // Row(
+                                                      //   mainAxisAlignment: MainAxisAlignment.start,
+                                                      //   children: [
+                                                      //     Padding(
+                                                      //       padding: const EdgeInsets.all(8.0),
+                                                      //       child: Icon(Icons.air),
+                                                      //     ),
+                                                      //     'Central air conditioning'.poppins(fontSize: 12)
+                                                      //   ],
+                                                      // ),
+                                                      // Row(
+                                                      //   mainAxisAlignment: MainAxisAlignment.start,
+                                                      //   children: [
+                                                      //     Padding(
+                                                      //       padding: const EdgeInsets.all(8.0),
+                                                      //       child: Icon(Icons.kitchen_outlined),
+                                                      //     ),
+                                                      //     'Refrigerator'.poppins(fontSize: 12)
+                                                      //   ],
+                                                      // ),
                                                     ],
                                                   )),
-                                                  Expanded(
-                                                      child: Column(
-                                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                                    mainAxisAlignment: MainAxisAlignment.spaceAround,
-                                                    children: [
-                                                      Row(
-                                                        mainAxisAlignment: MainAxisAlignment.start,
-                                                        children: [
-                                                          Padding(
-                                                            padding: const EdgeInsets.all(8.0),
-                                                            child: Icon(Icons.microwave_rounded),
-                                                          ),
-                                                          'Kitchen'.poppins(fontSize: 12)
-                                                        ],
-                                                      ),
-                                                      Row(
-                                                        mainAxisAlignment: MainAxisAlignment.start,
-                                                        children: [
-                                                          Padding(
-                                                            padding: const EdgeInsets.all(8.0),
-                                                            child: Icon(Icons.wifi),
-                                                          ),
-                                                          'Wifi'.poppins(fontSize: 12)
-                                                        ],
-                                                      ),
-                                                      Row(
-                                                        mainAxisAlignment: MainAxisAlignment.start,
-                                                        children: [
-                                                          Padding(
-                                                            padding: const EdgeInsets.all(8.0),
-                                                            child: Icon(Icons.pets),
-                                                          ),
-                                                          'Pets allowed'.poppins(fontSize: 12)
-                                                        ],
-                                                      ),
-                                                      Row(
-                                                        mainAxisAlignment: MainAxisAlignment.start,
-                                                        children: [
-                                                          Padding(
-                                                            padding: const EdgeInsets.all(8.0),
-                                                            child: Icon(Icons.local_fire_department),
-                                                          ),
-                                                          'Dryer'.poppins(fontSize: 12)
-                                                        ],
-                                                      ),
-                                                      Row(
-                                                        mainAxisAlignment: MainAxisAlignment.start,
-                                                        children: [
-                                                          Padding(
-                                                            padding: const EdgeInsets.all(8.0),
-                                                            child: Icon(Icons.pedal_bike),
-                                                          ),
-                                                          'Bicycles'.poppins(fontSize: 12)
-                                                        ],
-                                                      ),
-                                                    ],
-                                                  ))
+                                                  // Expanded(
+                                                  //     child: Column(
+                                                  //   crossAxisAlignment: CrossAxisAlignment.start,
+                                                  //   mainAxisAlignment: MainAxisAlignment.spaceAround,
+                                                  //   children: [
+                                                  //     Row(
+                                                  //       mainAxisAlignment: MainAxisAlignment.start,
+                                                  //       children: [
+                                                  //         Padding(
+                                                  //           padding: const EdgeInsets.all(8.0),
+                                                  //           child: Icon(Icons.microwave_rounded),
+                                                  //         ),
+                                                  //         'Kitchen'.poppins(fontSize: 12)
+                                                  //       ],
+                                                  //     ),
+                                                  //     Row(
+                                                  //       mainAxisAlignment: MainAxisAlignment.start,
+                                                  //       children: [
+                                                  //         Padding(
+                                                  //           padding: const EdgeInsets.all(8.0),
+                                                  //           child: Icon(Icons.wifi),
+                                                  //         ),
+                                                  //         'Wifi'.poppins(fontSize: 12)
+                                                  //       ],
+                                                  //     ),
+                                                  //     Row(
+                                                  //       mainAxisAlignment: MainAxisAlignment.start,
+                                                  //       children: [
+                                                  //         Padding(
+                                                  //           padding: const EdgeInsets.all(8.0),
+                                                  //           child: Icon(Icons.pets),
+                                                  //         ),
+                                                  //         'Pets allowed'.poppins(fontSize: 12)
+                                                  //       ],
+                                                  //     ),
+                                                  //     Row(
+                                                  //       mainAxisAlignment: MainAxisAlignment.start,
+                                                  //       children: [
+                                                  //         Padding(
+                                                  //           padding: const EdgeInsets.all(8.0),
+                                                  //           child: Icon(Icons.local_fire_department),
+                                                  //         ),
+                                                  //         'Dryer'.poppins(fontSize: 12)
+                                                  //       ],
+                                                  //     ),
+                                                  //     Row(
+                                                  //       mainAxisAlignment: MainAxisAlignment.start,
+                                                  //       children: [
+                                                  //         Padding(
+                                                  //           padding: const EdgeInsets.all(8.0),
+                                                  //           child: Icon(Icons.pedal_bike),
+                                                  //         ),
+                                                  //         'Bicycles'.poppins(fontSize: 12)
+                                                  //       ],
+                                                  //     ),
+                                                  //   ],
+                                                  // ))
                                                 ],
                                               ),
-                                              InkWell(
-                                                mouseCursor: SystemMouseCursors.click,
-                                                child: Container(
-                                                  margin: EdgeInsets.symmetric(vertical: 16.0),
-                                                  padding: EdgeInsets.all(10.0),
-                                                  decoration: BoxDecoration(
-                                                      border: Border.all(width: 1, color: black),
-                                                      borderRadius: BorderRadius.circular(8)),
-                                                  child: 'Show all 37 amenities'
-                                                      .poppins(fontSize: 12, fontWeight: FontWeight.w500),
-                                                ),
-                                              ),
+                                              // InkWell(
+                                              //   mouseCursor: SystemMouseCursors.click,
+                                              //   child: Container(
+                                              //     margin: EdgeInsets.symmetric(vertical: 16.0),
+                                              //     padding: EdgeInsets.all(10.0),
+                                              //     decoration: BoxDecoration(
+                                              //         border: Border.all(width: 1, color: black),
+                                              //         borderRadius: BorderRadius.circular(8)),
+                                              //     child: 'Show all 37 amenities'
+                                              //         .poppins(fontSize: 12, fontWeight: FontWeight.w500),
+                                              //   ),
+                                              // ),
                                               Container(
                                                 margin: EdgeInsets.symmetric(vertical: 20),
                                                 height: 1,
@@ -1377,206 +1502,246 @@ class _RentDetailsState extends ConsumerState<RentDetails> {
                                       mainAxisAlignment: MainAxisAlignment.spaceAround,
                                       crossAxisAlignment: CrossAxisAlignment.start,
                                       children: [
-                                        Expanded(
-                                            flex: 1,
-                                            child: Column(
-                                              mainAxisAlignment: MainAxisAlignment.start,
-                                              crossAxisAlignment: CrossAxisAlignment.start,
-                                              children: [
-                                                'House rules'.poppins(
-                                                    fontSize: 14,
-                                                    fontWeight: FontWeight.w600,
-                                                    textAlign: TextAlign.start),
-                                                Padding(
-                                                  padding: const EdgeInsets.all(8.0),
-                                                  child: Column(
-                                                    children: [
-                                                      Row(
-                                                        mainAxisAlignment: MainAxisAlignment.start,
-                                                        children: [
-                                                          Padding(
-                                                            padding: const EdgeInsets.all(8.0),
-                                                            child: Icon(Icons.access_time),
-                                                          ),
-                                                          'Check-in: After 4:00 PM'.poppins(fontSize: 12)
-                                                        ],
-                                                      ),
-                                                      Row(
-                                                        mainAxisAlignment: MainAxisAlignment.start,
-                                                        children: [
-                                                          Padding(
-                                                            padding: const EdgeInsets.all(8.0),
-                                                            child: Icon(Icons.access_time),
-                                                          ),
-                                                          'Checkout:  10:00 AM'.poppins(fontSize: 12)
-                                                        ],
-                                                      ),
-                                                      Row(
-                                                        mainAxisAlignment: MainAxisAlignment.start,
-                                                        children: [
-                                                          Padding(
-                                                            padding: const EdgeInsets.all(8.0),
-                                                            child: Icon(Icons.door_back_door_outlined),
-                                                          ),
-                                                          'Self check-in with lockbox'.poppins(fontSize: 12)
-                                                        ],
-                                                      ),
-                                                      Row(
-                                                        mainAxisAlignment: MainAxisAlignment.start,
-                                                        children: [
-                                                          Padding(
-                                                            padding: const EdgeInsets.all(8.0),
-                                                            child: Icon(Icons.shopping_cart_outlined),
-                                                          ),
-                                                          'Not suitable for infants (under 2 years)'
-                                                              .poppins(fontSize: 12)
-                                                        ],
-                                                      ),
-                                                      Row(
-                                                        mainAxisAlignment: MainAxisAlignment.start,
-                                                        children: [
-                                                          Padding(
-                                                            padding: const EdgeInsets.all(8.0),
-                                                            child: Icon(Icons.smoke_free),
-                                                          ),
-                                                          'No smoking'.poppins(fontSize: 12)
-                                                        ],
-                                                      ),
-                                                      Row(
-                                                        mainAxisAlignment: MainAxisAlignment.start,
-                                                        children: [
-                                                          Padding(
-                                                            padding: const EdgeInsets.all(8.0),
-                                                            child: Icon(Icons.celebration_outlined),
-                                                          ),
-                                                          'No parties or events'.poppins(fontSize: 12)
-                                                        ],
-                                                      ),
-                                                    ],
-                                                  ),
-                                                ),
-                                              ],
-                                            )),
-                                        Expanded(
-                                            child: Column(
-                                          mainAxisAlignment: MainAxisAlignment.start,
-                                          crossAxisAlignment: CrossAxisAlignment.start,
-                                          children: [
-                                            'Health & safety'.poppins(
-                                                fontSize: 14, fontWeight: FontWeight.w600, textAlign: TextAlign.start),
-                                            Padding(
-                                              padding: const EdgeInsets.all(8.0),
+                                        for (int index = 0; index < ThingsknowType_models.length; index++)
+                                          // if (Thingsknow_models[0].things_ser == ThingsknowType_models[index].ser)
+                                          Expanded(
+                                              // flex: 1,
                                               child: Column(
-                                                children: [
-                                                  Row(
-                                                    mainAxisAlignment: MainAxisAlignment.start,
-                                                    children: [
-                                                      Padding(
-                                                        padding: const EdgeInsets.all(8.0),
-                                                        child: Icon(Icons.auto_awesome_outlined),
-                                                      ),
-                                                      Text(
-                                                        "Committed to Airbnb's enhanced cleaning\n process.",
-                                                        style: GoogleFonts.poppins(
-                                                          fontSize: 12,
+                                            mainAxisAlignment: MainAxisAlignment.start,
+                                            crossAxisAlignment: CrossAxisAlignment.start,
+                                            children: [
+                                              '${ThingsknowType_models[index].name}'.poppins(
+                                                  fontSize: 14,
+                                                  fontWeight: FontWeight.w600,
+                                                  textAlign: TextAlign.start),
+                                              Padding(
+                                                padding: const EdgeInsets.all(8.0),
+                                                child: Column(
+                                                  children: [
+                                                    for (int index1 = 0; index1 < Thingsknow_models.length; index1++)
+                                                      if (Thingsknow_models[index1].things_ser.toString().trim() ==
+                                                          ThingsknowType_models[index].ser.toString().trim())
+                                                        Row(
+                                                          mainAxisAlignment: MainAxisAlignment.start,
+                                                          children: [
+                                                            Padding(
+                                                              padding: const EdgeInsets.all(8.0),
+                                                              child: Icon(IconData(
+                                                                  int.parse('${Thingsknow_models[index1].icon}'),
+                                                                  fontFamily: 'MaterialIcons')),
+                                                            ),
+                                                            Expanded(
+                                                              child: '${Thingsknow_models[index1].name}'
+                                                                  .poppins(fontSize: 12),
+                                                            )
+                                                          ],
                                                         ),
-                                                        textAlign: TextAlign.justify,
-                                                      ),
-                                                    ],
-                                                  ),
-                                                  Row(
-                                                    mainAxisAlignment: MainAxisAlignment.start,
-                                                    children: [
-                                                      Padding(
-                                                        padding: const EdgeInsets.all(8.0),
-                                                        child: Icon(Icons.clean_hands_outlined),
-                                                      ),
-                                                      Text(
-                                                        "Airbnb's social-distancing and other\n COVID-19-related guidelines apply",
-                                                        style: GoogleFonts.poppins(
-                                                          fontSize: 12,
-                                                        ),
-                                                        textAlign: TextAlign.justify,
-                                                      )
-                                                    ],
-                                                  ),
-                                                  Row(
-                                                    mainAxisAlignment: MainAxisAlignment.start,
-                                                    children: [
-                                                      Padding(
-                                                        padding: const EdgeInsets.all(8.0),
-                                                        child: Icon(Icons.radio_button_on),
-                                                      ),
-                                                      'Smoke alarm'.poppins(fontSize: 12)
-                                                    ],
-                                                  ),
-                                                  Row(
-                                                    mainAxisAlignment: MainAxisAlignment.start,
-                                                    children: [
-                                                      Padding(
-                                                        padding: const EdgeInsets.all(8.0),
-                                                        child: Icon(Icons.credit_card),
-                                                      ),
-                                                      Text(
-                                                        "Security Deposit - if you damage the\n home, you may be charged up to \$566",
-                                                        style: GoogleFonts.poppins(
-                                                          fontSize: 12,
-                                                        ),
-                                                        textAlign: TextAlign.justify,
-                                                      )
-                                                    ],
-                                                  ),
-                                                  Row(
-                                                    mainAxisAlignment: MainAxisAlignment.start,
-                                                    children: [
-                                                      Padding(
-                                                        padding: const EdgeInsets.all(8.0),
-                                                        child: Icon(Icons.smoke_free),
-                                                      ),
-                                                      'No smoking'.poppins(fontSize: 12)
-                                                    ],
-                                                  ),
-                                                ],
-                                              ),
-                                            ),
-                                          ],
-                                        )),
-                                        Expanded(
-                                            flex: 1,
-                                            child: Column(
-                                              crossAxisAlignment: CrossAxisAlignment.start,
-                                              children: [
-                                                'Cancellation policy'.poppins(
-                                                    fontSize: 14,
-                                                    fontWeight: FontWeight.w600,
-                                                    textAlign: TextAlign.start),
-                                                Padding(
-                                                  padding: const EdgeInsets.all(8.0),
-                                                  child: Column(
-                                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                                    mainAxisAlignment: MainAxisAlignment.start,
-                                                    children: [
-                                                      "Free cancellation before Feb 14"
-                                                          .poppins(fontSize: 12, color: Color.fromRGBO(75, 85, 99, 1)),
-                                                      Row(
-                                                        children: [
-                                                          'Show more'.poppins(decoration: TextDecoration.underline),
-                                                          Icon(Icons.keyboard_arrow_right)
-                                                        ],
-                                                      ),
-                                                    ],
-                                                  ),
+                                                  ],
                                                 ),
-                                              ],
-                                            ))
+                                              ),
+                                            ],
+                                          )),
+                                        // Expanded(
+                                        //     flex: 1,
+                                        //     child: Column(
+                                        //       mainAxisAlignment: MainAxisAlignment.start,
+                                        //       crossAxisAlignment: CrossAxisAlignment.start,
+                                        //       children: [
+
+                                        //         'House rules'.poppins(
+                                        //             fontSize: 14,
+                                        //             fontWeight: FontWeight.w600,
+                                        //             textAlign: TextAlign.start),
+                                        //         Padding(
+                                        //           padding: const EdgeInsets.all(8.0),
+                                        //           child: Column(
+                                        //             children: [
+                                        //               Row(
+                                        //                 mainAxisAlignment: MainAxisAlignment.start,
+                                        //                 children: [
+                                        //                   Padding(
+                                        //                     padding: const EdgeInsets.all(8.0),
+                                        //                     child: Icon(Icons.access_time),
+                                        //                   ),
+                                        //                   'Check-in: After 4:00 PM'.poppins(fontSize: 12)
+                                        //                 ],
+                                        //               ),
+                                        //               Row(
+                                        //                 mainAxisAlignment: MainAxisAlignment.start,
+                                        //                 children: [
+                                        //                   Padding(
+                                        //                     padding: const EdgeInsets.all(8.0),
+                                        //                     child: Icon(Icons.access_time),
+                                        //                   ),
+                                        //                   'Checkout:  10:00 AM'.poppins(fontSize: 12)
+                                        //                 ],
+                                        //               ),
+                                        //               Row(
+                                        //                 mainAxisAlignment: MainAxisAlignment.start,
+                                        //                 children: [
+                                        //                   Padding(
+                                        //                     padding: const EdgeInsets.all(8.0),
+                                        //                     child: Icon(Icons.door_back_door_outlined),
+                                        //                   ),
+                                        //                   'Self check-in with lockbox'.poppins(fontSize: 12)
+                                        //                 ],
+                                        //               ),
+                                        //               Row(
+                                        //                 mainAxisAlignment: MainAxisAlignment.start,
+                                        //                 children: [
+                                        //                   Padding(
+                                        //                     padding: const EdgeInsets.all(8.0),
+                                        //                     child: Icon(Icons.shopping_cart_outlined),
+                                        //                   ),
+                                        //                   'Not suitable for infants (under 2 years)'
+                                        //                       .poppins(fontSize: 12)
+                                        //                 ],
+                                        //               ),
+                                        //               Row(
+                                        //                 mainAxisAlignment: MainAxisAlignment.start,
+                                        //                 children: [
+                                        //                   Padding(
+                                        //                     padding: const EdgeInsets.all(8.0),
+                                        //                     child: Icon(Icons.smoke_free),
+                                        //                   ),
+                                        //                   'No smoking'.poppins(fontSize: 12)
+                                        //                 ],
+                                        //               ),
+                                        //               Row(
+                                        //                 mainAxisAlignment: MainAxisAlignment.start,
+                                        //                 children: [
+                                        //                   Padding(
+                                        //                     padding: const EdgeInsets.all(8.0),
+                                        //                     child: Icon(Icons.celebration_outlined),
+                                        //                   ),
+                                        //                   'No parties or events'.poppins(fontSize: 12)
+                                        //                 ],
+                                        //               ),
+                                        //             ],
+                                        //           ),
+                                        //         ),
+                                        //       ],
+                                        //     )),
+                                        // Expanded(
+                                        //     child: Column(
+                                        //   mainAxisAlignment: MainAxisAlignment.start,
+                                        //   crossAxisAlignment: CrossAxisAlignment.start,
+                                        //   children: [
+                                        //     'Health & safety'.poppins(
+                                        //         fontSize: 14, fontWeight: FontWeight.w600, textAlign: TextAlign.start),
+                                        //     Padding(
+                                        //       padding: const EdgeInsets.all(8.0),
+                                        //       child: Column(
+                                        //         children: [
+                                        //           Row(
+                                        //             mainAxisAlignment: MainAxisAlignment.start,
+                                        //             children: [
+                                        //               Padding(
+                                        //                 padding: const EdgeInsets.all(8.0),
+                                        //                 child: Icon(Icons.auto_awesome_outlined),
+                                        //               ),
+                                        //               Text(
+                                        //                 "Committed to Airbnb's enhanced cleaning\n process.",
+                                        //                 style: GoogleFonts.poppins(
+                                        //                   fontSize: 12,
+                                        //                 ),
+                                        //                 textAlign: TextAlign.justify,
+                                        //               ),
+                                        //             ],
+                                        //           ),
+                                        //           Row(
+                                        //             mainAxisAlignment: MainAxisAlignment.start,
+                                        //             children: [
+                                        //               Padding(
+                                        //                 padding: const EdgeInsets.all(8.0),
+                                        //                 child: Icon(Icons.clean_hands_outlined),
+                                        //               ),
+                                        //               Text(
+                                        //                 "Airbnb's social-distancing and other\n COVID-19-related guidelines apply",
+                                        //                 style: GoogleFonts.poppins(
+                                        //                   fontSize: 12,
+                                        //                 ),
+                                        //                 textAlign: TextAlign.justify,
+                                        //               )
+                                        //             ],
+                                        //           ),
+                                        //           Row(
+                                        //             mainAxisAlignment: MainAxisAlignment.start,
+                                        //             children: [
+                                        //               Padding(
+                                        //                 padding: const EdgeInsets.all(8.0),
+                                        //                 child: Icon(Icons.radio_button_on),
+                                        //               ),
+                                        //               'Smoke alarm'.poppins(fontSize: 12)
+                                        //             ],
+                                        //           ),
+                                        //           Row(
+                                        //             mainAxisAlignment: MainAxisAlignment.start,
+                                        //             children: [
+                                        //               Padding(
+                                        //                 padding: const EdgeInsets.all(8.0),
+                                        //                 child: Icon(Icons.credit_card),
+                                        //               ),
+                                        //               Text(
+                                        //                 "Security Deposit - if you damage the\n home, you may be charged up to \$566",
+                                        //                 style: GoogleFonts.poppins(
+                                        //                   fontSize: 12,
+                                        //                 ),
+                                        //                 textAlign: TextAlign.justify,
+                                        //               )
+                                        //             ],
+                                        //           ),
+                                        //           Row(
+                                        //             mainAxisAlignment: MainAxisAlignment.start,
+                                        //             children: [
+                                        //               Padding(
+                                        //                 padding: const EdgeInsets.all(8.0),
+                                        //                 child: Icon(Icons.smoke_free),
+                                        //               ),
+                                        //               'No smoking'.poppins(fontSize: 12)
+                                        //             ],
+                                        //           ),
+                                        //         ],
+                                        //       ),
+                                        //     ),
+                                        //   ],
+                                        // )),
+                                        // Expanded(
+                                        //     flex: 1,
+                                        //     child: Column(
+                                        //       crossAxisAlignment: CrossAxisAlignment.start,
+                                        //       children: [
+                                        //         'Cancellation policy'.poppins(
+                                        //             fontSize: 14,
+                                        //             fontWeight: FontWeight.w600,
+                                        //             textAlign: TextAlign.start),
+                                        //         Padding(
+                                        //           padding: const EdgeInsets.all(8.0),
+                                        //           child: Column(
+                                        //             crossAxisAlignment: CrossAxisAlignment.start,
+                                        //             mainAxisAlignment: MainAxisAlignment.start,
+                                        //             children: [
+                                        //               "Free cancellation before Feb 14"
+                                        //                   .poppins(fontSize: 12, color: Color.fromRGBO(75, 85, 99, 1)),
+                                        //               Row(
+                                        //                 children: [
+                                        //                   'Show more'.poppins(decoration: TextDecoration.underline),
+                                        //                   Icon(Icons.keyboard_arrow_right)
+                                        //                 ],
+                                        //               ),
+                                        //             ],
+                                        //           ),
+                                        //         ),
+                                        //       ],
+                                        //     ))
                                       ],
                                     ),
-                                    Row(
-                                      children: [
-                                        'Show more'.poppins(decoration: TextDecoration.underline),
-                                        Icon(Icons.keyboard_arrow_right)
-                                      ],
-                                    ),
+                                    // Row(
+                                    //   children: [
+                                    //     'Show more'.poppins(decoration: TextDecoration.underline),
+                                    //     Icon(Icons.keyboard_arrow_right)
+                                    //   ],
+                                    // ),
                                   ],
                                 ),
                               ),
@@ -1598,125 +1763,125 @@ class _RentDetailsState extends ConsumerState<RentDetails> {
     );
   } ////---------------------------------------->
 
-  Widget TypeThings() {
-    List<String> imageUrls = type_Things.map((data) => data['imageUrl'].toString()).toList();
-    final pad = normalize(min: 576, max: 1440, data: Metrics.width(context));
-    return Column(
-      children: [
-        const SizedBox(height: 80),
-        SizedBox(
-          height: 400 + 100 * pad,
-          child: PageView.builder(
-            controller: _controller,
-            onPageChanged: (val) => setState(() => currentPage = val),
-            itemCount: type_Things.length,
-            // physics: const NeverScrollableScrollPhysics(),
-            itemBuilder: (context, index) {
-              return Padding(
-                padding: EdgeInsets.only(left: 36 * pad, right: 36 * pad),
-                child: AnimatedScale(
-                    duration: const Duration(milliseconds: 240),
-                    scale: currentPage == index ? 1 : 0.75,
-                    child: Column(
-                      children: [
-                        Padding(
-                          padding: EdgeInsets.only(left: 36 * pad, right: 36 * pad, bottom: 8),
-                          child: Align(
-                            alignment: Alignment.centerLeft,
-                            child: '${type_Things[index]['type']}'.poppins(
-                              color: black,
-                              fontSize: 25 + 4 * pad,
-                            ),
-                          ),
-                        ),
-                        Expanded(
-                          child: Container(
-                            decoration: BoxDecoration(
-                              borderRadius: const BorderRadius.only(
-                                topLeft: Radius.circular(8),
-                                topRight: Radius.circular(8),
-                                bottomLeft: Radius.circular(8),
-                                bottomRight: Radius.circular(8),
-                              ),
-                              color: white,
-                              // border: Border.all(
-                              //     color: Color.fromARGB(255, 216, 213, 213),
-                              //     width: 1),
-                              // boxShadow: [
-                              //   BoxShadow(
-                              //     color:
-                              //         const Color.fromARGB(255, 180, 175, 175)
-                              //             .withOpacity(0.5),
-                              //     spreadRadius: 3,
-                              //     blurRadius: 4,
-                              //     offset: Offset(
-                              //         0, 4), // changes position of shadow
-                              //   ),
-                              // ],
-                            ),
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              children: [
-                                for (int index3 = 0; index3 < data_Things.length; index3++)
-                                  if (data_Things[index3]['type_id'] == type_Things[index]['type_id'])
-                                    Padding(
-                                      padding: const EdgeInsets.all(8.0),
-                                      child: Row(
-                                        children: [
-                                          Padding(
-                                            padding: const EdgeInsets.fromLTRB(0, 0, 20, 0),
-                                            child: Center(
-                                              child: Icon(IconData(int.parse('${data_Things[index3]['icons']}'),
-                                                  fontFamily: 'MaterialIcons')),
-                                            ),
-                                          ),
-                                          Expanded(
-                                            child: Align(
-                                              alignment: Alignment.centerLeft,
-                                              child: '${data_Things[index3]['name']}'.poppins(
-                                                color: black,
-                                                fontSize: 14 + 4 * pad,
-                                              ),
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                              ],
-                            ),
-                          ),
-                        ),
-                      ],
-                    )),
-              );
-            },
-          ),
-        ),
-        const SizedBox(height: 34),
-        ImageSliderController(
-          currentPage: currentPage,
-          images: imageUrls,
-          title: title,
-          prev: currentPage != 0
-              ? () {
-                  _controller.animateToPage(
-                    currentPage - 1,
-                    duration: const Duration(milliseconds: 240),
-                    curve: Curves.linear,
-                  );
-                }
-              : null,
-          next: (currentPage != type_Things.length - 1)
-              ? () {
-                  _controller.animateToPage(
-                    currentPage + 1,
-                    duration: const Duration(milliseconds: 240),
-                    curve: Curves.linear,
-                  );
-                }
-              : null,
-        ),
-      ],
-    );
-  }
+  // Widget TypeThings() {
+  //   List<String> imageUrls = type_Things.map((data) => data['imageUrl'].toString()).toList();
+  //   final pad = normalize(min: 576, max: 1440, data: Metrics.width(context));
+  //   return Column(
+  //     children: [
+  //       const SizedBox(height: 80),
+  //       SizedBox(
+  //         height: 400 + 100 * pad,
+  //         child: PageView.builder(
+  //           controller: _controller,
+  //           onPageChanged: (val) => setState(() => currentPage = val),
+  //           itemCount: type_Things.length,
+  //           // physics: const NeverScrollableScrollPhysics(),
+  //           itemBuilder: (context, index) {
+  //             return Padding(
+  //               padding: EdgeInsets.only(left: 36 * pad, right: 36 * pad),
+  //               child: AnimatedScale(
+  //                   duration: const Duration(milliseconds: 240),
+  //                   scale: currentPage == index ? 1 : 0.75,
+  //                   child: Column(
+  //                     children: [
+  //                       Padding(
+  //                         padding: EdgeInsets.only(left: 36 * pad, right: 36 * pad, bottom: 8),
+  //                         child: Align(
+  //                           alignment: Alignment.centerLeft,
+  //                           child: '${type_Things[index]['type']}'.poppins(
+  //                             color: black,
+  //                             fontSize: 25 + 4 * pad,
+  //                           ),
+  //                         ),
+  //                       ),
+  //                       Expanded(
+  //                         child: Container(
+  //                           decoration: BoxDecoration(
+  //                             borderRadius: const BorderRadius.only(
+  //                               topLeft: Radius.circular(8),
+  //                               topRight: Radius.circular(8),
+  //                               bottomLeft: Radius.circular(8),
+  //                               bottomRight: Radius.circular(8),
+  //                             ),
+  //                             color: white,
+  //                             // border: Border.all(
+  //                             //     color: Color.fromARGB(255, 216, 213, 213),
+  //                             //     width: 1),
+  //                             // boxShadow: [
+  //                             //   BoxShadow(
+  //                             //     color:
+  //                             //         const Color.fromARGB(255, 180, 175, 175)
+  //                             //             .withOpacity(0.5),
+  //                             //     spreadRadius: 3,
+  //                             //     blurRadius: 4,
+  //                             //     offset: Offset(
+  //                             //         0, 4), // changes position of shadow
+  //                             //   ),
+  //                             // ],
+  //                           ),
+  //                           child: Column(
+  //                             mainAxisAlignment: MainAxisAlignment.start,
+  //                             children: [
+  //                               for (int index3 = 0; index3 < data_Things.length; index3++)
+  //                                 if (data_Things[index3]['type_id'] == type_Things[index]['type_id'])
+  //                                   Padding(
+  //                                     padding: const EdgeInsets.all(8.0),
+  //                                     child: Row(
+  //                                       children: [
+  //                                         Padding(
+  //                                           padding: const EdgeInsets.fromLTRB(0, 0, 20, 0),
+  //                                           child: Center(
+  //                                             child: Icon(IconData(int.parse('${data_Things[index3]['icons']}'),
+  //                                                 fontFamily: 'MaterialIcons')),
+  //                                           ),
+  //                                         ),
+  //                                         Expanded(
+  //                                           child: Align(
+  //                                             alignment: Alignment.centerLeft,
+  //                                             child: '${data_Things[index3]['name']}'.poppins(
+  //                                               color: black,
+  //                                               fontSize: 14 + 4 * pad,
+  //                                             ),
+  //                                           ),
+  //                                         ),
+  //                                       ],
+  //                                     ),
+  //                                   ),
+  //                             ],
+  //                           ),
+  //                         ),
+  //                       ),
+  //                     ],
+  //                   )),
+  //             );
+  //           },
+  //         ),
+  //       ),
+  //       const SizedBox(height: 34),
+  //       ImageSliderController(
+  //         currentPage: currentPage,
+  //         images: imageUrls,
+  //         title: title,
+  //         prev: currentPage != 0
+  //             ? () {
+  //                 _controller.animateToPage(
+  //                   currentPage - 1,
+  //                   duration: const Duration(milliseconds: 240),
+  //                   curve: Curves.linear,
+  //                 );
+  //               }
+  //             : null,
+  //         next: (currentPage != type_Things.length - 1)
+  //             ? () {
+  //                 _controller.animateToPage(
+  //                   currentPage + 1,
+  //                   duration: const Duration(milliseconds: 240),
+  //                   curve: Curves.linear,
+  //                 );
+  //               }
+  //             : null,
+  //       ),
+  //     ],
+  //   );
+  // }
 }

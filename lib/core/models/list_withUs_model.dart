@@ -1,4 +1,4 @@
-class BlogModel {
+class ListWithUsModel {
   String? ser;
   String? datex;
   String? timex;
@@ -14,7 +14,7 @@ class BlogModel {
   String? view;
   String? data_update;
 
-  BlogModel(
+  ListWithUsModel(
       {this.ser,
       this.datex,
       this.timex,
@@ -30,7 +30,7 @@ class BlogModel {
       this.view,
       this.data_update});
 
-  BlogModel.fromJson(Map<String, dynamic> json) {
+  ListWithUsModel.fromJson(Map<String, dynamic> json) {
     ser = json['ser'];
     datex = json['datex'];
     timex = json['timex'];
