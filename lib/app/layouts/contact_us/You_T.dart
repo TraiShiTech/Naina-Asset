@@ -16,12 +16,11 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen> {
   void initState() {
     readDataaa2();
     super.initState();
-    _controller = VideoPlayerController.networkUrl(Uri.parse('https://www.youtube.com/embed/LRGmsXvMaHU?si=z8L9TKYsHMkCmJe1'))
+    _controller = VideoPlayerController.networkUrl(
+        Uri.parse('https://flutter.github.io/assets-for-api-docs/assets/videos/bee.mp4'))
       ..initialize().then((_) {
         // Ensure the first frame is shown after the video is initialized, even before the play button has been pressed.
         setState(() {});
-        // _controller.setLooping(true); // Set the video to loop
-        // _controller.play(); // Start playing the video
       });
   }
 
@@ -52,8 +51,8 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen> {
     //     onWebViewCreated: (controller) => webviewController = controller,
     //   ),
     // );
-    _controller.setLooping(true); // Set the video to loop
-    _controller.play(); // Start playing the video
+    _controller.play();
+    _controller.setLooping(true);
     return Center(
       child: _controller.value.isInitialized
           ? AspectRatio(
