@@ -10,11 +10,19 @@ import '../../widgets/base_container.dart';
 import '../../widgets/icon_btn.dart';
 import '../../with_us.dart';
 
-class Appbar extends StatelessWidget {
-  const Appbar({
-    Key? key,
-  }) : super(key: key);
+class Appbar extends StatefulWidget {
+  const Appbar({super.key});
 
+  @override
+  State<Appbar> createState() => _AppbarState();
+}
+
+class _AppbarState extends State<Appbar> {
+// class Appbar extends StatefulWidget {
+//   const Appbar({
+//     Key? key,
+//   }) : super(key: key);
+  bool dropbar = false;
   @override
   Widget build(BuildContext context) {
     final bool isBigScreen = Metrics.isDesktop(context) || Metrics.isTablet(context);
@@ -285,7 +293,12 @@ class Appbar extends StatelessWidget {
                     //   onTap: () {},
                     // ),
                     InkWell(
-                      onTap: () {},
+                      onTap: () {
+                        setState(() {
+                          dropbar = dropbar == true ? false : true;
+                          print(dropbar);
+                        });
+                      },
                       child: Padding(
                         padding: isBigScreen == Metrics.isTablet(context) ? EdgeInsets.all(4.0) : EdgeInsets.all(8.0),
                         child: Column(
@@ -319,6 +332,81 @@ class Appbar extends StatelessWidget {
             ),
           ),
         ),
+        if (!Metrics.isDesktop(context) && dropbar == true)
+          Column(
+            children: [
+              InkWell(
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => RentAll(),
+                    ),
+                  );
+                },
+                child: Padding(
+                  padding: const EdgeInsets.all(6.0),
+                  child: 'Rent'.poppins(color: white),
+                ),
+              ),
+              InkWell(
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => AssetAll(),
+                    ),
+                  );
+                },
+                child: Padding(
+                  padding: const EdgeInsets.all(6.0),
+                  child: 'Property Management Services'.poppins(color: white),
+                ),
+              ),
+              InkWell(
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => WistUs(),
+                    ),
+                  );
+                },
+                child: Padding(
+                  padding: const EdgeInsets.all(6.0),
+                  child: 'List with Us'.poppins(color: white),
+                ),
+              ),
+              InkWell(
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => AboutUs_All(),
+                    ),
+                  );
+                },
+                child: Padding(
+                  padding: const EdgeInsets.all(6.0),
+                  child: 'About Us'.poppins(color: white),
+                ),
+              ),
+              InkWell(
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => BlogAll(),
+                    ),
+                  );
+                },
+                child: Padding(
+                  padding: const EdgeInsets.all(6.0),
+                  child: 'Blogs'.poppins(color: white),
+                ),
+              ),
+            ],
+          ),
         Container(
           width: Metrics.width(context),
           height: 1,

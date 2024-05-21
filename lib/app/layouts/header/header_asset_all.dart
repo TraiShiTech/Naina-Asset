@@ -67,42 +67,47 @@ class Header_AssetAll extends StatelessWidget {
                                 child: Row(
                                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                   children: [
-                                    Row(
-                                      children: [
-                                        Container(
-                                          width: 60,
-                                          height: 60,
-                                          decoration: const BoxDecoration(
-                                            image: DecorationImage(
-                                              image: NetworkImage(
-                                                  "https://s3-alpha-sig.figma.com/img/5da3/4bc4/1fbe5a4bd62aa21042bda5592db20d39?Expires=1716163200&Key-Pair-Id=APKAQ4GOSFWCVNEHN3O4&Signature=geKrfG~kUGFIFaThNK326NB9Xq-JXVPXqv69fq2oQWE0VhdxWskf354YLvNhQIm3EYT7zvTsMgDa5YStFmeYsFLS814xjFEKXVgLwjOxHlkPe1IeLMZppAMlrqx4v8ncGKbxTLCORQl7Er60asGy1b70hV21bYVYNHOldpvm3n6A8Cgt6rEhdrz1L4jpxv8Ye9RdJCgpb7OVElv6G8lvvnof0oUPTld4j1raiV8EpyuLJp4EhUuEsT-Mg2LgfJLuAeuIhc7xh-8UhOX7vV7YhuPAnHNz6ufW5tB6hQQw9BEqXBEh205iMqvnxp9TAuSUVdUBsWbathZzvvL~QL7Bcw__"),
-                                              fit: BoxFit.cover,
-                                              filterQuality: FilterQuality.high,
-                                              isAntiAlias: true,
+                                    Expanded(
+                                      child: Row(
+                                        children: [
+                                          Container(
+                                            width: 60,
+                                            height: 60,
+                                            decoration: const BoxDecoration(
+                                              image: DecorationImage(
+                                                image: NetworkImage(
+                                                    "https://s3-alpha-sig.figma.com/img/5da3/4bc4/1fbe5a4bd62aa21042bda5592db20d39?Expires=1716163200&Key-Pair-Id=APKAQ4GOSFWCVNEHN3O4&Signature=geKrfG~kUGFIFaThNK326NB9Xq-JXVPXqv69fq2oQWE0VhdxWskf354YLvNhQIm3EYT7zvTsMgDa5YStFmeYsFLS814xjFEKXVgLwjOxHlkPe1IeLMZppAMlrqx4v8ncGKbxTLCORQl7Er60asGy1b70hV21bYVYNHOldpvm3n6A8Cgt6rEhdrz1L4jpxv8Ye9RdJCgpb7OVElv6G8lvvnof0oUPTld4j1raiV8EpyuLJp4EhUuEsT-Mg2LgfJLuAeuIhc7xh-8UhOX7vV7YhuPAnHNz6ufW5tB6hQQw9BEqXBEh205iMqvnxp9TAuSUVdUBsWbathZzvvL~QL7Bcw__"),
+                                                fit: BoxFit.cover,
+                                                filterQuality: FilterQuality.high,
+                                                isAntiAlias: true,
+                                              ),
                                             ),
                                           ),
-                                        ),
-                                        const SizedBox(width: 16),
-                                        Column(
-                                          crossAxisAlignment: CrossAxisAlignment.start,
-                                          mainAxisAlignment: MainAxisAlignment.center,
-                                          children: [
-                                            'Naina Asset'.poppins(
-                                              color: greenBg,
-                                              fontWeight: FontWeight.w600,
-                                              fontSize:  (Metrics.isDesktop(context) || Metrics.isTablet(context)) ? 24 : 14,
-                                              height: 1.5,
+                                          const SizedBox(width: 16),
+                                          Expanded(
+                                            child: Column(
+                                              crossAxisAlignment: CrossAxisAlignment.start,
+                                              mainAxisAlignment: MainAxisAlignment.center,
+                                              children: [
+                                                'Naina Asset'.poppins(
+                                                  color: greenBg,
+                                                  fontWeight: FontWeight.w600,
+                                                  fontSize:
+                                                      (Metrics.isDesktop(context) || Metrics.isTablet(context)) ? 24 : 14,
+                                                  height: 1.5,
+                                                ),
+                                                'ในนา แอสเสท - บริการดูแลพร็อพเพอร์ตี้มืออาชีพ '.poppins(
+                                                  color: greenBg,
+                                                  fontWeight: FontWeight.w600,
+                                                  fontSize:
+                                                      (Metrics.isDesktop(context) || Metrics.isTablet(context)) ? 14 : 10,
+                                                  height: 1.5,
+                                                ),
+                                              ],
                                             ),
-                                            'ในนา แอสเสท - บริการดูแลพร็อพเพอร์ตี้มืออาชีพ '.poppins(
-                                              color: greenBg,
-                                              fontWeight: FontWeight.w600,
-                                              fontSize:
-                                                  (Metrics.isDesktop(context) || Metrics.isTablet(context)) ? 14 : 10,
-                                              height: 1.5,
-                                            ),
-                                          ],
-                                        ),
-                                      ],
+                                          ),
+                                        ],
+                                      ),
                                     ),
                                     Row(
                                       children: [
@@ -587,7 +592,7 @@ class Asset_HeaderLeftSubtitle extends StatelessWidget {
           style: TextStyle(
               color: Color.fromRGBO(72, 60, 60, 1),
               fontWeight: FontWeight.bold,
-              fontSize: 50,
+              fontSize: Metrics.isMobile(context) ? 30 : 50,
               height: 1.5,
               letterSpacing: 1,
               shadows: [Shadow(blurRadius: 2, color: Colors.black38, offset: Offset(2, 2))]),

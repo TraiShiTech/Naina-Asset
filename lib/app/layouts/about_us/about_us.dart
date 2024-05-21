@@ -10,6 +10,7 @@ import 'package:properties/Constant/Myconstant.dart';
 import 'package:properties/core/core.dart';
 import 'package:properties/core/models/review_model.dart';
 import 'package:http/http.dart' as http;
+import 'package:properties/core/utils/utils.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/utils/methods.dart';
 import '../../../core/utils/metrics.dart';
@@ -343,6 +344,7 @@ class _AboutUsState extends State<AboutUs> {
                             Container(
                               height: 500,
                               width: double.infinity,
+                              alignment: Alignment.topCenter,
                               padding: EdgeInsets.only(left: 20.0 * pad, right: 20.0 * pad),
                               // padding: const EdgeInsets.all(8.0),
                               child: SingleChildScrollView(
@@ -350,19 +352,20 @@ class _AboutUsState extends State<AboutUs> {
                                 child: GridView.builder(
                                   // scrollDirection: Axis.vertical,
                                   gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                                      crossAxisCount: Metrics.isMobile(context)
-                                          ? 1
-                                          : Metrics.isCompact(context)
-                                              ? 1
-                                              : Metrics.isTablet(context)
-                                                  ? 2
-                                                  : 2,
-                                      // crossAxisCount: gride_review.toInt(),
-                                      // crossAxisCount: reviewmodels.length.toInt(),
-                                      childAspectRatio: 3 / 1,
-                                      crossAxisSpacing: 24,
-                                      mainAxisSpacing: 10,
-                                      mainAxisExtent: 200.0),
+                                    crossAxisCount: Metrics.isMobile(context)
+                                        ? 1
+                                        : Metrics.isCompact(context)
+                                            ? 1
+                                            : Metrics.isTablet(context)
+                                                ? 2
+                                                : 2,
+                                    // crossAxisCount: gride_review.toInt(),
+                                    // crossAxisCount: reviewmodels.length.toInt(),
+                                    childAspectRatio: 3 / 1,
+                                    crossAxisSpacing: 24,
+                                    mainAxisSpacing: 10,
+                                    // mainAxisExtent: 200.0
+                                  ),
                                   shrinkWrap: true,
                                   physics: const NeverScrollableScrollPhysics(),
                                   itemCount: reviewmodels.length,
@@ -375,16 +378,20 @@ class _AboutUsState extends State<AboutUs> {
                                       children: [
                                         Container(
                                           width: double.infinity,
-                                          height: 200,
-                                          margin: EdgeInsets.only(left: 50),
-                                          padding: EdgeInsets.only(left: 70, right: 16, top: 16, bottom: 16),
+                                          height: Metrics.isMobile(context) ? 100 : 200,
+                                          margin: EdgeInsets.only(left: Metrics.isMobile(context) ? 35 : 50),
+                                          padding: EdgeInsets.only(
+                                              left: Metrics.isMobile(context) ? 25 : 70,
+                                              right: 16,
+                                              top: 16,
+                                              bottom: 16),
                                           decoration: BoxDecoration(
                                             color: white,
-                                            borderRadius: const BorderRadius.only(
-                                              topLeft: Radius.circular(20),
-                                              topRight: Radius.circular(20),
-                                              bottomLeft: Radius.circular(20),
-                                              bottomRight: Radius.circular(20),
+                                            borderRadius: BorderRadius.only(
+                                              topLeft: Radius.circular(Metrics.isMobile(context) ? 10 : 20),
+                                              topRight: Radius.circular(Metrics.isMobile(context) ? 10 : 20),
+                                              bottomLeft: Radius.circular(Metrics.isMobile(context) ? 10 : 20),
+                                              bottomRight: Radius.circular(Metrics.isMobile(context) ? 10 : 20),
                                             ),
                                             boxShadow: [
                                               BoxShadow(
@@ -406,13 +413,14 @@ class _AboutUsState extends State<AboutUs> {
                                                         fontSize: 14 + 4 * pad,
                                                       ),
                                                       textAlign: TextAlign.start),
+                                                  // if (Metrics.isTablet(context) || Metrics.isDesktop(context))
                                                   RatingBar.builder(
                                                     initialRating: double.parse('${reviewmodels[index].poit_score}'),
                                                     minRating: 1,
                                                     direction: Axis.horizontal,
                                                     allowHalfRating: true,
                                                     itemCount: 5,
-                                                    itemSize: 16,
+                                                    itemSize: 14,
                                                     itemPadding: const EdgeInsets.symmetric(horizontal: 4.0),
                                                     unratedColor: Colors.grey.withOpacity(0.5),
                                                     wrapAlignment: WrapAlignment.start,
@@ -426,6 +434,7 @@ class _AboutUsState extends State<AboutUs> {
                                                   ),
                                                 ],
                                               ),
+
                                               Text('${reviewmodels[index].description}',
                                                   style: GoogleFonts.poppins(
                                                     color: Color.fromRGBO(72, 72, 72, 1),
@@ -448,8 +457,8 @@ class _AboutUsState extends State<AboutUs> {
                                         // ),
                                         Positioned(
                                             // top: 25,
-                                            width: 100,
-                                            height: 100,
+                                            width: Metrics.isMobile(context) ? 50 : 100,
+                                            height: Metrics.isMobile(context) ? 50 : 100,
                                             // left: -12.5,
                                             child: CircleAvatar(
                                               backgroundColor: Color.fromRGBO(177, 170, 151, 1),

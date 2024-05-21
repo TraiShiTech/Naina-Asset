@@ -1,14 +1,18 @@
 import 'dart:convert';
+import 'dart:developer';
+// import 'dart:ffi';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:intl/intl.dart';
 import 'package:properties/app/widgets/base_container.dart';
 import 'package:properties/app/with_us.dart';
 import 'package:properties/core/core.dart';
 import 'package:http/http.dart' as http;
+import 'package:syncfusion_flutter_datepicker/datepicker.dart';
 import '../../../Constant/Myconstant.dart';
 import '../../../core/models/assetDetails_model.dart';
 import '../../../core/models/asset_model.dart';
@@ -36,6 +40,9 @@ class _RentDetailsState extends ConsumerState<RentDetails> {
   int endIndex = 0;
   int index_imgPath = 0;
   int index_asset = 0;
+  var selectsdate;
+  var selectldate;
+  bool rangedate = false;
 
 ///////----------------------------------------------->
   late PageController _controller;
@@ -52,8 +59,10 @@ class _RentDetailsState extends ConsumerState<RentDetails> {
   List<ThingsknowType_model> ThingsknowType_models = [];
   List<Thingsknow_model> Thingsknow_models = [];
   List<Specialknow_model> specialknow_models = [];
+  List<DateTime> disabledDates = [];
 ///////----------------------------------------------->
   String? corver_Img;
+
 ///////----------------------------------------------->
   @override
   void initState() {
@@ -166,8 +175,9 @@ class _RentDetailsState extends ConsumerState<RentDetails> {
           corver_Img = assetmodelss.corver_img.toString().trim();
         });
       }
-      check_add_places(places);
-      read_GC_AssetImg_Details();
+
+      await read_GC_AssetImg_Details();
+      await check_add_places(places);
     } catch (e) {}
   }
 
@@ -175,34 +185,39 @@ class _RentDetailsState extends ConsumerState<RentDetails> {
     setState(() {
       place_list.clear();
     });
-    List<int> dataList = places.toString().split(',').map(int.parse).toList();
-    /////////------------------>
-    ///
-    for (int index_add = 0; index_add < dataList.length; index_add++) {
-      Map<String, dynamic> map = Map();
-      map['ser'] =
-          '${placestype_models.where((model) => model.ser == '${dataList[index_add]}').map((model) => model.ser).join(', ')}';
-      map['datex'] =
-          '${placestype_models.where((model) => model.ser == '${dataList[index_add]}').map((model) => model.datex).join(', ')}';
-      map['timex'] =
-          '${placestype_models.where((model) => model.ser == '${dataList[index_add]}').map((model) => model.timex).join(', ')}';
-      map['user'] =
-          '${placestype_models.where((model) => model.ser == '${dataList[index_add]}').map((model) => model.user).join(', ')}';
-      map['name'] =
-          '${placestype_models.where((model) => model.ser == '${dataList[index_add]}').map((model) => model.name).join(', ')}';
-      map['icon'] =
-          '${placestype_models.where((model) => model.ser == '${dataList[index_add]}').map((model) => model.icon).join(', ')}';
-      map['st'] =
-          '${placestype_models.where((model) => model.ser == '${dataList[index_add]}').map((model) => model.st).join(', ')}';
-      map['dataUpdate'] =
-          '${placestype_models.where((model) => model.ser == '${dataList[index_add]}').map((model) => model.dataUpdate).join(', ')}';
+    if (places != null || places.toString() != '') {
+      List<int> dataList = places.toString().split(',').map(int.parse).toList();
 
-      placestype_model placestypemodelss = placestype_model.fromJson(map);
+      if (dataList.length != 0) {
+        for (int index_add = 0; index_add < dataList.length; index_add++) {
+          Map<String, dynamic> map = Map();
+          map['ser'] =
+              '${placestype_models.where((model) => model.ser == '${dataList[index_add]}').map((model) => model.ser).join(', ')}';
+          map['datex'] =
+              '${placestype_models.where((model) => model.ser == '${dataList[index_add]}').map((model) => model.datex).join(', ')}';
+          map['timex'] =
+              '${placestype_models.where((model) => model.ser == '${dataList[index_add]}').map((model) => model.timex).join(', ')}';
+          map['user'] =
+              '${placestype_models.where((model) => model.ser == '${dataList[index_add]}').map((model) => model.user).join(', ')}';
+          map['name'] =
+              '${placestype_models.where((model) => model.ser == '${dataList[index_add]}').map((model) => model.name).join(', ')}';
+          map['icon'] =
+              '${placestype_models.where((model) => model.ser == '${dataList[index_add]}').map((model) => model.icon).join(', ')}';
+          map['st'] =
+              '${placestype_models.where((model) => model.ser == '${dataList[index_add]}').map((model) => model.st).join(', ')}';
+          map['dataUpdate'] =
+              '${placestype_models.where((model) => model.ser == '${dataList[index_add]}').map((model) => model.dataUpdate).join(', ')}';
 
-      setState(() {
-        place_list.add(placestypemodelss);
-      });
+          placestype_model placestypemodelss = placestype_model.fromJson(map);
+
+          setState(() {
+            place_list.add(placestypemodelss);
+          });
+        }
+      }
     }
+
+    /////////------------------>
   }
 
   ///////----------------------------------------------->(รูปอื่นๆ) about_us
@@ -310,6 +325,18 @@ class _RentDetailsState extends ConsumerState<RentDetails> {
       keepPage: false,
       viewportFraction: 0.25 + plus,
     );
+    final sdate;
+    final ldate;
+    if (selectsdate != null) {
+      sdate = DateFormat('d MMMM yyyy', 'en_US').format(DateTime.parse('$selectsdate'));
+    } else {
+      sdate = DateFormat('d MMMM yyyy', 'en_US').format(DateTime.parse('${assetmodels[0].s_datex}'));
+    }
+    if (selectldate != null) {
+      ldate = DateFormat('d MMMM yyyy', 'en_US').format(DateTime.parse('$selectldate'));
+    } else {
+      ldate = DateFormat('d MMMM yyyy', 'en_US').format(DateTime.parse('${assetmodels[0].l_datex}'));
+    }
     return Scaffold(
       backgroundColor: white,
       body: SizedBox(
@@ -345,6 +372,7 @@ class _RentDetailsState extends ConsumerState<RentDetails> {
                             color: Color.fromRGBO(69, 69, 69, 1),
                             fontWeight: FontWeight.bold,
                             height: 1.5,
+                            textAlign: TextAlign.center,
                             letterSpacing: 1,
                           ),
                         ),
@@ -559,19 +587,22 @@ class _RentDetailsState extends ConsumerState<RentDetails> {
                           children: [
                             Center(
                               child: FractionallySizedBox(
-                                widthFactor: 0.85,
+                                widthFactor: 0.9,
                                 child: Container(
+                                  width: double.infinity,
+                                  height: Metrics.isMobile(context) ? 200 : 400,
                                   clipBehavior: Clip.antiAlias,
                                   decoration: BoxDecoration(borderRadius: BorderRadius.circular(10)),
                                   child: AspectRatio(
-                                    aspectRatio: 6 / 2,
+                                    aspectRatio: Metrics.isMobile(context) ? 8 / 6 : 6 / 2,
                                     child: Row(
                                       children: [
                                         Expanded(
+                                          flex: 2,
                                           // child: Container(),
                                           child: Container(
                                             alignment: Alignment.topRight,
-                                            padding: EdgeInsets.all(20),
+                                            padding: EdgeInsets.all(10),
                                             decoration: BoxDecoration(
                                                 image: DecorationImage(
                                                     fit: BoxFit.cover,
@@ -586,8 +617,11 @@ class _RentDetailsState extends ConsumerState<RentDetails> {
                                                         main_img = '';
                                                       });
                                                     },
-                                                    child: Icon(Icons.cancel_rounded,color: Colors.black54,),
-                                                   ),
+                                                    child: Icon(
+                                                      Icons.cancel_rounded,
+                                                      color: Colors.black54,
+                                                    ),
+                                                  ),
                                           ),
                                           // Image.network(
                                           //   main_img == '' ? '${assetmodels[0].corver_img}' : main_img,
@@ -600,6 +634,7 @@ class _RentDetailsState extends ConsumerState<RentDetails> {
                                           width: 10,
                                         ),
                                         Expanded(
+                                          flex: Metrics.isMobile(context) ? 1 : 2,
                                           child: SingleChildScrollView(
                                             scrollDirection: Axis.vertical,
                                             child: GridView.builder(
@@ -611,7 +646,7 @@ class _RentDetailsState extends ConsumerState<RentDetails> {
                                                   //         : Metrics.isTablet(context)
                                                   //             ? 3
                                                   //             : 4,
-                                                  crossAxisCount: 2,
+                                                  crossAxisCount: Metrics.isMobile(context) ? 1 : 2,
                                                   // childAspectRatio: 1 / (1),
                                                   crossAxisSpacing: 5,
                                                   mainAxisSpacing: 5,
@@ -643,6 +678,206 @@ class _RentDetailsState extends ConsumerState<RentDetails> {
                             SizedBox(
                               height: 60,
                             ),
+                            if (Metrics.isMobile(context))
+                              Container(
+                                width: double.infinity,
+                                padding: EdgeInsets.all(20),
+                                margin: EdgeInsets.all(20),
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(20),
+                                  color: white,
+                                  boxShadow: [
+                                    BoxShadow(
+                                      color: Colors.grey.withOpacity(0.25),
+                                      offset: const Offset(0, 4),
+                                      blurRadius: 20,
+                                    ),
+                                  ],
+                                ),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                                  children: [
+                                    Padding(
+                                      padding: const EdgeInsets.all(8.0),
+                                      child: Row(
+                                        crossAxisAlignment: CrossAxisAlignment.center,
+                                        mainAxisAlignment: MainAxisAlignment.center,
+                                        children: [
+                                          '15,000 thb'.poppins(color: black, fontWeight: FontWeight.w600, fontSize: 20),
+                                          '/ month'.poppins(color: black, fontWeight: FontWeight.w500, fontSize: 18),
+                                        ],
+                                      ),
+                                    ),
+                                    Container(
+                                      decoration: BoxDecoration(
+                                          borderRadius: BorderRadius.circular(10),
+                                          border: Border.all(color: Colors.grey, width: 1)),
+                                      child: Column(
+                                        children: [
+                                          Row(
+                                            children: [
+                                              Expanded(
+                                                child: InkWell(
+                                                  onTap: () {
+                                                    showDialog(
+                                                        context: context,
+                                                        builder: (BuildContext context) {
+                                                          return Center(
+                                                            child: FractionallySizedBox(
+                                                                widthFactor: Metrics.isMobile(context) ? 1 : 0.5,
+                                                                child: selectdate('s')),
+                                                          );
+                                                        });
+                                                  },
+                                                  child: Container(
+                                                    alignment: Alignment.centerLeft,
+                                                    padding: EdgeInsets.all(8.0),
+                                                    decoration: BoxDecoration(
+                                                        border: Border(
+                                                      right: BorderSide(
+                                                        width: 1,
+                                                        color: Colors.grey,
+                                                      ),
+                                                      bottom: BorderSide(
+                                                        width: 1,
+                                                        color: Colors.grey,
+                                                      ),
+                                                    )),
+                                                    child: Column(
+                                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                                      children: [
+                                                        'CHECK-IN'.toUpperCase().poppins(
+                                                            fontSize: 12,
+                                                            fontWeight: FontWeight.w600,
+                                                            textAlign: TextAlign.start),
+                                                        Padding(
+                                                            padding: const EdgeInsets.symmetric(vertical: 6.0),
+                                                            child: '${sdate}'.poppins(
+                                                              color: Color.fromRGBO(107, 114, 128, 1),
+                                                              textAlign: TextAlign.start,
+                                                            ))
+                                                      ],
+                                                    ),
+                                                  ),
+                                                ),
+                                              ),
+                                              Expanded(
+                                                child: InkWell(
+                                                  onTap: () {
+                                                    setState(() {
+                                                      rangedate = true;
+                                                    });
+                                                    showDialog(
+                                                        context: context,
+                                                        builder: (BuildContext context) {
+                                                          return Center(
+                                                            child: FractionallySizedBox(
+                                                                widthFactor: Metrics.isMobile(context) ? 1 : 0.5,
+                                                                child: selectdate('l')),
+                                                          );
+                                                        });
+                                                  },
+                                                  child: Container(
+                                                    alignment: Alignment.centerLeft,
+                                                    padding: EdgeInsets.all(8.0),
+                                                    decoration: BoxDecoration(
+                                                        border: Border(
+                                                      bottom: BorderSide(
+                                                        width: 1,
+                                                        color: Colors.grey,
+                                                      ),
+                                                    )),
+                                                    child: Column(
+                                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                                      children: [
+                                                        'CHECKOUT'.toUpperCase().poppins(
+                                                            fontSize: 12,
+                                                            fontWeight: FontWeight.w600,
+                                                            textAlign: TextAlign.start),
+                                                        Padding(
+                                                            padding: const EdgeInsets.symmetric(vertical: 6.0),
+                                                            child: '${ldate}'.poppins(
+                                                              color: Color.fromRGBO(107, 114, 128, 1),
+                                                              textAlign: TextAlign.start,
+                                                            ))
+                                                      ],
+                                                    ),
+                                                  ),
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                          Container(
+                                            alignment: Alignment.centerLeft,
+                                            padding: EdgeInsets.all(8.0),
+                                            child: Column(
+                                              crossAxisAlignment: CrossAxisAlignment.start,
+                                              children: [
+                                                'GUESTS'.toUpperCase().poppins(
+                                                    fontSize: 12,
+                                                    fontWeight: FontWeight.w600,
+                                                    textAlign: TextAlign.start),
+                                                Padding(
+                                                  padding: const EdgeInsets.symmetric(vertical: 6.0),
+                                                  child: '2 guests'.poppins(
+                                                      color: Color.fromRGBO(107, 114, 128, 1),
+                                                      textAlign: TextAlign.start),
+                                                )
+                                              ],
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                    InkWell(
+                                      onTap: () {},
+                                      child: Container(
+                                        width: double.infinity,
+                                        margin: EdgeInsets.symmetric(vertical: 16),
+                                        padding: EdgeInsets.all(16),
+                                        alignment: Alignment.center,
+                                        decoration: BoxDecoration(
+                                            borderRadius: BorderRadius.circular(10),
+                                            color: Color.fromRGBO(222, 49, 81, 1)),
+                                        child: 'Send us an inquiry'.poppins(
+                                            color: white,
+                                            fontWeight: FontWeight.w400,
+                                            fontSize: 16,
+                                            textAlign: TextAlign.center),
+                                      ),
+                                    ),
+                                    SizedBox(
+                                      height: 10,
+                                    ),
+                                    Padding(
+                                      padding: const EdgeInsets.all(8.0),
+                                      child: 'You won’t be charged yet'.poppins(
+                                          fontWeight: FontWeight.w400,
+                                          fontSize: 16,
+                                          color: Color.fromRGBO(107, 114, 128, 1)),
+                                    ),
+                                    Container(
+                                      height: 2,
+                                      color: Color.fromRGBO(229, 231, 235, 1),
+                                      margin: EdgeInsets.all(8.0),
+                                    ),
+                                    Padding(
+                                      padding: const EdgeInsets.all(8.0),
+                                      child: Row(
+                                        crossAxisAlignment: CrossAxisAlignment.center,
+                                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                        children: [
+                                          'Total'.poppins(
+                                              textAlign: TextAlign.start, fontSize: 20, fontWeight: FontWeight.w600),
+                                          '\$701'.poppins(
+                                              textAlign: TextAlign.end, fontSize: 20, fontWeight: FontWeight.w600),
+                                        ],
+                                      ),
+                                    )
+                                  ],
+                                ),
+                              ),
                             Center(
                               child: FractionallySizedBox(
                                 widthFactor: 0.9,
@@ -668,7 +903,7 @@ class _RentDetailsState extends ConsumerState<RentDetails> {
                                                   Padding(
                                                     padding: const EdgeInsets.all(8.0),
                                                     child: '${assetmodels[0].guests} guests'
-                                                        .poppins(fontWeight: FontWeight.w500),
+                                                        .poppins(fontWeight: FontWeight.w500, fontSize: 10),
                                                   ),
                                                   Icon(
                                                     Icons.circle,
@@ -677,7 +912,7 @@ class _RentDetailsState extends ConsumerState<RentDetails> {
                                                   Padding(
                                                     padding: const EdgeInsets.all(8.0),
                                                     child: '${assetmodels[0].bedroom} bedroom'
-                                                        .poppins(fontWeight: FontWeight.w500),
+                                                        .poppins(fontWeight: FontWeight.w500, fontSize: 10),
                                                   ),
                                                   Icon(
                                                     Icons.circle,
@@ -686,7 +921,7 @@ class _RentDetailsState extends ConsumerState<RentDetails> {
                                                   Padding(
                                                     padding: const EdgeInsets.all(8.0),
                                                     child: '${assetmodels[0].bed} bed'
-                                                        .poppins(fontWeight: FontWeight.w500),
+                                                        .poppins(fontWeight: FontWeight.w500, fontSize: 10),
                                                   ),
                                                   Icon(
                                                     Icons.circle,
@@ -695,7 +930,7 @@ class _RentDetailsState extends ConsumerState<RentDetails> {
                                                   Padding(
                                                     padding: const EdgeInsets.all(8.0),
                                                     child: '${assetmodels[0].bathroom} bath'
-                                                        .poppins(fontWeight: FontWeight.w500),
+                                                        .poppins(fontWeight: FontWeight.w500, fontSize: 10),
                                                   ),
                                                 ],
                                               ),
@@ -828,7 +1063,7 @@ class _RentDetailsState extends ConsumerState<RentDetails> {
                                                 color: Colors.grey,
                                               ),
                                               '${assetmodels[0].content}'
-                                                  .poppins(textAlign: TextAlign.justify, fontWeight: FontWeight.w400),
+                                                  .poppins(textAlign: TextAlign.center, fontWeight: FontWeight.w400),
                                               Padding(
                                                 padding: const EdgeInsets.symmetric(vertical: 8.0),
                                                 child: Row(
@@ -1006,184 +1241,216 @@ class _RentDetailsState extends ConsumerState<RentDetails> {
                                             ],
                                           ),
                                         )),
-                                    Expanded(
-                                        flex: 2,
-                                        child: Container(
-                                          padding: EdgeInsets.all(20),
-                                          decoration: BoxDecoration(
-                                            borderRadius: BorderRadius.circular(20),
-                                            color: white,
-                                            boxShadow: [
-                                              BoxShadow(
-                                                color: Colors.grey.withOpacity(0.25),
-                                                offset: const Offset(0, 4),
-                                                blurRadius: 20,
-                                              ),
-                                            ],
-                                          ),
-                                          child: Column(
-                                            crossAxisAlignment: CrossAxisAlignment.center,
-                                            mainAxisAlignment: MainAxisAlignment.spaceAround,
-                                            children: [
-                                              Padding(
-                                                padding: const EdgeInsets.all(8.0),
-                                                child: Row(
-                                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                                  mainAxisAlignment: MainAxisAlignment.center,
-                                                  children: [
-                                                    '15,000 thb'.poppins(
-                                                        color: black, fontWeight: FontWeight.w600, fontSize: 20),
-                                                    '/ month'.poppins(
-                                                        color: black, fontWeight: FontWeight.w500, fontSize: 18),
-                                                  ],
+                                    if (Metrics.isDesktop(context))
+                                      Expanded(
+                                          flex: 2,
+                                          child: Container(
+                                            padding: EdgeInsets.all(20),
+                                            decoration: BoxDecoration(
+                                              borderRadius: BorderRadius.circular(20),
+                                              color: white,
+                                              boxShadow: [
+                                                BoxShadow(
+                                                  color: Colors.grey.withOpacity(0.25),
+                                                  offset: const Offset(0, 4),
+                                                  blurRadius: 20,
                                                 ),
-                                              ),
-                                              Container(
-                                                decoration: BoxDecoration(
-                                                    borderRadius: BorderRadius.circular(10),
-                                                    border: Border.all(color: Colors.grey, width: 1)),
-                                                child: Column(
-                                                  children: [
-                                                    Row(
-                                                      children: [
-                                                        Expanded(
-                                                          child: Container(
-                                                            alignment: Alignment.centerLeft,
-                                                            padding: EdgeInsets.all(8.0),
-                                                            decoration: BoxDecoration(
-                                                                border: Border(
-                                                              right: BorderSide(
-                                                                width: 1,
-                                                                color: Colors.grey,
-                                                              ),
-                                                              bottom: BorderSide(
-                                                                width: 1,
-                                                                color: Colors.grey,
-                                                              ),
-                                                            )),
-                                                            child: Column(
-                                                              crossAxisAlignment: CrossAxisAlignment.start,
-                                                              children: [
-                                                                'CHECK-IN'.toUpperCase().poppins(
-                                                                    fontSize: 12,
-                                                                    fontWeight: FontWeight.w600,
-                                                                    textAlign: TextAlign.start),
-                                                                Padding(
-                                                                  padding: const EdgeInsets.symmetric(vertical: 6.0),
-                                                                  child: '2/19/2022'.poppins(
-                                                                    color: Color.fromRGBO(107, 114, 128, 1),
-                                                                    textAlign: TextAlign.start,
-                                                                  ),
-                                                                )
-                                                              ],
-                                                            ),
-                                                          ),
-                                                        ),
-                                                        Expanded(
-                                                          child: Container(
-                                                            alignment: Alignment.centerLeft,
-                                                            padding: EdgeInsets.all(8.0),
-                                                            decoration: BoxDecoration(
-                                                                border: Border(
-                                                              bottom: BorderSide(
-                                                                width: 1,
-                                                                color: Colors.grey,
-                                                              ),
-                                                            )),
-                                                            child: Column(
-                                                              crossAxisAlignment: CrossAxisAlignment.start,
-                                                              children: [
-                                                                'CHECKOUT'.toUpperCase().poppins(
-                                                                    fontSize: 12,
-                                                                    fontWeight: FontWeight.w600,
-                                                                    textAlign: TextAlign.start),
-                                                                Padding(
-                                                                  padding: const EdgeInsets.symmetric(vertical: 6.0),
-                                                                  child: '2/26/2022'.poppins(
-                                                                    color: Color.fromRGBO(107, 114, 128, 1),
-                                                                    textAlign: TextAlign.start,
-                                                                  ),
-                                                                )
-                                                              ],
-                                                            ),
-                                                          ),
-                                                        ),
-                                                      ],
-                                                    ),
-                                                    Container(
-                                                      alignment: Alignment.centerLeft,
-                                                      padding: EdgeInsets.all(8.0),
-                                                      child: Column(
-                                                        crossAxisAlignment: CrossAxisAlignment.start,
-                                                        children: [
-                                                          'GUESTS'.toUpperCase().poppins(
-                                                              fontSize: 12,
-                                                              fontWeight: FontWeight.w600,
-                                                              textAlign: TextAlign.start),
-                                                          Padding(
-                                                            padding: const EdgeInsets.symmetric(vertical: 6.0),
-                                                            child: '2 guests'.poppins(
-                                                                color: Color.fromRGBO(107, 114, 128, 1),
-                                                                textAlign: TextAlign.start),
-                                                          )
-                                                        ],
-                                                      ),
-                                                    ),
-                                                  ],
+                                              ],
+                                            ),
+                                            child: Column(
+                                              crossAxisAlignment: CrossAxisAlignment.center,
+                                              mainAxisAlignment: MainAxisAlignment.spaceAround,
+                                              children: [
+                                                Padding(
+                                                  padding: const EdgeInsets.all(8.0),
+                                                  child: Row(
+                                                    crossAxisAlignment: CrossAxisAlignment.center,
+                                                    mainAxisAlignment: MainAxisAlignment.center,
+                                                    children: [
+                                                      '15,000 thb'.poppins(
+                                                          color: black, fontWeight: FontWeight.w600, fontSize: 20),
+                                                      '/ month'.poppins(
+                                                          color: black, fontWeight: FontWeight.w500, fontSize: 18),
+                                                    ],
+                                                  ),
                                                 ),
-                                              ),
-                                              InkWell(
-                                                onTap: () {},
-                                                child: Container(
-                                                  width: double.infinity,
-                                                  margin: EdgeInsets.symmetric(vertical: 16),
-                                                  padding: EdgeInsets.all(16),
-                                                  alignment: Alignment.center,
+                                                Container(
                                                   decoration: BoxDecoration(
                                                       borderRadius: BorderRadius.circular(10),
-                                                      color: Color.fromRGBO(222, 49, 81, 1)),
-                                                  child: 'Send us an inquiry'.poppins(
-                                                      color: white,
+                                                      border: Border.all(color: Colors.grey, width: 1)),
+                                                  child: Column(
+                                                    children: [
+                                                      Row(
+                                                        children: [
+                                                          Expanded(
+                                                            child: InkWell(
+                                                              onTap: () {
+                                                                showDialog(
+                                                                    context: context,
+                                                                    builder: (BuildContext context) {
+                                                                      return Center(
+                                                                        child: FractionallySizedBox(
+                                                                            widthFactor:
+                                                                                Metrics.isMobile(context) ? 1 : 0.5,
+                                                                            child: selectdate('s')),
+                                                                      );
+                                                                    });
+                                                              },
+                                                              child: Container(
+                                                                alignment: Alignment.centerLeft,
+                                                                padding: EdgeInsets.all(8.0),
+                                                                decoration: BoxDecoration(
+                                                                    border: Border(
+                                                                  right: BorderSide(
+                                                                    width: 1,
+                                                                    color: Colors.grey,
+                                                                  ),
+                                                                  bottom: BorderSide(
+                                                                    width: 1,
+                                                                    color: Colors.grey,
+                                                                  ),
+                                                                )),
+                                                                child: Column(
+                                                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                                                  children: [
+                                                                    'CHECK-IN'.toUpperCase().poppins(
+                                                                        fontSize: 12,
+                                                                        fontWeight: FontWeight.w600,
+                                                                        textAlign: TextAlign.start),
+                                                                    Padding(
+                                                                        padding:
+                                                                            const EdgeInsets.symmetric(vertical: 6.0),
+                                                                        child: '${sdate}'.poppins(
+                                                                          color: Color.fromRGBO(107, 114, 128, 1),
+                                                                          textAlign: TextAlign.start,
+                                                                        ))
+                                                                  ],
+                                                                ),
+                                                              ),
+                                                            ),
+                                                          ),
+                                                          Expanded(
+                                                            child: InkWell(
+                                                              onTap: () {
+                                                                setState(() {
+                                                                  rangedate = true;
+                                                                });
+                                                                showDialog(
+                                                                    context: context,
+                                                                    builder: (BuildContext context) {
+                                                                      return Center(
+                                                                        child: FractionallySizedBox(
+                                                                            widthFactor:
+                                                                                Metrics.isMobile(context) ? 1 : 0.5,
+                                                                            child: selectdate('l')),
+                                                                      );
+                                                                    });
+                                                              },
+                                                              child: Container(
+                                                                alignment: Alignment.centerLeft,
+                                                                padding: EdgeInsets.all(8.0),
+                                                                decoration: BoxDecoration(
+                                                                    border: Border(
+                                                                  bottom: BorderSide(
+                                                                    width: 1,
+                                                                    color: Colors.grey,
+                                                                  ),
+                                                                )),
+                                                                child: Column(
+                                                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                                                  children: [
+                                                                    'CHECKOUT'.toUpperCase().poppins(
+                                                                        fontSize: 12,
+                                                                        fontWeight: FontWeight.w600,
+                                                                        textAlign: TextAlign.start),
+                                                                    Padding(
+                                                                        padding:
+                                                                            const EdgeInsets.symmetric(vertical: 6.0),
+                                                                        child: '${ldate}'.poppins(
+                                                                          color: Color.fromRGBO(107, 114, 128, 1),
+                                                                          textAlign: TextAlign.start,
+                                                                        ))
+                                                                  ],
+                                                                ),
+                                                              ),
+                                                            ),
+                                                          ),
+                                                        ],
+                                                      ),
+                                                      Container(
+                                                        alignment: Alignment.centerLeft,
+                                                        padding: EdgeInsets.all(8.0),
+                                                        child: Column(
+                                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                                          children: [
+                                                            'GUESTS'.toUpperCase().poppins(
+                                                                fontSize: 12,
+                                                                fontWeight: FontWeight.w600,
+                                                                textAlign: TextAlign.start),
+                                                            Padding(
+                                                              padding: const EdgeInsets.symmetric(vertical: 6.0),
+                                                              child: '2 guests'.poppins(
+                                                                  color: Color.fromRGBO(107, 114, 128, 1),
+                                                                  textAlign: TextAlign.start),
+                                                            )
+                                                          ],
+                                                        ),
+                                                      ),
+                                                    ],
+                                                  ),
+                                                ),
+                                                InkWell(
+                                                  onTap: () {},
+                                                  child: Container(
+                                                    width: double.infinity,
+                                                    margin: EdgeInsets.symmetric(vertical: 16),
+                                                    padding: EdgeInsets.all(16),
+                                                    alignment: Alignment.center,
+                                                    decoration: BoxDecoration(
+                                                        borderRadius: BorderRadius.circular(10),
+                                                        color: Color.fromRGBO(222, 49, 81, 1)),
+                                                    child: 'Send us an inquiry'.poppins(
+                                                        color: white,
+                                                        fontWeight: FontWeight.w400,
+                                                        fontSize: 16,
+                                                        textAlign: TextAlign.center),
+                                                  ),
+                                                ),
+                                                SizedBox(
+                                                  height: 10,
+                                                ),
+                                                Padding(
+                                                  padding: const EdgeInsets.all(8.0),
+                                                  child: 'You won’t be charged yet'.poppins(
                                                       fontWeight: FontWeight.w400,
                                                       fontSize: 16,
-                                                      textAlign: TextAlign.center),
+                                                      color: Color.fromRGBO(107, 114, 128, 1)),
                                                 ),
-                                              ),
-                                              SizedBox(
-                                                height: 10,
-                                              ),
-                                              Padding(
-                                                padding: const EdgeInsets.all(8.0),
-                                                child: 'You won’t be charged yet'.poppins(
-                                                    fontWeight: FontWeight.w400,
-                                                    fontSize: 16,
-                                                    color: Color.fromRGBO(107, 114, 128, 1)),
-                                              ),
-                                              Container(
-                                                height: 2,
-                                                color: Color.fromRGBO(229, 231, 235, 1),
-                                                margin: EdgeInsets.all(8.0),
-                                              ),
-                                              Padding(
-                                                padding: const EdgeInsets.all(8.0),
-                                                child: Row(
-                                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                                  children: [
-                                                    'Total'.poppins(
-                                                        textAlign: TextAlign.start,
-                                                        fontSize: 20,
-                                                        fontWeight: FontWeight.w600),
-                                                    '\$701'.poppins(
-                                                        textAlign: TextAlign.end,
-                                                        fontSize: 20,
-                                                        fontWeight: FontWeight.w600),
-                                                  ],
+                                                Container(
+                                                  height: 2,
+                                                  color: Color.fromRGBO(229, 231, 235, 1),
+                                                  margin: EdgeInsets.all(8.0),
                                                 ),
-                                              )
-                                            ],
-                                          ),
-                                        )),
+                                                Padding(
+                                                  padding: const EdgeInsets.all(8.0),
+                                                  child: Row(
+                                                    crossAxisAlignment: CrossAxisAlignment.center,
+                                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                    children: [
+                                                      'Total'.poppins(
+                                                          textAlign: TextAlign.start,
+                                                          fontSize: 20,
+                                                          fontWeight: FontWeight.w600),
+                                                      '\$701'.poppins(
+                                                          textAlign: TextAlign.end,
+                                                          fontSize: 20,
+                                                          fontWeight: FontWeight.w600),
+                                                    ],
+                                                  ),
+                                                )
+                                              ],
+                                            ),
+                                          )),
                                   ],
                                 ),
                               ),
@@ -1486,270 +1753,282 @@ class _RentDetailsState extends ConsumerState<RentDetails> {
                             //     fontSize: 25 + 4 * pad,
                             //   ),
                             // ),
-                            Center(
-                              child: FractionallySizedBox(
-                                widthFactor: 0.8,
-                                child: Column(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Padding(
-                                      padding: const EdgeInsets.symmetric(vertical: 16.0),
-                                      child: 'Things to know'.poppins(
-                                          fontSize: 20, fontWeight: FontWeight.w600, textAlign: TextAlign.start),
-                                    ),
-                                    Row(
-                                      mainAxisAlignment: MainAxisAlignment.spaceAround,
-                                      crossAxisAlignment: CrossAxisAlignment.start,
-                                      children: [
-                                        for (int index = 0; index < ThingsknowType_models.length; index++)
-                                          // if (Thingsknow_models[0].things_ser == ThingsknowType_models[index].ser)
-                                          Expanded(
-                                              // flex: 1,
-                                              child: Column(
-                                            mainAxisAlignment: MainAxisAlignment.start,
-                                            crossAxisAlignment: CrossAxisAlignment.start,
-                                            children: [
-                                              '${ThingsknowType_models[index].name}'.poppins(
-                                                  fontSize: 14,
-                                                  fontWeight: FontWeight.w600,
-                                                  textAlign: TextAlign.start),
-                                              Padding(
-                                                padding: const EdgeInsets.all(8.0),
-                                                child: Column(
-                                                  children: [
-                                                    for (int index1 = 0; index1 < Thingsknow_models.length; index1++)
-                                                      if (Thingsknow_models[index1].things_ser.toString().trim() ==
-                                                          ThingsknowType_models[index].ser.toString().trim())
-                                                        Row(
-                                                          mainAxisAlignment: MainAxisAlignment.start,
-                                                          children: [
-                                                            Padding(
-                                                              padding: const EdgeInsets.all(8.0),
-                                                              child: Icon(IconData(
-                                                                  int.parse('${Thingsknow_models[index1].icon}'),
-                                                                  fontFamily: 'MaterialIcons')),
-                                                            ),
-                                                            Expanded(
-                                                              child: '${Thingsknow_models[index1].name}'
-                                                                  .poppins(fontSize: 12),
-                                                            )
-                                                          ],
-                                                        ),
-                                                  ],
-                                                ),
-                                              ),
-                                            ],
-                                          )),
-                                        // Expanded(
-                                        //     flex: 1,
-                                        //     child: Column(
-                                        //       mainAxisAlignment: MainAxisAlignment.start,
-                                        //       crossAxisAlignment: CrossAxisAlignment.start,
-                                        //       children: [
+                            // Center(
+                            //   child: FractionallySizedBox(
+                            //     widthFactor: 0.8,
+                            //     child: Column(
+                            //       mainAxisAlignment: MainAxisAlignment.center,
+                            //       crossAxisAlignment: CrossAxisAlignment.start,
+                            //       children: [
+                            //         Padding(
+                            //           padding: const EdgeInsets.symmetric(vertical: 16.0),
+                            //           child: 'Things to know'.poppins(
+                            //               fontSize: 20, fontWeight: FontWeight.w600, textAlign: TextAlign.start),
+                            //         ),
+                            //         Container(
+                            //           width: double.infinity,
+                            //           height: 400,
+                            //           child: SingleChildScrollView(
+                            //             scrollDirection: Axis.horizontal,
+                            //             child: Row(
+                            //               mainAxisAlignment: MainAxisAlignment.spaceAround,
+                            //               crossAxisAlignment: CrossAxisAlignment.start,
+                            //               children: [
+                            //                 for (int index = 0; index < ThingsknowType_models.length; index++)
+                            //                   // if (Thingsknow_models[0].things_ser == ThingsknowType_models[index].ser)
+                            //                   Padding(
+                            //                     padding: const EdgeInsets.all(16.0),
+                            //                     child: Column(
+                            //                       mainAxisAlignment: MainAxisAlignment.start,
+                            //                       crossAxisAlignment: CrossAxisAlignment.start,
+                            //                       children: [
+                            //                         '${ThingsknowType_models[index].name}'.poppins(
+                            //                             fontSize: 14,
+                            //                             fontWeight: FontWeight.w600,
+                            //                             textAlign: TextAlign.start),
+                            //                         Padding(
+                            //                           padding: const EdgeInsets.all(8.0),
+                            //                           child: Column(
+                            //                             children: [
+                            //                               for (int index1 = 0; index1 < Thingsknow_models.length; index1++)
+                            //                                 if (Thingsknow_models[index1].things_ser.toString().trim() ==
+                            //                                     ThingsknowType_models[index].ser.toString().trim())
+                            //                                   Row(
+                            //                                     mainAxisAlignment: MainAxisAlignment.start,
+                            //                                     children: [
+                            //                                       Padding(
+                            //                                         padding: const EdgeInsets.all(8.0),
+                            //                                         child: Icon(IconData(
+                            //                                             int.parse('${Thingsknow_models[index1].icon}'),
+                            //                                             fontFamily: 'MaterialIcons')),
+                            //                                       ),
+                            //                                       Expanded(
+                            //                                         child: '${Thingsknow_models[index1].name}'
+                            //                                             .poppins(fontSize: 12),
+                            //                                       )
+                            //                                     ],
+                            //                                   ),
+                            //                             ],
+                            //                           ),
+                            //                         ),
+                            //                       ],
+                            //                     ),
+                            //                   ),
+                            //                 // Expanded(
+                            //                 //     flex: 1,
+                            //                 //     child: Column(
+                            //                 //       mainAxisAlignment: MainAxisAlignment.start,
+                            //                 //       crossAxisAlignment: CrossAxisAlignment.start,
+                            //                 //       children: [
 
-                                        //         'House rules'.poppins(
-                                        //             fontSize: 14,
-                                        //             fontWeight: FontWeight.w600,
-                                        //             textAlign: TextAlign.start),
-                                        //         Padding(
-                                        //           padding: const EdgeInsets.all(8.0),
-                                        //           child: Column(
-                                        //             children: [
-                                        //               Row(
-                                        //                 mainAxisAlignment: MainAxisAlignment.start,
-                                        //                 children: [
-                                        //                   Padding(
-                                        //                     padding: const EdgeInsets.all(8.0),
-                                        //                     child: Icon(Icons.access_time),
-                                        //                   ),
-                                        //                   'Check-in: After 4:00 PM'.poppins(fontSize: 12)
-                                        //                 ],
-                                        //               ),
-                                        //               Row(
-                                        //                 mainAxisAlignment: MainAxisAlignment.start,
-                                        //                 children: [
-                                        //                   Padding(
-                                        //                     padding: const EdgeInsets.all(8.0),
-                                        //                     child: Icon(Icons.access_time),
-                                        //                   ),
-                                        //                   'Checkout:  10:00 AM'.poppins(fontSize: 12)
-                                        //                 ],
-                                        //               ),
-                                        //               Row(
-                                        //                 mainAxisAlignment: MainAxisAlignment.start,
-                                        //                 children: [
-                                        //                   Padding(
-                                        //                     padding: const EdgeInsets.all(8.0),
-                                        //                     child: Icon(Icons.door_back_door_outlined),
-                                        //                   ),
-                                        //                   'Self check-in with lockbox'.poppins(fontSize: 12)
-                                        //                 ],
-                                        //               ),
-                                        //               Row(
-                                        //                 mainAxisAlignment: MainAxisAlignment.start,
-                                        //                 children: [
-                                        //                   Padding(
-                                        //                     padding: const EdgeInsets.all(8.0),
-                                        //                     child: Icon(Icons.shopping_cart_outlined),
-                                        //                   ),
-                                        //                   'Not suitable for infants (under 2 years)'
-                                        //                       .poppins(fontSize: 12)
-                                        //                 ],
-                                        //               ),
-                                        //               Row(
-                                        //                 mainAxisAlignment: MainAxisAlignment.start,
-                                        //                 children: [
-                                        //                   Padding(
-                                        //                     padding: const EdgeInsets.all(8.0),
-                                        //                     child: Icon(Icons.smoke_free),
-                                        //                   ),
-                                        //                   'No smoking'.poppins(fontSize: 12)
-                                        //                 ],
-                                        //               ),
-                                        //               Row(
-                                        //                 mainAxisAlignment: MainAxisAlignment.start,
-                                        //                 children: [
-                                        //                   Padding(
-                                        //                     padding: const EdgeInsets.all(8.0),
-                                        //                     child: Icon(Icons.celebration_outlined),
-                                        //                   ),
-                                        //                   'No parties or events'.poppins(fontSize: 12)
-                                        //                 ],
-                                        //               ),
-                                        //             ],
-                                        //           ),
-                                        //         ),
-                                        //       ],
-                                        //     )),
-                                        // Expanded(
-                                        //     child: Column(
-                                        //   mainAxisAlignment: MainAxisAlignment.start,
-                                        //   crossAxisAlignment: CrossAxisAlignment.start,
-                                        //   children: [
-                                        //     'Health & safety'.poppins(
-                                        //         fontSize: 14, fontWeight: FontWeight.w600, textAlign: TextAlign.start),
-                                        //     Padding(
-                                        //       padding: const EdgeInsets.all(8.0),
-                                        //       child: Column(
-                                        //         children: [
-                                        //           Row(
-                                        //             mainAxisAlignment: MainAxisAlignment.start,
-                                        //             children: [
-                                        //               Padding(
-                                        //                 padding: const EdgeInsets.all(8.0),
-                                        //                 child: Icon(Icons.auto_awesome_outlined),
-                                        //               ),
-                                        //               Text(
-                                        //                 "Committed to Airbnb's enhanced cleaning\n process.",
-                                        //                 style: GoogleFonts.poppins(
-                                        //                   fontSize: 12,
-                                        //                 ),
-                                        //                 textAlign: TextAlign.justify,
-                                        //               ),
-                                        //             ],
-                                        //           ),
-                                        //           Row(
-                                        //             mainAxisAlignment: MainAxisAlignment.start,
-                                        //             children: [
-                                        //               Padding(
-                                        //                 padding: const EdgeInsets.all(8.0),
-                                        //                 child: Icon(Icons.clean_hands_outlined),
-                                        //               ),
-                                        //               Text(
-                                        //                 "Airbnb's social-distancing and other\n COVID-19-related guidelines apply",
-                                        //                 style: GoogleFonts.poppins(
-                                        //                   fontSize: 12,
-                                        //                 ),
-                                        //                 textAlign: TextAlign.justify,
-                                        //               )
-                                        //             ],
-                                        //           ),
-                                        //           Row(
-                                        //             mainAxisAlignment: MainAxisAlignment.start,
-                                        //             children: [
-                                        //               Padding(
-                                        //                 padding: const EdgeInsets.all(8.0),
-                                        //                 child: Icon(Icons.radio_button_on),
-                                        //               ),
-                                        //               'Smoke alarm'.poppins(fontSize: 12)
-                                        //             ],
-                                        //           ),
-                                        //           Row(
-                                        //             mainAxisAlignment: MainAxisAlignment.start,
-                                        //             children: [
-                                        //               Padding(
-                                        //                 padding: const EdgeInsets.all(8.0),
-                                        //                 child: Icon(Icons.credit_card),
-                                        //               ),
-                                        //               Text(
-                                        //                 "Security Deposit - if you damage the\n home, you may be charged up to \$566",
-                                        //                 style: GoogleFonts.poppins(
-                                        //                   fontSize: 12,
-                                        //                 ),
-                                        //                 textAlign: TextAlign.justify,
-                                        //               )
-                                        //             ],
-                                        //           ),
-                                        //           Row(
-                                        //             mainAxisAlignment: MainAxisAlignment.start,
-                                        //             children: [
-                                        //               Padding(
-                                        //                 padding: const EdgeInsets.all(8.0),
-                                        //                 child: Icon(Icons.smoke_free),
-                                        //               ),
-                                        //               'No smoking'.poppins(fontSize: 12)
-                                        //             ],
-                                        //           ),
-                                        //         ],
-                                        //       ),
-                                        //     ),
-                                        //   ],
-                                        // )),
-                                        // Expanded(
-                                        //     flex: 1,
-                                        //     child: Column(
-                                        //       crossAxisAlignment: CrossAxisAlignment.start,
-                                        //       children: [
-                                        //         'Cancellation policy'.poppins(
-                                        //             fontSize: 14,
-                                        //             fontWeight: FontWeight.w600,
-                                        //             textAlign: TextAlign.start),
-                                        //         Padding(
-                                        //           padding: const EdgeInsets.all(8.0),
-                                        //           child: Column(
-                                        //             crossAxisAlignment: CrossAxisAlignment.start,
-                                        //             mainAxisAlignment: MainAxisAlignment.start,
-                                        //             children: [
-                                        //               "Free cancellation before Feb 14"
-                                        //                   .poppins(fontSize: 12, color: Color.fromRGBO(75, 85, 99, 1)),
-                                        //               Row(
-                                        //                 children: [
-                                        //                   'Show more'.poppins(decoration: TextDecoration.underline),
-                                        //                   Icon(Icons.keyboard_arrow_right)
-                                        //                 ],
-                                        //               ),
-                                        //             ],
-                                        //           ),
-                                        //         ),
-                                        //       ],
-                                        //     ))
-                                      ],
-                                    ),
-                                    // Row(
-                                    //   children: [
-                                    //     'Show more'.poppins(decoration: TextDecoration.underline),
-                                    //     Icon(Icons.keyboard_arrow_right)
-                                    //   ],
-                                    // ),
-                                  ],
-                                ),
-                              ),
-                            )
+                            //                 //         'House rules'.poppins(
+                            //                 //             fontSize: 14,
+                            //                 //             fontWeight: FontWeight.w600,
+                            //                 //             textAlign: TextAlign.start),
+                            //                 //         Padding(
+                            //                 //           padding: const EdgeInsets.all(8.0),
+                            //                 //           child: Column(
+                            //                 //             children: [
+                            //                 //               Row(
+                            //                 //                 mainAxisAlignment: MainAxisAlignment.start,
+                            //                 //                 children: [
+                            //                 //                   Padding(
+                            //                 //                     padding: const EdgeInsets.all(8.0),
+                            //                 //                     child: Icon(Icons.access_time),
+                            //                 //                   ),
+                            //                 //                   'Check-in: After 4:00 PM'.poppins(fontSize: 12)
+                            //                 //                 ],
+                            //                 //               ),
+                            //                 //               Row(
+                            //                 //                 mainAxisAlignment: MainAxisAlignment.start,
+                            //                 //                 children: [
+                            //                 //                   Padding(
+                            //                 //                     padding: const EdgeInsets.all(8.0),
+                            //                 //                     child: Icon(Icons.access_time),
+                            //                 //                   ),
+                            //                 //                   'Checkout:  10:00 AM'.poppins(fontSize: 12)
+                            //                 //                 ],
+                            //                 //               ),
+                            //                 //               Row(
+                            //                 //                 mainAxisAlignment: MainAxisAlignment.start,
+                            //                 //                 children: [
+                            //                 //                   Padding(
+                            //                 //                     padding: const EdgeInsets.all(8.0),
+                            //                 //                     child: Icon(Icons.door_back_door_outlined),
+                            //                 //                   ),
+                            //                 //                   'Self check-in with lockbox'.poppins(fontSize: 12)
+                            //                 //                 ],
+                            //                 //               ),
+                            //                 //               Row(
+                            //                 //                 mainAxisAlignment: MainAxisAlignment.start,
+                            //                 //                 children: [
+                            //                 //                   Padding(
+                            //                 //                     padding: const EdgeInsets.all(8.0),
+                            //                 //                     child: Icon(Icons.shopping_cart_outlined),
+                            //                 //                   ),
+                            //                 //                   'Not suitable for infants (under 2 years)'
+                            //                 //                       .poppins(fontSize: 12)
+                            //                 //                 ],
+                            //                 //               ),
+                            //                 //               Row(
+                            //                 //                 mainAxisAlignment: MainAxisAlignment.start,
+                            //                 //                 children: [
+                            //                 //                   Padding(
+                            //                 //                     padding: const EdgeInsets.all(8.0),
+                            //                 //                     child: Icon(Icons.smoke_free),
+                            //                 //                   ),
+                            //                 //                   'No smoking'.poppins(fontSize: 12)
+                            //                 //                 ],
+                            //                 //               ),
+                            //                 //               Row(
+                            //                 //                 mainAxisAlignment: MainAxisAlignment.start,
+                            //                 //                 children: [
+                            //                 //                   Padding(
+                            //                 //                     padding: const EdgeInsets.all(8.0),
+                            //                 //                     child: Icon(Icons.celebration_outlined),
+                            //                 //                   ),
+                            //                 //                   'No parties or events'.poppins(fontSize: 12)
+                            //                 //                 ],
+                            //                 //               ),
+                            //                 //             ],
+                            //                 //           ),
+                            //                 //         ),
+                            //                 //       ],
+                            //                 //     )),
+                            //                 // Expanded(
+                            //                 //     child: Column(
+                            //                 //   mainAxisAlignment: MainAxisAlignment.start,
+                            //                 //   crossAxisAlignment: CrossAxisAlignment.start,
+                            //                 //   children: [
+                            //                 //     'Health & safety'.poppins(
+                            //                 //         fontSize: 14, fontWeight: FontWeight.w600, textAlign: TextAlign.start),
+                            //                 //     Padding(
+                            //                 //       padding: const EdgeInsets.all(8.0),
+                            //                 //       child: Column(
+                            //                 //         children: [
+                            //                 //           Row(
+                            //                 //             mainAxisAlignment: MainAxisAlignment.start,
+                            //                 //             children: [
+                            //                 //               Padding(
+                            //                 //                 padding: const EdgeInsets.all(8.0),
+                            //                 //                 child: Icon(Icons.auto_awesome_outlined),
+                            //                 //               ),
+                            //                 //               Text(
+                            //                 //                 "Committed to Airbnb's enhanced cleaning\n process.",
+                            //                 //                 style: GoogleFonts.poppins(
+                            //                 //                   fontSize: 12,
+                            //                 //                 ),
+                            //                 //                 textAlign: TextAlign.justify,
+                            //                 //               ),
+                            //                 //             ],
+                            //                 //           ),
+                            //                 //           Row(
+                            //                 //             mainAxisAlignment: MainAxisAlignment.start,
+                            //                 //             children: [
+                            //                 //               Padding(
+                            //                 //                 padding: const EdgeInsets.all(8.0),
+                            //                 //                 child: Icon(Icons.clean_hands_outlined),
+                            //                 //               ),
+                            //                 //               Text(
+                            //                 //                 "Airbnb's social-distancing and other\n COVID-19-related guidelines apply",
+                            //                 //                 style: GoogleFonts.poppins(
+                            //                 //                   fontSize: 12,
+                            //                 //                 ),
+                            //                 //                 textAlign: TextAlign.justify,
+                            //                 //               )
+                            //                 //             ],
+                            //                 //           ),
+                            //                 //           Row(
+                            //                 //             mainAxisAlignment: MainAxisAlignment.start,
+                            //                 //             children: [
+                            //                 //               Padding(
+                            //                 //                 padding: const EdgeInsets.all(8.0),
+                            //                 //                 child: Icon(Icons.radio_button_on),
+                            //                 //               ),
+                            //                 //               'Smoke alarm'.poppins(fontSize: 12)
+                            //                 //             ],
+                            //                 //           ),
+                            //                 //           Row(
+                            //                 //             mainAxisAlignment: MainAxisAlignment.start,
+                            //                 //             children: [
+                            //                 //               Padding(
+                            //                 //                 padding: const EdgeInsets.all(8.0),
+                            //                 //                 child: Icon(Icons.credit_card),
+                            //                 //               ),
+                            //                 //               Text(
+                            //                 //                 "Security Deposit - if you damage the\n home, you may be charged up to \$566",
+                            //                 //                 style: GoogleFonts.poppins(
+                            //                 //                   fontSize: 12,
+                            //                 //                 ),
+                            //                 //                 textAlign: TextAlign.justify,
+                            //                 //               )
+                            //                 //             ],
+                            //                 //           ),
+                            //                 //           Row(
+                            //                 //             mainAxisAlignment: MainAxisAlignment.start,
+                            //                 //             children: [
+                            //                 //               Padding(
+                            //                 //                 padding: const EdgeInsets.all(8.0),
+                            //                 //                 child: Icon(Icons.smoke_free),
+                            //                 //               ),
+                            //                 //               'No smoking'.poppins(fontSize: 12)
+                            //                 //             ],
+                            //                 //           ),
+                            //                 //         ],
+                            //                 //       ),
+                            //                 //     ),
+                            //                 //   ],
+                            //                 // )),
+                            //                 // Expanded(
+                            //                 //     flex: 1,
+                            //                 //     child: Column(
+                            //                 //       crossAxisAlignment: CrossAxisAlignment.start,
+                            //                 //       children: [
+                            //                 //         'Cancellation policy'.poppins(
+                            //                 //             fontSize: 14,
+                            //                 //             fontWeight: FontWeight.w600,
+                            //                 //             textAlign: TextAlign.start),
+                            //                 //         Padding(
+                            //                 //           padding: const EdgeInsets.all(8.0),
+                            //                 //           child: Column(
+                            //                 //             crossAxisAlignment: CrossAxisAlignment.start,
+                            //                 //             mainAxisAlignment: MainAxisAlignment.start,
+                            //                 //             children: [
+                            //                 //               "Free cancellation before Feb 14"
+                            //                 //                   .poppins(fontSize: 12, color: Color.fromRGBO(75, 85, 99, 1)),
+                            //                 //               Row(
+                            //                 //                 children: [
+                            //                 //                   'Show more'.poppins(decoration: TextDecoration.underline),
+                            //                 //                   Icon(Icons.keyboard_arrow_right)
+                            //                 //                 ],
+                            //                 //               ),
+                            //                 //             ],
+                            //                 //           ),
+                            //                 //         ),
+                            //                 //       ],
+                            //                 //     ))
+                            //               ],
+                            //             ),
+                            //           ),
+                            //         ),
+                            //         // Row(
+                            //         //   children: [
+                            //         //     'Show more'.poppins(decoration: TextDecoration.underline),
+                            //         //     Icon(Icons.keyboard_arrow_right)
+                            //         //   ],
+                            //         // ),
+                            //       ],
+                            //     ),
+                            //   ),
+                            // )
                           ],
                         )
                       ])),
-                  // TypeThings(),
+                  'Thing to Know'.poppins(
+                      fontSize: Metrics.isMobile(context) ? 20 : 40,
+                      textAlign: TextAlign.start,
+                      fontWeight: FontWeight.w600),
+                  TypeThings(),
                   const SizedBox(height: 80),
                   const Footer(
                     bgcolor: Colors.white,
@@ -1763,125 +2042,213 @@ class _RentDetailsState extends ConsumerState<RentDetails> {
     );
   } ////---------------------------------------->
 
-  // Widget TypeThings() {
-  //   List<String> imageUrls = type_Things.map((data) => data['imageUrl'].toString()).toList();
-  //   final pad = normalize(min: 576, max: 1440, data: Metrics.width(context));
-  //   return Column(
-  //     children: [
-  //       const SizedBox(height: 80),
-  //       SizedBox(
-  //         height: 400 + 100 * pad,
-  //         child: PageView.builder(
-  //           controller: _controller,
-  //           onPageChanged: (val) => setState(() => currentPage = val),
-  //           itemCount: type_Things.length,
-  //           // physics: const NeverScrollableScrollPhysics(),
-  //           itemBuilder: (context, index) {
-  //             return Padding(
-  //               padding: EdgeInsets.only(left: 36 * pad, right: 36 * pad),
-  //               child: AnimatedScale(
-  //                   duration: const Duration(milliseconds: 240),
-  //                   scale: currentPage == index ? 1 : 0.75,
-  //                   child: Column(
-  //                     children: [
-  //                       Padding(
-  //                         padding: EdgeInsets.only(left: 36 * pad, right: 36 * pad, bottom: 8),
-  //                         child: Align(
-  //                           alignment: Alignment.centerLeft,
-  //                           child: '${type_Things[index]['type']}'.poppins(
-  //                             color: black,
-  //                             fontSize: 25 + 4 * pad,
-  //                           ),
-  //                         ),
-  //                       ),
-  //                       Expanded(
-  //                         child: Container(
-  //                           decoration: BoxDecoration(
-  //                             borderRadius: const BorderRadius.only(
-  //                               topLeft: Radius.circular(8),
-  //                               topRight: Radius.circular(8),
-  //                               bottomLeft: Radius.circular(8),
-  //                               bottomRight: Radius.circular(8),
-  //                             ),
-  //                             color: white,
-  //                             // border: Border.all(
-  //                             //     color: Color.fromARGB(255, 216, 213, 213),
-  //                             //     width: 1),
-  //                             // boxShadow: [
-  //                             //   BoxShadow(
-  //                             //     color:
-  //                             //         const Color.fromARGB(255, 180, 175, 175)
-  //                             //             .withOpacity(0.5),
-  //                             //     spreadRadius: 3,
-  //                             //     blurRadius: 4,
-  //                             //     offset: Offset(
-  //                             //         0, 4), // changes position of shadow
-  //                             //   ),
-  //                             // ],
-  //                           ),
-  //                           child: Column(
-  //                             mainAxisAlignment: MainAxisAlignment.start,
-  //                             children: [
-  //                               for (int index3 = 0; index3 < data_Things.length; index3++)
-  //                                 if (data_Things[index3]['type_id'] == type_Things[index]['type_id'])
-  //                                   Padding(
-  //                                     padding: const EdgeInsets.all(8.0),
-  //                                     child: Row(
-  //                                       children: [
-  //                                         Padding(
-  //                                           padding: const EdgeInsets.fromLTRB(0, 0, 20, 0),
-  //                                           child: Center(
-  //                                             child: Icon(IconData(int.parse('${data_Things[index3]['icons']}'),
-  //                                                 fontFamily: 'MaterialIcons')),
-  //                                           ),
-  //                                         ),
-  //                                         Expanded(
-  //                                           child: Align(
-  //                                             alignment: Alignment.centerLeft,
-  //                                             child: '${data_Things[index3]['name']}'.poppins(
-  //                                               color: black,
-  //                                               fontSize: 14 + 4 * pad,
-  //                                             ),
-  //                                           ),
-  //                                         ),
-  //                                       ],
-  //                                     ),
-  //                                   ),
-  //                             ],
-  //                           ),
-  //                         ),
-  //                       ),
-  //                     ],
-  //                   )),
-  //             );
-  //           },
-  //         ),
-  //       ),
-  //       const SizedBox(height: 34),
-  //       ImageSliderController(
-  //         currentPage: currentPage,
-  //         images: imageUrls,
-  //         title: title,
-  //         prev: currentPage != 0
-  //             ? () {
-  //                 _controller.animateToPage(
-  //                   currentPage - 1,
-  //                   duration: const Duration(milliseconds: 240),
-  //                   curve: Curves.linear,
-  //                 );
-  //               }
-  //             : null,
-  //         next: (currentPage != type_Things.length - 1)
-  //             ? () {
-  //                 _controller.animateToPage(
-  //                   currentPage + 1,
-  //                   duration: const Duration(milliseconds: 240),
-  //                   curve: Curves.linear,
-  //                 );
-  //               }
-  //             : null,
-  //       ),
-  //     ],
-  //   );
-  // }
+  Widget TypeThings() {
+    List<String> imageUrls = ThingsknowType_models.map((data) => data.name.toString()).toList();
+    final pad = normalize(min: 576, max: 1440, data: Metrics.width(context));
+    return Column(
+      children: [
+        const SizedBox(height: 80),
+        SizedBox(
+          width: double.infinity,
+          height: 400 + 100 * pad,
+          child: PageView.builder(
+            controller: _controller,
+            onPageChanged: (val) => setState(() => currentPage = val),
+            itemCount: ThingsknowType_models.length,
+            // physics: const NeverScrollableScrollPhysics(),
+            itemBuilder: (context, index) {
+              return Padding(
+                padding: EdgeInsets.only(left: 36 * pad, right: 36 * pad),
+                child: AnimatedScale(
+                    duration: const Duration(milliseconds: 240),
+                    scale: currentPage == index ? 1 : 0.75,
+                    child: Column(
+                      children: [
+                        Padding(
+                          padding: EdgeInsets.only(left: 36 * pad, right: 36 * pad, bottom: 8),
+                          child: Align(
+                            alignment: Alignment.centerLeft,
+                            child: '${ThingsknowType_models[index].name}'.poppins(
+                              color: black,
+                              fontSize: 25 + 4 * pad,
+                            ),
+                          ),
+                        ),
+                        Container(
+                          width: double.infinity,
+                          decoration: BoxDecoration(
+                            borderRadius: const BorderRadius.only(
+                              topLeft: Radius.circular(8),
+                              topRight: Radius.circular(8),
+                              bottomLeft: Radius.circular(8),
+                              bottomRight: Radius.circular(8),
+                            ),
+                            color: white,
+                            // border: Border.all(
+                            //     color: Color.fromARGB(255, 216, 213, 213),
+                            //     width: 1),
+                            // boxShadow: [
+                            //   BoxShadow(
+                            //     color:
+                            //         const Color.fromARGB(255, 180, 175, 175)
+                            //             .withOpacity(0.5),
+                            //     spreadRadius: 3,
+                            //     blurRadius: 4,
+                            //     offset: Offset(
+                            //         0, 4), // changes position of shadow
+                            //   ),
+                            // ],
+                          ),
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            children: [
+                              for (int index3 = 0; index3 < Thingsknow_models.length; index3++)
+                                if (Thingsknow_models[index3].things_ser.toString().trim() ==
+                                    ThingsknowType_models[index].ser.toString().trim())
+                                  Container(
+                                    width: double.infinity,
+                                    padding: const EdgeInsets.all(8.0),
+                                    child: Row(
+                                      children: [
+                                        Padding(
+                                          padding: const EdgeInsets.fromLTRB(0, 0, 20, 0),
+                                          child: Center(
+                                            child: Icon(IconData(int.parse('${Thingsknow_models[index3].icon}'),
+                                                fontFamily: 'MaterialIcons')),
+                                          ),
+                                        ),
+                                        Expanded(
+                                          child: Align(
+                                            alignment: Alignment.centerLeft,
+                                            child: '${Thingsknow_models[index3].name}'.poppins(
+                                              color: black,
+                                              fontSize: 14 + 4 * pad,
+                                            ),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    )),
+              );
+            },
+          ),
+        ),
+        const SizedBox(height: 34),
+        ImageSliderController(
+          currentPage: currentPage,
+          images: imageUrls,
+          prev: currentPage != 0
+              ? () {
+                  _controller.animateToPage(
+                    currentPage - 1,
+                    duration: const Duration(milliseconds: 240),
+                    curve: Curves.linear,
+                  );
+                }
+              : null,
+          next: (currentPage != ThingsknowType_models.length - 1)
+              ? () {
+                  _controller.animateToPage(
+                    currentPage + 1,
+                    duration: const Duration(milliseconds: 240),
+                    curve: Curves.linear,
+                  );
+                }
+              : null,
+          title: [],
+        ),
+      ],
+    );
+  }
+
+  selectdate(date) {
+    return Container(
+      clipBehavior: Clip.antiAlias,
+      padding: EdgeInsets.all(20),
+      margin: EdgeInsets.all(20),
+      decoration: BoxDecoration(color: white, borderRadius: BorderRadius.circular(20)),
+      child: SfDateRangePicker(
+        showActionButtons: true,
+        showTodayButton: true,
+        confirmText: 'OK',
+        cancelText: 'Cancel',
+        backgroundColor: white,
+        selectableDayPredicate: (date) {
+          return date.weekday != DateTime.monday &&
+              date.weekday != DateTime.wednesday &&
+              date.weekday != DateTime.friday;
+        },
+        minDate: selectsdate != null ? selectsdate : DateTime.now(),
+        maxDate: selectsdate?.add(Duration(days: 4)),
+        initialSelectedDate: selectldate == null ? selectsdate : null,
+        initialSelectedRange: rangedate != false ? PickerDateRange(selectsdate, selectldate) : null,
+        // initialSelectedDates: selectldate == null ? null : selectldate,
+        headerStyle: DateRangePickerHeaderStyle(backgroundColor: white),
+        selectionColor: const Color.fromRGBO(222, 49, 81, 1),
+        startRangeSelectionColor: const Color.fromRGBO(222, 49, 81, 1),
+        rangeSelectionColor: const Color.fromRGBO(222, 49, 81, 0.5),
+        todayHighlightColor: const Color.fromRGBO(222, 49, 81, 0.7),
+        endRangeSelectionColor: const Color.fromRGBO(222, 49, 81, 1),
+        onCancel: () {
+          setState(() {
+            selectsdate = null;
+            selectldate = null;
+            rangedate = false;
+          });
+          Navigator.of(context).pop();
+        },
+        showNavigationArrow: true,
+        selectionMode: date == 's'
+            ? selectldate != null
+                ? DateRangePickerSelectionMode.range
+                : DateRangePickerSelectionMode.single
+            : DateRangePickerSelectionMode.range,
+        onSelectionChanged: (DateRangePickerSelectionChangedArgs args) {
+          setState(() {
+            if (date == 's') {
+              if (rangedate == true) {
+                selectsdate = args.value.startDate;
+                selectldate = args.value.endDate;
+              } else {
+                selectsdate = args.value;
+              }
+
+              // rangedate = args.value;
+              // print('$selectsdate-$selectldate');
+            } else {
+              // rangedate = true;
+              // print(args.value);
+              // selectsdate = args.value.startDate;
+              selectldate = args.value.endDate;
+              // selectedDates = args.value;
+              // print('$selectsdate-$selectldate');
+            }
+          });
+        },
+        onSubmit: (p0) {
+          setState(() {
+            // print(p0);
+
+            // if (date == 's') {
+            //   selectsdate = p0;
+            //   print('s$selectsdate');
+            if (selectldate == null) {
+              rangedate = false;
+            }
+            Navigator.of(context).pop();
+            // } else {
+            //   selectldate = p0;
+            //   print('l$selectldate');
+            //   Navigator.of(context).pop();
+            // }
+          });
+        },
+      ),
+    );
+  }
 }

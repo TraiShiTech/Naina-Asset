@@ -3,6 +3,8 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:intl/date_symbol_data_local.dart';
+import 'package:intl/intl.dart';
 import 'package:properties/app/widgets/base_container.dart';
 import 'package:properties/app/with_us.dart';
 import 'package:properties/core/core.dart';
@@ -46,6 +48,7 @@ class _RentAllState extends ConsumerState<RentAll> {
   List<assetmodel> assetmodels = [];
   List<assetTypemodel> assetTypemodels = [];
   Map assetlist = {};
+  Map hover = {};
 
 ///////----------------------------------------------->
   @override
@@ -137,6 +140,7 @@ class _RentAllState extends ConsumerState<RentAll> {
           assetTypemodels.length,
           (index) => List<bool>.filled(assetmodels.length, false),
         );
+        // int numm = 0;
         // isHover.removeWhere((list) => list.isEmpty);
         // print('$isHover-${assetTypemodels.length}');
         // isHover = List.generate(
@@ -260,8 +264,20 @@ class _RentAllState extends ConsumerState<RentAll> {
                                       .where((value) => value.typeSer == assetTypemodels[index1].ser)
                                       .toList();
                                   // print(isHover[index1][index]);
+                                  // String dateStr = '${ass[index].s_datex}';
 
-                                  if (ass.isNotEmpty) {
+                                  final sdate = DateFormat('d MMMM yyyy', 'en_US')
+                                      .format(DateTime.parse('${ass[index].s_datex}'));
+                                  final ldate = DateFormat('d MMMM yyyy', 'en_US')
+                                      .format(DateTime.parse('${ass[index].l_datex}'));
+
+                                  if (isHover.isEmpty) {
+                                    // setState(() {
+                                    isHover.clear();
+                                    read_isHover();
+                                    // });
+                                  }
+                                  if (ass.isNotEmpty && isHover.isNotEmpty) {
                                     return InkWell(
                                       onTap: () {
                                         Navigator.push(
@@ -301,6 +317,15 @@ class _RentAllState extends ConsumerState<RentAll> {
                                                   blurRadius: 10,
                                                 ),
                                               ],
+                                              // boxShadow: [
+                                              //   BoxShadow(
+                                              //     // color: isHover[index1][index] == true
+                                              //     color: textPrimary.withOpacity(0.15),
+                                              //     // : textPrimary.withOpacity(0),
+                                              //     offset: const Offset(0, 6),
+                                              //     blurRadius: 10,
+                                              //   ),
+                                              // ],
                                             ),
                                             child: Container(
                                               margin: EdgeInsets.only(bottom: 12 + 12 * pad),
@@ -555,7 +580,7 @@ class _RentAllState extends ConsumerState<RentAll> {
                                                           ),
                                                           '${ass[index].addr}'
                                                               .poppins(fontSize: 12, fontWeight: FontWeight.w400),
-                                                          '${ass[index].s_datex}-${ass[index].l_datex}'.poppins(
+                                                          '${sdate} - ${ldate}'.poppins(
                                                             fontSize: 12,
                                                             fontWeight: FontWeight.w400,
                                                           ),
@@ -578,6 +603,7 @@ class _RentAllState extends ConsumerState<RentAll> {
                                           )),
                                     );
                                   }
+                                  return null;
                                   // }
                                 }),
                           ]))

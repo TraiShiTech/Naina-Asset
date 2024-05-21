@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/widgets.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:intl/intl.dart';
 import 'package:properties/Constant/Myconstant.dart';
 import 'package:properties/app/layouts/rent/rent_details.dart';
 import 'package:properties/core/core.dart';
@@ -472,7 +473,10 @@ class _HowItWorksState extends State<HowItWorks> {
                                     // final ass = assetmodels;
 
                                     // print('${index}- ${ass[index].addr}');
-
+                                    final sdate = DateFormat('d MMMM yyyy', 'en_US')
+                                        .format(DateTime.parse('${assetmodels[index].s_datex}'));
+                                    final ldate = DateFormat('d MMMM yyyy', 'en_US')
+                                        .format(DateTime.parse('${assetmodels[index].l_datex}'));
                                     return InkWell(
                                       onTap: () async {
                                         var ser = assetmodels[index].ser.toString();
@@ -600,8 +604,7 @@ class _HowItWorksState extends State<HowItWorks> {
                                                           ),
                                                           '${assetmodels[index].addr}'
                                                               .poppins(fontSize: 12, fontWeight: FontWeight.w400),
-                                                          '${assetmodels[index].s_datex}-${assetmodels[index].l_datex}'
-                                                              .poppins(
+                                                          '${sdate}-${ldate}'.poppins(
                                                             fontSize: 12,
                                                             fontWeight: FontWeight.w400,
                                                           ),

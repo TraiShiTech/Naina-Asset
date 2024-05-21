@@ -93,8 +93,7 @@ class _WistUsState extends ConsumerState<WistUs> {
 
 ///////----------------------------------------------->
   Future scrollToItem(GlobalKey key) async {
-    await Scrollable.ensureVisible(key.currentContext!,
-        duration: const Duration(milliseconds: 480));
+    await Scrollable.ensureVisible(key.currentContext!, duration: const Duration(milliseconds: 480));
   }
 
 ///////----------------------------------------------->
@@ -162,13 +161,9 @@ class _WistUsState extends ConsumerState<WistUs> {
     final pad = normalize(min: 576, max: 1440, data: Metrics.width(context));
 
     final isBigScreen = Metrics.isDesktop(context) || Metrics.isTablet(context);
-    final pad1 = isBigScreen
-        ? 0.0
-        : normalize(min: 576, max: 976, data: Metrics.width(context));
-    double plus = Metrics.isDesktop(context)
-        ? 0
-        : (0.5 *
-            (1 - normalize(min: 976, max: 1440, data: Metrics.width(context))));
+    final pad1 = isBigScreen ? 0.0 : normalize(min: 576, max: 976, data: Metrics.width(context));
+    double plus =
+        Metrics.isDesktop(context) ? 0 : (0.5 * (1 - normalize(min: 976, max: 1440, data: Metrics.width(context))));
     _controller = PageController(
       initialPage: currentPage,
       keepPage: false,
@@ -212,433 +207,485 @@ class _WistUsState extends ConsumerState<WistUs> {
                   const SizedBox(height: 40),
                   BaseContainer(
                       child: FractionallySizedBox(
-                    widthFactor: 0.7,
+                    widthFactor: Metrics.isMobile(context) ? 1 : 0.7,
                     child: Column(
-                        crossAxisAlignment: Metrics.isMobile(context)
-                            ? CrossAxisAlignment.center
-                            : CrossAxisAlignment.center,
+                        crossAxisAlignment:
+                            Metrics.isMobile(context) ? CrossAxisAlignment.center : CrossAxisAlignment.center,
                         children: [
-                          Stack(
-                            children: [
-                              AspectRatio(
-                                  aspectRatio:
-                                      // 45 / 35,
-                                      Metrics.isMobile(context)
-                                          ? 45 / 65
-                                          : Metrics.isCompact(context)
-                                              ? 45 / 65
-                                              : Metrics.isTablet(context)
-                                                  ? 45 / 65
-                                                  : 60 / 30,
-                                  child: Container(
-                                      decoration: BoxDecoration(
-                                        borderRadius: const BorderRadius.only(
-                                          topLeft: Radius.circular(20),
-                                          topRight: Radius.circular(20),
-                                          bottomLeft: Radius.circular(20),
-                                          bottomRight: Radius.circular(20),
+                          Metrics.isMobile(context)
+                              ? Container(
+                                  width: double.infinity,
+                                  // height: 500 * pad1,
+                                  clipBehavior: Clip.antiAlias,
+                                  decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(20),
+                                      border: Border.all(width: 1, color: Colors.grey)),
+                                  child: Column(
+                                    children: [
+                                      AspectRatio(
+                                        aspectRatio: 6 / 4,
+                                        child: Image.network(
+                                          '${ListWithUsModels[0].corver_img}',
+                                          fit: BoxFit.cover,
                                         ),
-                                        color: white,
-                                        boxShadow: [
-                                          BoxShadow(
-                                            color:
-                                                Colors.grey.withOpacity(0.25),
-                                            offset: const Offset(0, 4),
-                                            blurRadius: 4,
-                                          ),
-                                        ],
-                                        border: Border.all(
-                                            color: Color.fromARGB(
-                                                255, 192, 189, 189),
-                                            width: 1),
-                                        // image: DecorationImage(
-                                        //   image: AssetImage(
-                                        //     'assets/property_service/11.jpg',
-                                        //   ),
-                                        //   fit: BoxFit.cover,
-                                        // ),
                                       ),
-                                      child: Row(
+                                      Column(
+                                        crossAxisAlignment: CrossAxisAlignment.center,
                                         children: [
-                                          Expanded(
-                                              flex: 1,
+                                          const SizedBox(height: 20),
+                                          Align(
+                                            alignment: Alignment.centerLeft,
+                                            child: Padding(
+                                              padding: const EdgeInsets.all(20.0),
+                                              child: Column(
+                                                crossAxisAlignment: CrossAxisAlignment.start,
+                                                children: [
+                                                  'Get in touch'.poppins(
+                                                    color: Color.fromRGBO(85, 82, 82, 1),
+                                                    fontWeight: FontWeight.bold,
+                                                    fontSize: 25 + 4 * pad,
+                                                  ),
+                                                  Container(
+                                                    height: 5,
+                                                    width: 100,
+                                                    color: Color.fromRGBO(222, 110, 75, 1),
+                                                  )
+                                                ],
+                                              ),
+                                            ),
+                                          ),
+                                          const SizedBox(height: 20),
+                                          Container(
+                                            // width: 200,
+                                            height: 40,
+                                            // color: white,
+                                            padding: EdgeInsets.only(left: 30.0 * pad, right: 30.0 * pad),
+                                            child: Container(
+                                              color: white,
+                                              child: TextFormField(
+                                                cursorColor: Colors.green,
+                                                decoration: InputDecoration(
+                                                  fillColor: Colors.grey[200]!.withOpacity(0.5),
+                                                  filled: true,
+                                                  // prefixIcon:
+                                                  //     const Icon(Icons.person, color: Colors.black),
+                                                  // suffixIcon: Icon(Icons.clear, color: Colors.black),
+                                                  focusedBorder: const OutlineInputBorder(
+                                                    borderRadius: BorderRadius.only(
+                                                      topRight: Radius.circular(10),
+                                                      topLeft: Radius.circular(10),
+                                                      bottomRight: Radius.circular(10),
+                                                      bottomLeft: Radius.circular(10),
+                                                    ),
+                                                    borderSide: BorderSide(
+                                                      width: 1,
+                                                      color: Colors.white,
+                                                    ),
+                                                  ),
+                                                  enabledBorder: const OutlineInputBorder(
+                                                    borderRadius: BorderRadius.only(
+                                                      topRight: Radius.circular(10),
+                                                      topLeft: Radius.circular(10),
+                                                      bottomRight: Radius.circular(10),
+                                                      bottomLeft: Radius.circular(10),
+                                                    ),
+                                                    borderSide: BorderSide(
+                                                      width: 1,
+                                                      color: Colors.white,
+                                                    ),
+                                                  ),
+                                                ),
+                                              ),
+                                            ),
+                                          ),
+                                          const SizedBox(height: 10),
+                                          Container(
+                                            // width: 200,
+                                            height: 40,
+                                            // color: white,
+                                            padding: EdgeInsets.only(left: 30.0 * pad, right: 30.0 * pad),
+                                            child: Container(
+                                              color: white,
+                                              child: TextFormField(
+                                                cursorColor: Colors.green,
+                                                decoration: InputDecoration(
+                                                  fillColor: Colors.grey[200]!.withOpacity(0.5),
+                                                  filled: true,
+                                                  // prefixIcon:
+                                                  //     const Icon(Icons.person, color: Colors.black),
+                                                  // suffixIcon: Icon(Icons.clear, color: Colors.black),
+                                                  focusedBorder: const OutlineInputBorder(
+                                                    borderRadius: BorderRadius.only(
+                                                      topRight: Radius.circular(10),
+                                                      topLeft: Radius.circular(10),
+                                                      bottomRight: Radius.circular(10),
+                                                      bottomLeft: Radius.circular(10),
+                                                    ),
+                                                    borderSide: BorderSide(
+                                                      width: 1,
+                                                      color: Colors.white,
+                                                    ),
+                                                  ),
+                                                  enabledBorder: const OutlineInputBorder(
+                                                    borderRadius: BorderRadius.only(
+                                                      topRight: Radius.circular(10),
+                                                      topLeft: Radius.circular(10),
+                                                      bottomRight: Radius.circular(10),
+                                                      bottomLeft: Radius.circular(10),
+                                                    ),
+                                                    borderSide: BorderSide(
+                                                      width: 1,
+                                                      color: Colors.white,
+                                                    ),
+                                                  ),
+                                                ),
+                                              ),
+                                            ),
+                                          ),
+                                          const SizedBox(height: 10),
+                                          Align(
+                                            alignment: Alignment.center,
+                                            child: Container(
+                                              height: 200,
+                                              padding: EdgeInsets.only(left: 30.0 * pad, right: 30.0 * pad),
+                                              color: white,
+                                              child: Center(
+                                                child: TextFormField(
+                                                  maxLines: 80,
+                                                  // maxLength: 13,
+                                                  cursorColor: Colors.green,
+                                                  decoration: InputDecoration(
+                                                    fillColor: Colors.grey[200]!.withOpacity(0.5),
+                                                    filled: true,
+                                                    // prefixIcon:
+                                                    //     const Icon(Icons.person, color: Colors.black),
+                                                    // suffixIcon: Icon(Icons.clear, color: Colors.black),
+                                                    focusedBorder: const OutlineInputBorder(
+                                                      borderRadius: BorderRadius.only(
+                                                        topRight: Radius.circular(10),
+                                                        topLeft: Radius.circular(10),
+                                                        bottomRight: Radius.circular(10),
+                                                        bottomLeft: Radius.circular(10),
+                                                      ),
+                                                      borderSide: BorderSide(
+                                                        width: 1,
+                                                        color: Colors.white,
+                                                      ),
+                                                    ),
+                                                    enabledBorder: const OutlineInputBorder(
+                                                      borderRadius: BorderRadius.only(
+                                                        topRight: Radius.circular(10),
+                                                        topLeft: Radius.circular(10),
+                                                        bottomRight: Radius.circular(10),
+                                                        bottomLeft: Radius.circular(10),
+                                                      ),
+                                                      borderSide: BorderSide(
+                                                        width: 1,
+                                                        color: Colors.white,
+                                                      ),
+                                                    ),
+                                                  ),
+                                                ),
+                                              ),
+                                            ),
+                                          ),
+                                          const SizedBox(height: 10),
+                                          Align(
+                                            alignment: Alignment.centerLeft,
+                                            child: Padding(
+                                              padding: const EdgeInsets.all(20.0),
                                               child: Container(
-                                                child: Column(
-                                                  crossAxisAlignment:
-                                                      CrossAxisAlignment.center,
-                                                  children: [
-                                                    const SizedBox(height: 20),
-                                                    Align(
-                                                      alignment:
-                                                          Alignment.centerLeft,
-                                                      child: Padding(
-                                                        padding:
-                                                            const EdgeInsets
-                                                                .all(20.0),
-                                                        child: Column(
-                                                          crossAxisAlignment:
-                                                              CrossAxisAlignment
-                                                                  .start,
-                                                          children: [
-                                                            'Get in touch'
-                                                                .poppins(
-                                                              color: Color
-                                                                  .fromRGBO(
-                                                                      85,
-                                                                      82,
-                                                                      82,
-                                                                      1),
-                                                              fontWeight:
-                                                                  FontWeight
-                                                                      .bold,
-                                                              fontSize:
-                                                                  25 + 4 * pad,
-                                                            ),
-                                                            Container(
-                                                              height: 5,
-                                                              width: 100,
-                                                              color: Color
-                                                                  .fromRGBO(
-                                                                      222,
-                                                                      110,
-                                                                      75,
-                                                                      1),
-                                                            )
-                                                          ],
-                                                        ),
-                                                      ),
-                                                    ),
-                                                    const SizedBox(height: 20),
-                                                    Container(
-                                                      // width: 200,
-                                                      height: 40,
-                                                      // color: white,
-                                                      padding: EdgeInsets.only(
-                                                          left: 30.0 * pad,
-                                                          right: 30.0 * pad),
-                                                      child: Container(
-                                                        color: white,
-                                                        child: TextFormField(
-                                                          cursorColor:
-                                                              Colors.green,
-                                                          decoration:
-                                                              InputDecoration(
-                                                            fillColor: Colors
-                                                                .grey[200]!
-                                                                .withOpacity(
-                                                                    0.5),
-                                                            filled: true,
-                                                            // prefixIcon:
-                                                            //     const Icon(Icons.person, color: Colors.black),
-                                                            // suffixIcon: Icon(Icons.clear, color: Colors.black),
-                                                            focusedBorder:
-                                                                const OutlineInputBorder(
-                                                              borderRadius:
-                                                                  BorderRadius
-                                                                      .only(
-                                                                topRight: Radius
-                                                                    .circular(
-                                                                        10),
-                                                                topLeft: Radius
-                                                                    .circular(
-                                                                        10),
-                                                                bottomRight:
-                                                                    Radius
-                                                                        .circular(
-                                                                            10),
-                                                                bottomLeft: Radius
-                                                                    .circular(
-                                                                        10),
-                                                              ),
-                                                              borderSide:
-                                                                  BorderSide(
-                                                                width: 1,
-                                                                color: Colors
-                                                                    .white,
-                                                              ),
-                                                            ),
-                                                            enabledBorder:
-                                                                const OutlineInputBorder(
-                                                              borderRadius:
-                                                                  BorderRadius
-                                                                      .only(
-                                                                topRight: Radius
-                                                                    .circular(
-                                                                        10),
-                                                                topLeft: Radius
-                                                                    .circular(
-                                                                        10),
-                                                                bottomRight:
-                                                                    Radius
-                                                                        .circular(
-                                                                            10),
-                                                                bottomLeft: Radius
-                                                                    .circular(
-                                                                        10),
-                                                              ),
-                                                              borderSide:
-                                                                  BorderSide(
-                                                                width: 1,
-                                                                color: Colors
-                                                                    .white,
-                                                              ),
+                                                // height: 40,
+                                                // width: 120,
+                                                decoration: const BoxDecoration(
+                                                  borderRadius: BorderRadius.only(
+                                                    topLeft: Radius.circular(8),
+                                                    topRight: Radius.circular(8),
+                                                    bottomLeft: Radius.circular(8),
+                                                    bottomRight: Radius.circular(8),
+                                                  ),
+                                                  color: Color.fromRGBO(154, 135, 129, 1),
+                                                  // border: Border.all(
+                                                  //     color: Color.fromARGB(255, 150, 148, 148), width: 2),
+                                                ),
+                                                padding: const EdgeInsets.all(8.0),
+                                                child: 'Submit'.poppins(
+                                                  color: white,
+                                                  fontWeight: FontWeight.w400,
+                                                  fontSize: 12 + 4 * pad,
+                                                ),
+                                              ),
+                                            ),
+                                          ),
+                                          const SizedBox(height: 10),
+                                        ],
+                                      )
+                                    ],
+                                  ),
+                                )
+                              : Stack(
+                                  children: [
+                                    AspectRatio(
+                                        aspectRatio:
+                                            // 45 / 35,
+                                            Metrics.isMobile(context)
+                                                ? 45 / 65
+                                                : Metrics.isCompact(context)
+                                                    ? 45 / 65
+                                                    : Metrics.isTablet(context)
+                                                        ? 6 / 2
+                                                        : 60 / 30,
+                                        child: Container(
+                                            decoration: BoxDecoration(
+                                              borderRadius: const BorderRadius.only(
+                                                topLeft: Radius.circular(20),
+                                                topRight: Radius.circular(20),
+                                                bottomLeft: Radius.circular(20),
+                                                bottomRight: Radius.circular(20),
+                                              ),
+                                              color: white,
+                                              boxShadow: [
+                                                BoxShadow(
+                                                  color: Colors.grey.withOpacity(0.25),
+                                                  offset: const Offset(0, 4),
+                                                  blurRadius: 4,
+                                                ),
+                                              ],
+                                              border: Border.all(color: Color.fromARGB(255, 192, 189, 189), width: 1),
+                                              // image: DecorationImage(
+                                              //   image: AssetImage(
+                                              //     'assets/property_service/11.jpg',
+                                              //   ),
+                                              //   fit: BoxFit.cover,
+                                              // ),
+                                            ),
+                                            child: Row(
+                                              children: [
+                                                Expanded(
+                                                    flex: 1,
+                                                    child: Column(
+                                                      crossAxisAlignment: CrossAxisAlignment.center,
+                                                      children: [
+                                                        const SizedBox(height: 20),
+                                                        Align(
+                                                          alignment: Alignment.centerLeft,
+                                                          child: Padding(
+                                                            padding: const EdgeInsets.all(20.0),
+                                                            child: Column(
+                                                              crossAxisAlignment: CrossAxisAlignment.start,
+                                                              children: [
+                                                                'Get in touch'.poppins(
+                                                                  color: Color.fromRGBO(85, 82, 82, 1),
+                                                                  fontWeight: FontWeight.bold,
+                                                                  fontSize: 25 + 4 * pad,
+                                                                ),
+                                                                Container(
+                                                                  height: 5,
+                                                                  width: 100,
+                                                                  color: Color.fromRGBO(222, 110, 75, 1),
+                                                                )
+                                                              ],
                                                             ),
                                                           ),
                                                         ),
-                                                      ),
-                                                    ),
-                                                    const SizedBox(height: 10),
-                                                    Container(
-                                                      // width: 200,
-                                                      height: 40,
-                                                      // color: white,
-                                                      padding: EdgeInsets.only(
-                                                          left: 30.0 * pad,
-                                                          right: 30.0 * pad),
-                                                      child: Container(
-                                                        color: white,
-                                                        child: TextFormField(
-                                                          cursorColor:
-                                                              Colors.green,
-                                                          decoration:
-                                                              InputDecoration(
-                                                            fillColor: Colors
-                                                                .grey[200]!
-                                                                .withOpacity(
-                                                                    0.5),
-                                                            filled: true,
-                                                            // prefixIcon:
-                                                            //     const Icon(Icons.person, color: Colors.black),
-                                                            // suffixIcon: Icon(Icons.clear, color: Colors.black),
-                                                            focusedBorder:
-                                                                const OutlineInputBorder(
-                                                              borderRadius:
-                                                                  BorderRadius
-                                                                      .only(
-                                                                topRight: Radius
-                                                                    .circular(
-                                                                        10),
-                                                                topLeft: Radius
-                                                                    .circular(
-                                                                        10),
-                                                                bottomRight:
-                                                                    Radius
-                                                                        .circular(
-                                                                            10),
-                                                                bottomLeft: Radius
-                                                                    .circular(
-                                                                        10),
-                                                              ),
-                                                              borderSide:
-                                                                  BorderSide(
-                                                                width: 1,
-                                                                color: Colors
-                                                                    .white,
-                                                              ),
-                                                            ),
-                                                            enabledBorder:
-                                                                const OutlineInputBorder(
-                                                              borderRadius:
-                                                                  BorderRadius
-                                                                      .only(
-                                                                topRight: Radius
-                                                                    .circular(
-                                                                        10),
-                                                                topLeft: Radius
-                                                                    .circular(
-                                                                        10),
-                                                                bottomRight:
-                                                                    Radius
-                                                                        .circular(
-                                                                            10),
-                                                                bottomLeft: Radius
-                                                                    .circular(
-                                                                        10),
-                                                              ),
-                                                              borderSide:
-                                                                  BorderSide(
-                                                                width: 1,
-                                                                color: Colors
-                                                                    .white,
-                                                              ),
-                                                            ),
-                                                          ),
-                                                        ),
-                                                      ),
-                                                    ),
-                                                    const SizedBox(height: 10),
-                                                    Expanded(
-                                                      // flex: 3,
-                                                      child: Align(
-                                                        alignment:
-                                                            Alignment.center,
-                                                        child: Container(
-                                                          // height: 300,
-                                                          padding:
-                                                              EdgeInsets.only(
-                                                                  left: 30.0 *
-                                                                      pad,
-                                                                  right: 30.0 *
-                                                                      pad),
-                                                          color: white,
-                                                          child: Center(
-                                                            child:
-                                                                TextFormField(
-                                                              maxLines: 80,
-                                                              // maxLength: 13,
-                                                              cursorColor:
-                                                                  Colors.green,
-                                                              decoration:
-                                                                  InputDecoration(
-                                                                fillColor: Colors
-                                                                    .grey[200]!
-                                                                    .withOpacity(
-                                                                        0.5),
+                                                        const SizedBox(height: 20),
+                                                        Container(
+                                                          // width: 200,
+                                                          height: 40,
+                                                          // color: white,
+                                                          padding: EdgeInsets.only(left: 30.0 * pad, right: 30.0 * pad),
+                                                          child: Container(
+                                                            color: white,
+                                                            child: TextFormField(
+                                                              cursorColor: Colors.green,
+                                                              decoration: InputDecoration(
+                                                                fillColor: Colors.grey[200]!.withOpacity(0.5),
                                                                 filled: true,
                                                                 // prefixIcon:
                                                                 //     const Icon(Icons.person, color: Colors.black),
                                                                 // suffixIcon: Icon(Icons.clear, color: Colors.black),
-                                                                focusedBorder:
-                                                                    const OutlineInputBorder(
-                                                                  borderRadius:
-                                                                      BorderRadius
-                                                                          .only(
-                                                                    topRight: Radius
-                                                                        .circular(
-                                                                            10),
-                                                                    topLeft: Radius
-                                                                        .circular(
-                                                                            10),
-                                                                    bottomRight:
-                                                                        Radius.circular(
-                                                                            10),
-                                                                    bottomLeft:
-                                                                        Radius.circular(
-                                                                            10),
+                                                                focusedBorder: const OutlineInputBorder(
+                                                                  borderRadius: BorderRadius.only(
+                                                                    topRight: Radius.circular(10),
+                                                                    topLeft: Radius.circular(10),
+                                                                    bottomRight: Radius.circular(10),
+                                                                    bottomLeft: Radius.circular(10),
                                                                   ),
-                                                                  borderSide:
-                                                                      BorderSide(
+                                                                  borderSide: BorderSide(
                                                                     width: 1,
-                                                                    color: Colors
-                                                                        .white,
+                                                                    color: Colors.white,
                                                                   ),
                                                                 ),
-                                                                enabledBorder:
-                                                                    const OutlineInputBorder(
-                                                                  borderRadius:
-                                                                      BorderRadius
-                                                                          .only(
-                                                                    topRight: Radius
-                                                                        .circular(
-                                                                            10),
-                                                                    topLeft: Radius
-                                                                        .circular(
-                                                                            10),
-                                                                    bottomRight:
-                                                                        Radius.circular(
-                                                                            10),
-                                                                    bottomLeft:
-                                                                        Radius.circular(
-                                                                            10),
+                                                                enabledBorder: const OutlineInputBorder(
+                                                                  borderRadius: BorderRadius.only(
+                                                                    topRight: Radius.circular(10),
+                                                                    topLeft: Radius.circular(10),
+                                                                    bottomRight: Radius.circular(10),
+                                                                    bottomLeft: Radius.circular(10),
                                                                   ),
-                                                                  borderSide:
-                                                                      BorderSide(
+                                                                  borderSide: BorderSide(
                                                                     width: 1,
-                                                                    color: Colors
-                                                                        .white,
+                                                                    color: Colors.white,
                                                                   ),
                                                                 ),
                                                               ),
                                                             ),
                                                           ),
                                                         ),
-                                                      ),
-                                                    ),
-                                                    const SizedBox(height: 10),
-                                                    Align(
-                                                      alignment:
-                                                          Alignment.centerLeft,
-                                                      child: Padding(
-                                                        padding:
-                                                            const EdgeInsets
-                                                                .all(20.0),
-                                                        child: Container(
-                                                          // height: 40,
-                                                          // width: 120,
-                                                          decoration:
-                                                              const BoxDecoration(
-                                                            borderRadius:
-                                                                BorderRadius
-                                                                    .only(
-                                                              topLeft: Radius
-                                                                  .circular(8),
-                                                              topRight: Radius
-                                                                  .circular(8),
-                                                              bottomLeft: Radius
-                                                                  .circular(8),
-                                                              bottomRight:
-                                                                  Radius
-                                                                      .circular(
-                                                                          8),
-                                                            ),
-                                                            color:
-                                                                Color.fromRGBO(
-                                                                    154,
-                                                                    135,
-                                                                    129,
-                                                                    1),
-                                                            // border: Border.all(
-                                                            //     color: Color.fromARGB(255, 150, 148, 148), width: 2),
-                                                          ),
-                                                          padding:
-                                                              const EdgeInsets
-                                                                  .all(8.0),
-                                                          child:
-                                                              'Submit'.poppins(
+                                                        const SizedBox(height: 10),
+                                                        Container(
+                                                          // width: 200,
+                                                          height: 40,
+                                                          // color: white,
+                                                          padding: EdgeInsets.only(left: 30.0 * pad, right: 30.0 * pad),
+                                                          child: Container(
                                                             color: white,
-                                                            fontWeight:
-                                                                FontWeight.w400,
-                                                            fontSize:
-                                                                12 + 4 * pad,
+                                                            child: TextFormField(
+                                                              cursorColor: Colors.green,
+                                                              decoration: InputDecoration(
+                                                                fillColor: Colors.grey[200]!.withOpacity(0.5),
+                                                                filled: true,
+                                                                // prefixIcon:
+                                                                //     const Icon(Icons.person, color: Colors.black),
+                                                                // suffixIcon: Icon(Icons.clear, color: Colors.black),
+                                                                focusedBorder: const OutlineInputBorder(
+                                                                  borderRadius: BorderRadius.only(
+                                                                    topRight: Radius.circular(10),
+                                                                    topLeft: Radius.circular(10),
+                                                                    bottomRight: Radius.circular(10),
+                                                                    bottomLeft: Radius.circular(10),
+                                                                  ),
+                                                                  borderSide: BorderSide(
+                                                                    width: 1,
+                                                                    color: Colors.white,
+                                                                  ),
+                                                                ),
+                                                                enabledBorder: const OutlineInputBorder(
+                                                                  borderRadius: BorderRadius.only(
+                                                                    topRight: Radius.circular(10),
+                                                                    topLeft: Radius.circular(10),
+                                                                    bottomRight: Radius.circular(10),
+                                                                    bottomLeft: Radius.circular(10),
+                                                                  ),
+                                                                  borderSide: BorderSide(
+                                                                    width: 1,
+                                                                    color: Colors.white,
+                                                                  ),
+                                                                ),
+                                                              ),
+                                                            ),
                                                           ),
                                                         ),
+                                                        const SizedBox(height: 10),
+                                                        Expanded(
+                                                          // flex: 3,
+                                                          child: Align(
+                                                            alignment: Alignment.center,
+                                                            child: Container(
+                                                              // height: 300,
+                                                              padding:
+                                                                  EdgeInsets.only(left: 30.0 * pad, right: 30.0 * pad),
+                                                              color: white,
+                                                              child: Center(
+                                                                child: TextFormField(
+                                                                  maxLines: 80,
+                                                                  // maxLength: 13,
+                                                                  cursorColor: Colors.green,
+                                                                  decoration: InputDecoration(
+                                                                    fillColor: Colors.grey[200]!.withOpacity(0.5),
+                                                                    filled: true,
+                                                                    // prefixIcon:
+                                                                    //     const Icon(Icons.person, color: Colors.black),
+                                                                    // suffixIcon: Icon(Icons.clear, color: Colors.black),
+                                                                    focusedBorder: const OutlineInputBorder(
+                                                                      borderRadius: BorderRadius.only(
+                                                                        topRight: Radius.circular(10),
+                                                                        topLeft: Radius.circular(10),
+                                                                        bottomRight: Radius.circular(10),
+                                                                        bottomLeft: Radius.circular(10),
+                                                                      ),
+                                                                      borderSide: BorderSide(
+                                                                        width: 1,
+                                                                        color: Colors.white,
+                                                                      ),
+                                                                    ),
+                                                                    enabledBorder: const OutlineInputBorder(
+                                                                      borderRadius: BorderRadius.only(
+                                                                        topRight: Radius.circular(10),
+                                                                        topLeft: Radius.circular(10),
+                                                                        bottomRight: Radius.circular(10),
+                                                                        bottomLeft: Radius.circular(10),
+                                                                      ),
+                                                                      borderSide: BorderSide(
+                                                                        width: 1,
+                                                                        color: Colors.white,
+                                                                      ),
+                                                                    ),
+                                                                  ),
+                                                                ),
+                                                              ),
+                                                            ),
+                                                          ),
+                                                        ),
+                                                        const SizedBox(height: 10),
+                                                        Align(
+                                                          alignment: Alignment.centerLeft,
+                                                          child: Padding(
+                                                            padding: const EdgeInsets.all(20.0),
+                                                            child: Container(
+                                                              // height: 40,
+                                                              // width: 120,
+                                                              decoration: const BoxDecoration(
+                                                                borderRadius: BorderRadius.only(
+                                                                  topLeft: Radius.circular(8),
+                                                                  topRight: Radius.circular(8),
+                                                                  bottomLeft: Radius.circular(8),
+                                                                  bottomRight: Radius.circular(8),
+                                                                ),
+                                                                color: Color.fromRGBO(154, 135, 129, 1),
+                                                                // border: Border.all(
+                                                                //     color: Color.fromARGB(255, 150, 148, 148), width: 2),
+                                                              ),
+                                                              padding: const EdgeInsets.all(8.0),
+                                                              child: 'Submit'.poppins(
+                                                                color: white,
+                                                                fontWeight: FontWeight.w400,
+                                                                fontSize: 12 + 4 * pad,
+                                                              ),
+                                                            ),
+                                                          ),
+                                                        ),
+                                                        const SizedBox(height: 10),
+                                                      ],
+                                                    )),
+                                                Expanded(
+                                                  flex: 1,
+                                                  child: ClipPath(
+                                                      child: Container(
+                                                    decoration: BoxDecoration(
+                                                      borderRadius: const BorderRadius.only(
+                                                        topLeft: Radius.circular(0),
+                                                        topRight: Radius.circular(20),
+                                                        bottomLeft: Radius.circular(0),
+                                                        bottomRight: Radius.circular(20),
+                                                      ),
+                                                      image: DecorationImage(
+                                                        // image: AssetImage(
+                                                        //   'assets/property_service/11.jpg',
+                                                        // ),
+                                                        image: NetworkImage(
+                                                          '${ListWithUsModels[0].corver_img}',
+                                                        ),
+
+                                                        fit: BoxFit.cover,
                                                       ),
                                                     ),
-                                                    const SizedBox(height: 10),
-                                                  ],
+                                                  )),
                                                 ),
-                                              )),
-                                          Expanded(
-                                            flex: 1,
-                                            child: ClipPath(
-                                                child: Container(
-                                              decoration: BoxDecoration(
-                                                borderRadius:
-                                                    const BorderRadius.only(
-                                                  topLeft: Radius.circular(0),
-                                                  topRight: Radius.circular(20),
-                                                  bottomLeft:
-                                                      Radius.circular(0),
-                                                  bottomRight:
-                                                      Radius.circular(20),
-                                                ),
-                                                image: DecorationImage(
-                                                  // image: AssetImage(
-                                                  //   'assets/property_service/11.jpg',
-                                                  // ),
-                                                  image: NetworkImage(
-                                                    '${ListWithUsModels[0].corver_img}',
-                                                  ),
-
-                                                  fit: BoxFit.cover,
-                                                ),
-                                              ),
-                                            )),
-                                          ),
-                                        ],
-                                      ))),
-                            ],
-                          ),
+                                              ],
+                                            ))),
+                                  ],
+                                ),
                           const SizedBox(height: 34),
                           Align(
                             alignment: Alignment.center,
@@ -661,9 +708,8 @@ class _WistUsState extends ConsumerState<WistUs> {
                   const SizedBox(height: 34),
                   BaseContainer(
                       child: Column(
-                          crossAxisAlignment: Metrics.isMobile(context)
-                              ? CrossAxisAlignment.center
-                              : CrossAxisAlignment.start,
+                          crossAxisAlignment:
+                              Metrics.isMobile(context) ? CrossAxisAlignment.center : CrossAxisAlignment.start,
                           children: [
                         Align(
                           alignment: Alignment.center,
@@ -676,8 +722,7 @@ class _WistUsState extends ConsumerState<WistUs> {
                         Center(
                           child: FractionallySizedBox(
                             widthFactor: 0.9,
-                            child:
-                                '${ListWithUsModels[0].content_sub1}'.poppins(
+                            child: '${ListWithUsModels[0].content_sub1}'.poppins(
                               textAlign: TextAlign.center,
                               fontSize: 14 + 4 * pad,
                               fontWeight: FontWeight.w400,
@@ -691,8 +736,7 @@ class _WistUsState extends ConsumerState<WistUs> {
                             widthFactor: 0.9,
                             // height: 1440,
                             child: GridView.builder(
-                              gridDelegate:
-                                  SliverGridDelegateWithFixedCrossAxisCount(
+                              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                                 crossAxisCount: Metrics.isMobile(context)
                                     ? 1
                                     : Metrics.isCompact(context)
@@ -700,8 +744,7 @@ class _WistUsState extends ConsumerState<WistUs> {
                                         : Metrics.isTablet(context)
                                             ? 2
                                             : 4,
-                                crossAxisSpacing:
-                                    45.0, // Spacing between columns
+                                crossAxisSpacing: 45.0, // Spacing between columns
                                 mainAxisSpacing: 45.0, // Spacing between rows
                                 childAspectRatio: 9 / (8),
                               ),
@@ -720,11 +763,8 @@ class _WistUsState extends ConsumerState<WistUs> {
                                       padding: EdgeInsets.all(20),
                                       decoration: BoxDecoration(
                                           color: white.withOpacity(0.8),
-                                          image: DecorationImage(
-                                              image: NetworkImage(img),
-                                              fit: BoxFit.cover),
-                                          borderRadius:
-                                              BorderRadius.circular(20)),
+                                          image: DecorationImage(image: NetworkImage(img), fit: BoxFit.cover),
+                                          borderRadius: BorderRadius.circular(20)),
                                       child: Text(
                                         title,
                                         style: GoogleFonts.poppins(
@@ -732,10 +772,7 @@ class _WistUsState extends ConsumerState<WistUs> {
                                             color: white,
                                             fontSize: 20,
                                             shadows: [
-                                              Shadow(
-                                                  blurRadius: 2,
-                                                  color: Colors.black38,
-                                                  offset: Offset(2, 2))
+                                              Shadow(blurRadius: 2, color: Colors.black38, offset: Offset(2, 2))
                                             ]),
                                       )),
                                 );
@@ -759,8 +796,7 @@ class _WistUsState extends ConsumerState<WistUs> {
 
 ////---------------------------------------->
   Widget service() {
-    List<String> imageUrls =
-        packagemodels.map((data) => data.img.toString()).toList();
+    List<String> imageUrls = packagemodels.map((data) => data.img.toString()).toList();
     final pad = normalize(min: 576, max: 1440, data: Metrics.width(context));
     return Column(
       children: [
@@ -776,15 +812,11 @@ class _WistUsState extends ConsumerState<WistUs> {
               String trimmedData = packagemodels[index]
                   .description
                   .toString()
-                  .substring(1,
-                      packagemodels[index].description.toString().length - 1);
+                  .substring(1, packagemodels[index].description.toString().length - 1);
               String trimmedData_sub = packagemodels[index]
                   .descriptionSub
                   .toString()
-                  .substring(
-                      1,
-                      packagemodels[index].descriptionSub.toString().length -
-                          1);
+                  .substring(1, packagemodels[index].descriptionSub.toString().length - 1);
 
               // Split the string into a list
               List<String> description_List = trimmedData.split('],[');
@@ -802,12 +834,9 @@ class _WistUsState extends ConsumerState<WistUs> {
                           bottomLeft: Radius.circular(8),
                           bottomRight: Radius.circular(8),
                         ),
-                        color: (packagemodels[index].name.toString() == 'Free')
-                            ? Color.fromRGBO(86, 230, 165, 1)
-                            : white,
-                        border: Border.all(
-                            color: Color.fromARGB(255, 216, 213, 213),
-                            width: 1),
+                        color:
+                            (packagemodels[index].name.toString() == 'Free') ? Color.fromRGBO(86, 230, 165, 1) : white,
+                        border: Border.all(color: Color.fromARGB(255, 216, 213, 213), width: 1),
                         // gradient:
                         //     (data_Service[index]['name'].toString() == 'Free')
                         //         ? LinearGradient(
@@ -824,8 +853,7 @@ class _WistUsState extends ConsumerState<WistUs> {
                         //         : null,
                         boxShadow: [
                           BoxShadow(
-                            color: const Color.fromARGB(255, 180, 175, 175)
-                                .withOpacity(0.5),
+                            color: const Color.fromARGB(255, 180, 175, 175).withOpacity(0.5),
                             spreadRadius: 3,
                             blurRadius: 4,
                             offset: Offset(0, 4), // changes position of shadow
@@ -839,9 +867,7 @@ class _WistUsState extends ConsumerState<WistUs> {
                             padding: const EdgeInsets.all(20.0),
                             child: Align(
                               alignment: Alignment.centerLeft,
-                              child: '${packagemodels[index].name}'
-                                  .toString()
-                                  .poppins(
+                              child: '${packagemodels[index].name}'.toString().poppins(
                                     fontWeight: FontWeight.w500,
                                     color: greenBg,
                                     fontSize: 25 + 4 * pad,
@@ -873,22 +899,12 @@ class _WistUsState extends ConsumerState<WistUs> {
                                     bottomLeft: Radius.circular(8),
                                     bottomRight: Radius.circular(8),
                                   ),
-                                  color:
-                                      (packagemodels[index].name.toString() ==
-                                              'Free')
-                                          ? Colors.brown
-                                          : null,
-                                  border: Border.all(
-                                      color: Color.fromARGB(255, 150, 148, 148),
-                                      width: 2),
+                                  color: (packagemodels[index].name.toString() == 'Free') ? Colors.brown : null,
+                                  border: Border.all(color: Color.fromARGB(255, 150, 148, 148), width: 2),
                                 ),
                                 padding: const EdgeInsets.all(8.0),
                                 child: 'Request a demo'.poppins(
-                                  color:
-                                      (packagemodels[index].name.toString() ==
-                                              'Free')
-                                          ? white
-                                          : greenBg,
+                                  color: (packagemodels[index].name.toString() == 'Free') ? white : greenBg,
                                   fontWeight: FontWeight.w500,
                                   fontSize: 16 + 4 * pad,
                                 ),
@@ -898,16 +914,12 @@ class _WistUsState extends ConsumerState<WistUs> {
                           const SizedBox(
                             height: 20.0,
                           ),
-                          for (int index2 = 0;
-                              index2 < description_List.length;
-                              index2++)
+                          for (int index2 = 0; index2 < description_List.length; index2++)
                             Padding(
                               padding: const EdgeInsets.all(4.0),
                               child: Align(
                                 alignment: Alignment.centerLeft,
-                                child:
-                                    '🟢 ${description_List[index2].toString()}'
-                                        .poppins(
+                                child: '🟢 ${description_List[index2].toString()}'.poppins(
                                   color: greenBg,
                                   fontWeight: FontWeight.w500,
                                   fontSize: 16 + 4 * pad,
@@ -924,16 +936,12 @@ class _WistUsState extends ConsumerState<WistUs> {
                           const SizedBox(
                             height: 10.0,
                           ),
-                          for (int index3 = 0;
-                              index3 < descriptionSub_List.length;
-                              index3++)
+                          for (int index3 = 0; index3 < descriptionSub_List.length; index3++)
                             Padding(
                               padding: const EdgeInsets.all(4.0),
                               child: Align(
                                 alignment: Alignment.centerLeft,
-                                child:
-                                    '+ ${descriptionSub_List[index3].toString()}'
-                                        .poppins(
+                                child: '+ ${descriptionSub_List[index3].toString()}'.poppins(
                                   color: greenBg,
                                   fontWeight: FontWeight.w500,
                                   fontSize: 16 + 4 * pad,

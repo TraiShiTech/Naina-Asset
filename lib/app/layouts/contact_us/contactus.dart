@@ -91,7 +91,7 @@ class _ContactusState extends State<Contactus> {
                       width: Metrics.width(context),
                       height: 340,
                       // color: Colors.blue,
-                      child: VideoPlayer(),
+                      child: VideoPlayerScreen(),
                     ),
                     const SizedBox(height: 90),
                     const SizedBox(height: 10),
@@ -151,7 +151,7 @@ class _ContactusState extends State<Contactus> {
                             ),
                             Expanded(
                               flex: 2,
-                              child: Align(alignment: Alignment.center, child: VideoPlayer()),
+                              child: Align(alignment: Alignment.center, child: VideoPlayerScreen()),
                             ),
                             Expanded(
                               flex: 1,

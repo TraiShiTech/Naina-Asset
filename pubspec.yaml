@@ -28,11 +28,18 @@ environment:
 # the latest version available on pub.dev. To see which dependencies have newer
 # versions available, run `flutter pub outdated`.
 dependencies:
+  appinio_video_player: ^1.2.2
   flutter:
     sdk: flutter
   flutter_rating_bar: ^4.0.1
   google_fonts: ^6.2.1
+  intl: ^0.19.0
+  syncfusion_flutter_datepicker: ^25.2.4
+  video_player: ^2.8.6
+  vimeo_video_player: ^0.0.15
+  visibility_detector: ^0.4.0+2
   webview_flutter: ^2.8.0
+  youtube_player_flutter: ^9.0.1
 
 
   # The following adds the Cupertino Icons font to your application.
@@ -56,6 +63,7 @@ dev_dependencies:
   flutter_widget_from_html_core: ^0.8.0
   # flutter_osm_plugin: ^0.70.0
   flutter_map_location_marker: ^8.0.8
+  
 
   # venturedive_flutter_cli: ^0.0.1
   # The "flutter_lints" package below contains a set of recommended lints to
