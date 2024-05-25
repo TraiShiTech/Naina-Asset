@@ -22,14 +22,14 @@ import 'layouts/footer/footer.dart';
 import 'layouts/header/header_rent.dart';
 import 'layouts/layouts.dart';
 
-class AboutUs_All extends ConsumerStatefulWidget {
-  const AboutUs_All({Key? key}) : super(key: key);
+class Service extends ConsumerStatefulWidget {
+  const Service({Key? key}) : super(key: key);
 
   @override
-  ConsumerState<ConsumerStatefulWidget> createState() => _AboutUs_AllState();
+  ConsumerState<ConsumerStatefulWidget> createState() => _ServiceState();
 }
 
-class _AboutUs_AllState extends ConsumerState<AboutUs_All> {
+class _ServiceState extends ConsumerState<Service> {
   int limit = 2; // The maximum number of items you want
   int offset = 0; // The starting index of items you want
   int endIndex = 0;
