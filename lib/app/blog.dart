@@ -299,18 +299,63 @@ class _BlogAllState extends ConsumerState<BlogAll> {
                                                         padding: EdgeInsets.all(16.0),
                                                         child: Column(
                                                           children: [
-                                                            Container(
-                                                              padding: const EdgeInsets.all(8.0),
-                                                              decoration: BoxDecoration(
-                                                                  border: Border(
-                                                                      bottom:
-                                                                          BorderSide(width: 1, color: Colors.grey))),
-                                                              child: Row(
-                                                                crossAxisAlignment: CrossAxisAlignment.center,
-                                                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                                                children: [
-                                                                  Expanded(
-                                                                    child: Row(
+                                                            if (Metrics.isDesktop(context))
+                                                              Container(
+                                                                padding: const EdgeInsets.all(8.0),
+                                                                decoration: BoxDecoration(
+                                                                    border: Border(
+                                                                        bottom:
+                                                                            BorderSide(width: 1, color: Colors.grey))),
+                                                                child: Row(
+                                                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                                  children: [
+                                                                    Expanded(
+                                                                      child: Row(
+                                                                        mainAxisAlignment: MainAxisAlignment.start,
+                                                                        children: [
+                                                                          '${blogmodels[index].name}'.poppinsBlog(
+                                                                              fontSize: 14,
+                                                                              fontWeight: FontWeight.w600,
+                                                                              color: Color.fromRGBO(71, 69, 69, 1)),
+                                                                          '${blogmodels[index].name_th}'.poppinsBlog(
+                                                                              fontSize: 14,
+                                                                              fontWeight: FontWeight.w600,
+                                                                              color: Color.fromRGBO(71, 69, 69, 1)),
+                                                                        ],
+                                                                      ),
+                                                                    ),
+                                                                    InkWell(
+                                                                      onTap: () {
+                                                                        Navigator.of(context).pop();
+                                                                      },
+                                                                      child: Container(
+                                                                        padding: EdgeInsets.all(8.0),
+                                                                        decoration: BoxDecoration(
+                                                                            color: black,
+                                                                            borderRadius: BorderRadius.circular(4)),
+                                                                        child: 'Close'.poppins(
+                                                                          color: white,
+                                                                        ),
+                                                                      ),
+                                                                    ),
+                                                                  ],
+                                                                ),
+                                                              ),
+                                                            if (Metrics.isMobile(context) ||
+                                                                Metrics.isCompact(context) ||
+                                                                Metrics.isTablet(context))
+                                                              Container(
+                                                                padding: const EdgeInsets.all(8.0),
+                                                                decoration: BoxDecoration(
+                                                                    border: Border(
+                                                                        bottom:
+                                                                            BorderSide(width: 1, color: Colors.grey))),
+                                                                child: Column(
+                                                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                                                  mainAxisAlignment: MainAxisAlignment.start,
+                                                                  children: [
+                                                                    Column(
                                                                       mainAxisAlignment: MainAxisAlignment.start,
                                                                       children: [
                                                                         '${blogmodels[index].name}'.poppinsBlog(
@@ -323,24 +368,26 @@ class _BlogAllState extends ConsumerState<BlogAll> {
                                                                             color: Color.fromRGBO(71, 69, 69, 1)),
                                                                       ],
                                                                     ),
-                                                                  ),
-                                                                  InkWell(
-                                                                    onTap: () {
-                                                                      Navigator.of(context).pop();
-                                                                    },
-                                                                    child: Container(
-                                                                      padding: EdgeInsets.all(8.0),
-                                                                      decoration: BoxDecoration(
-                                                                          color: black,
-                                                                          borderRadius: BorderRadius.circular(4)),
-                                                                      child: 'Close'.poppins(
-                                                                        color: white,
+                                                                    Container(
+                                                                      alignment: Alignment.centerRight,
+                                                                      child: InkWell(
+                                                                        onTap: () {
+                                                                          Navigator.of(context).pop();
+                                                                        },
+                                                                        child: Container(
+                                                                          padding: EdgeInsets.all(8.0),
+                                                                          decoration: BoxDecoration(
+                                                                              color: black,
+                                                                              borderRadius: BorderRadius.circular(4)),
+                                                                          child: 'Close'.poppins(
+                                                                            color: white,
+                                                                          ),
+                                                                        ),
                                                                       ),
                                                                     ),
-                                                                  ),
-                                                                ],
+                                                                  ],
+                                                                ),
                                                               ),
-                                                            ),
                                                             Padding(
                                                               padding: const EdgeInsets.all(8.0),
                                                               child: Center(
@@ -348,31 +395,64 @@ class _BlogAllState extends ConsumerState<BlogAll> {
                                                                   widthFactor: 0.7,
                                                                   child: Column(
                                                                     children: [
-                                                                      Row(
-                                                                        children: [
-                                                                          Expanded(
-                                                                            child: AspectRatio(
-                                                                              aspectRatio: 4 / 3,
-                                                                              child: Image.network(
-                                                                                blogmodels[index].corver_img.toString(),
-                                                                                fit: BoxFit.cover,
-                                                                              ),
-                                                                            ),
-                                                                          ),
-                                                                          for (int index1 = 0;
-                                                                              index1 < imgBlogs_models.length;
-                                                                              index1++)
-                                                                            Expanded(
-                                                                              child: AspectRatio(
-                                                                                aspectRatio: 4 / 3,
-                                                                                child: Image.network(
-                                                                                  imgBlogs_models[index1].img.toString(),
-                                                                                  fit: BoxFit.cover,
+                                                                      if (Metrics.isDesktop(context))
+                                                                        Row(
+                                                                          children: [
+                                                                            // Expanded(
+                                                                            //   child: AspectRatio(
+                                                                            //     aspectRatio: 4 / 3,
+                                                                            //     child: Image.network(
+                                                                            //       blogmodels[index].corver_img.toString(),
+                                                                            //       fit: BoxFit.cover,
+                                                                            //     ),
+                                                                            //   ),
+                                                                            // ),
+                                                                            for (int index1 = 0;
+                                                                                index1 < imgBlogs_models.length;
+                                                                                index1++)
+                                                                              Expanded(
+                                                                                child: AspectRatio(
+                                                                                  aspectRatio: 4 / 3,
+                                                                                  child: Image.network(
+                                                                                    '${MyConstant().domain}img/${imgBlogs_models[index1].img.toString()}',
+                                                                                    fit: BoxFit.cover,
+                                                                                  ),
                                                                                 ),
                                                                               ),
+                                                                          ],
+                                                                        ),
+                                                                      if (!Metrics.isDesktop(context))
+                                                                        Container(
+                                                                          height: 200,
+                                                                          width: double.infinity,
+                                                                          child: SingleChildScrollView(
+                                                                            scrollDirection: Axis.horizontal,
+                                                                            child: Row(
+                                                                              children: [
+                                                                                // Expanded(
+                                                                                //   child: AspectRatio(
+                                                                                //     aspectRatio: 4 / 3,
+                                                                                //     child: Image.network(
+                                                                                //       blogmodels[index].corver_img.toString(),
+                                                                                //       fit: BoxFit.cover,
+                                                                                //     ),
+                                                                                //   ),
+                                                                                // ),
+                                                                                for (int index1 = 0;
+                                                                                    index1 < imgBlogs_models.length;
+                                                                                    index1++)
+                                                                                  AspectRatio(
+                                                                                    aspectRatio: 4 / 3,
+                                                                                    child: Image.network(
+                                                                                      '${MyConstant().domain}img/${imgBlogs_models[index1].img.toString()}',
+                                                                                      fit: BoxFit.cover,
+                                                                                    ),
+                                                                                  ),
+                                                                              ],
                                                                             ),
-                                                                        ],
-                                                                      ),
+                                                                          ),
+                                                                        ),
+
                                                                       // Padding(
                                                                       //   padding: const EdgeInsets.all(8.0),
                                                                       //   child: Row(
@@ -475,7 +555,7 @@ class _BlogAllState extends ConsumerState<BlogAll> {
                                                 child: ClipRRect(
                                                   // borderRadius: BorderRadius.circular(8),
                                                   child: Image.network(
-                                                    blogmodels[index].corver_img.toString(),
+                                                    '${MyConstant().domain}img/${blogmodels[index].corver_img.toString()}',
                                                     fit: BoxFit.cover,
                                                   ),
                                                 ),

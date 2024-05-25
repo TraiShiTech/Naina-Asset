@@ -200,7 +200,7 @@ class _AboutUs_AllState extends ConsumerState<AboutUs_All> {
                       // physics: const NeverScrollableScrollPhysics(),
                       itemBuilder: (context, index) {
                         final img = '${MyConstant().domain}img/${imgaboutUsAllmodels[index].img.toString()}';
-                        
+
                         return Padding(
                           padding: EdgeInsets.only(left: 36 * pad, right: 36 * pad),
                           child: AnimatedScale(

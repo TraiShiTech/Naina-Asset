@@ -823,12 +823,14 @@ class title1 extends StatelessWidget {
     return Text(
       text,
       style: GoogleFonts.poppins(
-          textStyle: TextStyle(
-        color: Color.fromRGBO(137, 125, 120, 1),
-        fontWeight: fw,
-        height: 1.5,
-        letterSpacing: 1,
-      )),
+        textStyle: TextStyle(
+          color: Color.fromRGBO(137, 125, 120, 1),
+          fontWeight: fw,
+          height: 1.5,
+          letterSpacing: 1,
+        ),
+      ),
+      textAlign: TextAlign.center,
     );
   }
 }

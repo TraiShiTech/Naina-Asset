@@ -8,6 +8,8 @@ import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:properties/Constant/Myconstant.dart';
 import 'package:properties/core/core.dart';
+import 'package:properties/core/models/management_typemodel.dart';
+import 'package:properties/core/models/partner_model.dart';
 import 'package:properties/core/models/review_model.dart';
 import 'package:http/http.dart' as http;
 import 'package:properties/core/utils/utils.dart';
@@ -27,6 +29,8 @@ class AboutUs extends StatefulWidget {
 class _AboutUsState extends State<AboutUs> {
 ///////----------------------------------------------->
   List<reviewmodel> reviewmodels = [];
+  List<PartnerModel> partnerModels = [];
+  List<Management_TypeModel> managementTypeModels = [];
 ///////----------------------------------------------->
   @override
   void initState() {
@@ -39,6 +43,8 @@ class _AboutUsState extends State<AboutUs> {
     //   }
     // });
     read_GC_reviewmodels();
+    read_GC_ManagementType();
+    read_GC_Partner();
     super.initState();
   }
 
@@ -73,6 +79,52 @@ class _AboutUsState extends State<AboutUs> {
       // print(reviewmodels);
       // read_isHover();
       // Map assetlist = {};
+    } catch (e) {}
+  }
+
+  ///////----------------------------------------------->  List<Management_TypeModel> managementTypeModels = [];
+  Future<Null> read_GC_ManagementType() async {
+    if (managementTypeModels.length != 0) {
+      managementTypeModels.clear();
+    }
+
+    String url = '${MyConstant().domain}/GC_Management_Type.php?isAdd=true';
+
+    try {
+      var response = await http.get(Uri.parse(url));
+
+      var result = json.decode(response.body);
+      // print(result);
+
+      for (var map in result) {
+        Management_TypeModel managementTypeModelss = Management_TypeModel.fromJson(map);
+        setState(() {
+          managementTypeModels.add(managementTypeModelss);
+        });
+      }
+    } catch (e) {}
+  }
+
+  ///////----------------------------------------------->    List<PartnerModel> partnerModels = [];
+  Future<Null> read_GC_Partner() async {
+    if (partnerModels.length != 0) {
+      partnerModels.clear();
+    }
+
+    String url = '${MyConstant().domain}/GC_Partner.php?isAdd=true';
+
+    try {
+      var response = await http.get(Uri.parse(url));
+
+      var result = json.decode(response.body);
+      // print(result);
+
+      for (var map in result) {
+        PartnerModel partnerModelss = PartnerModel.fromJson(map);
+        setState(() {
+          partnerModels.add(partnerModelss);
+        });
+      }
     } catch (e) {}
   }
 
@@ -229,10 +281,10 @@ class _AboutUsState extends State<AboutUs> {
                           ),
                           shrinkWrap: true,
                           physics: const NeverScrollableScrollPhysics(),
-                          itemCount: 8, // Number of items in the grid
+                          itemCount: managementTypeModels.length, // Number of items in the grid
                           itemBuilder: (BuildContext context, int index) {
                             // final img = index1 == 1 ? gride_image[index + 4] : gride_image[index];
-                            final img = gride_image[index];
+                            final img = '${MyConstant().domain}/img/${managementTypeModels[index].corver_img}';
                             return ClipRRect(
                               clipBehavior: Clip.antiAlias,
                               borderRadius: BorderRadius.circular(20),
@@ -242,6 +294,17 @@ class _AboutUsState extends State<AboutUs> {
                                 // height: 300,
                               ),
                             );
+                            // return Container(
+                            //     clipBehavior: Clip.antiAlias,
+                            //     padding: const EdgeInsets.all(16),
+                            //     alignment: Alignment.bottomLeft,
+                            //     decoration: BoxDecoration(
+                            //         image: DecorationImage(image: NetworkImage(img), fit: BoxFit.cover),
+                            //         borderRadius: BorderRadius.circular(16)),
+                            //     child: Text(
+                            //       '${managementTypeModels[index].name}',
+                            //       style: TextStyle(color: white, fontSize: 25, fontWeight: FontWeight.bold),
+                            //     ));
                           },
                         ),
                       ),
@@ -336,6 +399,7 @@ class _AboutUsState extends State<AboutUs> {
                       FractionallySizedBox(
                           widthFactor: 0.9,
                           child: Column(children: [
+                            const SizedBox(height: 20),
                             'Property Owner Reviews: Why let us look after your property?'.poppins(
                                 color: Color.fromRGBO(60, 60, 60, 1),
                                 fontSize: Metrics.isMobile(context) ? 12 : 25,
@@ -527,26 +591,13 @@ class _AboutUsState extends State<AboutUs> {
                                 fontWeight: FontWeight.w600,
                                 fontSize: isBigScreen == Metrics.isTablet(context) ? 15 : 20),
                           ),
-                          Image.network(
-                            'https://s3-alpha-sig.figma.com/img/1364/4a39/74b868d76c02b2f0c4cba2cd0a186b74?Expires=1716163200&Key-Pair-Id=APKAQ4GOSFWCVNEHN3O4&Signature=pBo8US~JrwBJiB5UmjSfltQn1VG67G-3U01ocKNYRN64rcX~Zx9ZczKgPpg1ozXhy1pZVGD9Dk~RmncNVa1fleBj3PMWnxvf-lXobnfKMQ24CCZmc5ksYp9LM3NbeRSwI5-eDBQZ9pXeCm4By9vnok3FkL77DjRpL8qAC5ckBBURzz1Pszymrz7IOi21mhzcUTokp-~8jxbJJf4KEB~83EQBjxjiOha1QsScfltQjehpFkCeFdeH8WJN6KO4F1fn-ESYusA9pduUiEcafE440KWhWV2oRDhkcY215lu3Ay16Et~g~w-i9AtQMHFiZTLF1vWgCzPXp0iKTkK~eIHwSg__',
-                            width: isBigScreen == Metrics.isTablet(context) ? 40 : 70,
-                            height: isBigScreen == Metrics.isTablet(context) ? 40 : 70,
-                          ),
-                          Image.network(
-                            'https://s3-alpha-sig.figma.com/img/3bbb/75c2/faf15c463c09ad26929ddcbc325a963f?Expires=1716163200&Key-Pair-Id=APKAQ4GOSFWCVNEHN3O4&Signature=H43Y4JZqD4rt9xKcKvvKWHHu5Ag~2Y~4bFB4eBDDsNbTZxqpZ-61ijJ44Bqya52CrnCN45tTTo7Q4qKTgF5D4Js9kwAvK0eVIZj-8zaNVeikfQMThYMZjjY~Bbcnd-1PAoiqVmJGPLd6ZYi10aDqXrhWkmH600nxpHO2EAk38UrK~zc1yVvicMwBm-PBhfCKyv32PwZRO8mD0bodZoaLYkJza1XNW8jggdM1iCY8RQttRiIzc5gLLu7pPnJPozNUc4PzWcDd4JfmSODv2gZrsVZ0A6S0SV9~L7CkXW6XChFxT-IAzy2q91a5FraFQ-2dv9ezgSSCAjM3EbOrrh2ejw__',
-                            width: isBigScreen == Metrics.isTablet(context) ? 40 : 70,
-                            height: isBigScreen == Metrics.isTablet(context) ? 40 : 70,
-                          ),
-                          Image.network(
-                            'https://s3-alpha-sig.figma.com/img/bcc9/03b4/05cb5f5488e95194aea6b5e70a9ae844?Expires=1716768000&Key-Pair-Id=APKAQ4GOSFWCVNEHN3O4&Signature=OzWkroZx0RYgvPxX6igR1m5QMkEWvatodZgmUnutjqFq4PIY3hrTY~V-vp1VCOzBRedaOe8uQy-QNF31Z9fsERWkGFNMtQaGrBsnybwmmVjl1UTT6Jd8y4YVGb7WNM9p6lSvn8rNp03PejnwBq-6fBOpq5A3M3sGQ7tU5TOdk0WopqI5DFuF7ZuEPavD15I3SAxvndepRpQNaAVZQ2YrAJhkglVE0QPkw12nFOqZMg~10r0XCLZ5EnQoAo8OGoI9ZjZ2U5j3a8-nohcRPwUNmbdqwjV-qLWm9vpA~nd-FR-xfuHdG~nesIImJjzPRKqcCFd2IzV2XK47Q-tJgsid3Q__',
-                            width: isBigScreen == Metrics.isTablet(context) ? 40 : 70,
-                            height: isBigScreen == Metrics.isTablet(context) ? 40 : 70,
-                          ),
-                          Image.network(
-                            'https://s3-alpha-sig.figma.com/img/41d6/449e/c1260892f94e05edb74aff5285a7ad39?Expires=1716163200&Key-Pair-Id=APKAQ4GOSFWCVNEHN3O4&Signature=R6NH1yqKYC2gPDwk3bVxTYxCqpqWQ0rw3yw3vD4AKMnxQDQyHi6RoNOfOnrxnTWvB4LaRvFMElKzDeEvSpUgBJQr4JOET6vsYqQXGBkui-asrF-tEOjLTy7knciauSFHxoDO0x0U3~NMJciFBODdorY1NO4dWjNyl6Dpk7C4t9Zgl~BiLPhWlTNaVE7vqHEKNbusNLk4EHQ9TlCXREkS5WsA2smT5vev8dnXz4DXaBF63JZLq8Kfpn31tORTMIaxzROjX3qO9jJELIZAVNPMq~HnCo8YY-lpU40D9TcuRE1DK8UNmRIahFt7SG7wrgN8jQXyMG~9NxdHuCne4Xtq-w__',
-                            width: isBigScreen == Metrics.isTablet(context) ? 40 : 70,
-                            height: isBigScreen == Metrics.isTablet(context) ? 40 : 70,
-                          ),
+                          if (partnerModels.isNotEmpty)
+                            for (int index = 0; index < partnerModels.length; index++)
+                              Image.network(
+                                '${MyConstant().domain}img/${partnerModels[index].corver_img}',
+                                width: isBigScreen == Metrics.isTablet(context) ? 40 : 70,
+                                height: isBigScreen == Metrics.isTablet(context) ? 40 : 70,
+                              ),
                         ],
                       ),
                     ))
@@ -569,26 +620,13 @@ class _AboutUsState extends State<AboutUs> {
                         fontWeight: FontWeight.w600,
                         fontSize: isBigScreen == Metrics.isTablet(context) ? 15 : 20),
                   ),
-                  Image.network(
-                    'https://s3-alpha-sig.figma.com/img/1364/4a39/74b868d76c02b2f0c4cba2cd0a186b74?Expires=1716163200&Key-Pair-Id=APKAQ4GOSFWCVNEHN3O4&Signature=pBo8US~JrwBJiB5UmjSfltQn1VG67G-3U01ocKNYRN64rcX~Zx9ZczKgPpg1ozXhy1pZVGD9Dk~RmncNVa1fleBj3PMWnxvf-lXobnfKMQ24CCZmc5ksYp9LM3NbeRSwI5-eDBQZ9pXeCm4By9vnok3FkL77DjRpL8qAC5ckBBURzz1Pszymrz7IOi21mhzcUTokp-~8jxbJJf4KEB~83EQBjxjiOha1QsScfltQjehpFkCeFdeH8WJN6KO4F1fn-ESYusA9pduUiEcafE440KWhWV2oRDhkcY215lu3Ay16Et~g~w-i9AtQMHFiZTLF1vWgCzPXp0iKTkK~eIHwSg__',
-                    width: isBigScreen == Metrics.isTablet(context) ? 40 : 70,
-                    height: isBigScreen == Metrics.isTablet(context) ? 40 : 70,
-                  ),
-                  Image.network(
-                    'https://s3-alpha-sig.figma.com/img/3bbb/75c2/faf15c463c09ad26929ddcbc325a963f?Expires=1716163200&Key-Pair-Id=APKAQ4GOSFWCVNEHN3O4&Signature=H43Y4JZqD4rt9xKcKvvKWHHu5Ag~2Y~4bFB4eBDDsNbTZxqpZ-61ijJ44Bqya52CrnCN45tTTo7Q4qKTgF5D4Js9kwAvK0eVIZj-8zaNVeikfQMThYMZjjY~Bbcnd-1PAoiqVmJGPLd6ZYi10aDqXrhWkmH600nxpHO2EAk38UrK~zc1yVvicMwBm-PBhfCKyv32PwZRO8mD0bodZoaLYkJza1XNW8jggdM1iCY8RQttRiIzc5gLLu7pPnJPozNUc4PzWcDd4JfmSODv2gZrsVZ0A6S0SV9~L7CkXW6XChFxT-IAzy2q91a5FraFQ-2dv9ezgSSCAjM3EbOrrh2ejw__',
-                    width: isBigScreen == Metrics.isTablet(context) ? 40 : 70,
-                    height: isBigScreen == Metrics.isTablet(context) ? 40 : 70,
-                  ),
-                  Image.network(
-                    'https://s3-alpha-sig.figma.com/img/bcc9/03b4/05cb5f5488e95194aea6b5e70a9ae844?Expires=1716768000&Key-Pair-Id=APKAQ4GOSFWCVNEHN3O4&Signature=OzWkroZx0RYgvPxX6igR1m5QMkEWvatodZgmUnutjqFq4PIY3hrTY~V-vp1VCOzBRedaOe8uQy-QNF31Z9fsERWkGFNMtQaGrBsnybwmmVjl1UTT6Jd8y4YVGb7WNM9p6lSvn8rNp03PejnwBq-6fBOpq5A3M3sGQ7tU5TOdk0WopqI5DFuF7ZuEPavD15I3SAxvndepRpQNaAVZQ2YrAJhkglVE0QPkw12nFOqZMg~10r0XCLZ5EnQoAo8OGoI9ZjZ2U5j3a8-nohcRPwUNmbdqwjV-qLWm9vpA~nd-FR-xfuHdG~nesIImJjzPRKqcCFd2IzV2XK47Q-tJgsid3Q__',
-                    width: isBigScreen == Metrics.isTablet(context) ? 40 : 70,
-                    height: isBigScreen == Metrics.isTablet(context) ? 40 : 70,
-                  ),
-                  Image.network(
-                    'https://s3-alpha-sig.figma.com/img/41d6/449e/c1260892f94e05edb74aff5285a7ad39?Expires=1716163200&Key-Pair-Id=APKAQ4GOSFWCVNEHN3O4&Signature=R6NH1yqKYC2gPDwk3bVxTYxCqpqWQ0rw3yw3vD4AKMnxQDQyHi6RoNOfOnrxnTWvB4LaRvFMElKzDeEvSpUgBJQr4JOET6vsYqQXGBkui-asrF-tEOjLTy7knciauSFHxoDO0x0U3~NMJciFBODdorY1NO4dWjNyl6Dpk7C4t9Zgl~BiLPhWlTNaVE7vqHEKNbusNLk4EHQ9TlCXREkS5WsA2smT5vev8dnXz4DXaBF63JZLq8Kfpn31tORTMIaxzROjX3qO9jJELIZAVNPMq~HnCo8YY-lpU40D9TcuRE1DK8UNmRIahFt7SG7wrgN8jQXyMG~9NxdHuCne4Xtq-w__',
-                    width: isBigScreen == Metrics.isTablet(context) ? 40 : 70,
-                    height: isBigScreen == Metrics.isTablet(context) ? 40 : 70,
-                  ),
+                  if (partnerModels.isNotEmpty)
+                    for (int index = 0; index < partnerModels.length; index++)
+                      Image.network(
+                        '${MyConstant().domain}img/${partnerModels[index].corver_img}',
+                        width: isBigScreen == Metrics.isTablet(context) ? 40 : 70,
+                        height: isBigScreen == Metrics.isTablet(context) ? 40 : 70,
+                      ),
                 ],
               ),
             ),

@@ -678,7 +678,7 @@ class _RentDetailsState extends ConsumerState<RentDetails> {
                             SizedBox(
                               height: 60,
                             ),
-                            if (Metrics.isMobile(context))
+                            if (Metrics.isMobile(context) || Metrics.isTablet(context) || Metrics.isCompact(context))
                               Container(
                                 width: double.infinity,
                                 padding: EdgeInsets.all(20),

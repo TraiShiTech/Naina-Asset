@@ -10,6 +10,7 @@ import 'package:properties/app/widgets/base_container.dart';
 import 'package:properties/app/widgets/how_it_work_card_item.dart';
 import 'package:properties/core/core.dart';
 import 'package:http/http.dart' as http;
+import 'package:properties/core/models/management_typemodel.dart';
 import '../Constant/Myconstant.dart';
 import '../core/models/list_withUs_model.dart';
 import '../core/models/package_model.dart';
@@ -41,6 +42,7 @@ class _WistUsState extends ConsumerState<WistUs> {
   ///////----------------------------------------------->
   List<packagemodel> packagemodels = [];
   List<ListWithUsModel> ListWithUsModels = [];
+  List<Management_TypeModel> managementTypeModels = [];
   List<bool> isHover = [];
   List<String> gride_image = [
     'https://s3-alpha-sig.figma.com/img/9879/be65/cb78d9f230682212edb7f9f15137b65b?Expires=1716768000&Key-Pair-Id=APKAQ4GOSFWCVNEHN3O4&Signature=jMU29Pk~LhuZ5hxRlQpNF3UNjp~j2n5FgnUXX25zIYO~V3zdGdSwpbn-gQyBWGfH4MYH3D-cYz5A0MmIqq0WB6pePq~RlYPkZPDxKnB6qsvV8ofqbECcwi~hn7Kg6i0U7gQcWTOd8TiPTmIyEqMkjXo~raoMD-69adA8FCcplv-zQldleZkz1AyEV76W4ZvpFIsYhVHFo5ZENzIZcgK2dHLT8orFTUN4iT0pZfTWtRhb0SYbc-5NuWfOoi7~PJyf111FRT-mgCp8RNkojR27WpKbJ5ZA5QYqsXlFmmt8c0LfqL28XX0GUuLxAbLDlboPw11Jb5UBJ-hW70Wy9cr0kw__',
@@ -80,6 +82,7 @@ class _WistUsState extends ConsumerState<WistUs> {
       viewportFraction: 0.25,
     );
     read_GC_PackagAll();
+    read_GC_ManagementType();
     read_GC_ListWithUsAll();
     super.initState();
   }
@@ -89,6 +92,29 @@ class _WistUsState extends ConsumerState<WistUs> {
     _controller.dispose();
     _baseController.dispose();
     super.dispose();
+  }
+
+  ///////----------------------------------------------->  List<Management_TypeModel> managementTypeModels = [];
+  Future<Null> read_GC_ManagementType() async {
+    if (managementTypeModels.length != 0) {
+      managementTypeModels.clear();
+    }
+
+    String url = '${MyConstant().domain}/GC_Management_Type.php?isAdd=true';
+
+    try {
+      var response = await http.get(Uri.parse(url));
+
+      var result = json.decode(response.body);
+      // print(result);
+
+      for (var map in result) {
+        Management_TypeModel managementTypeModelss = Management_TypeModel.fromJson(map);
+        setState(() {
+          managementTypeModels.add(managementTypeModelss);
+        });
+      }
+    } catch (e) {}
   }
 
 ///////----------------------------------------------->
@@ -731,6 +757,14 @@ class _WistUsState extends ConsumerState<WistUs> {
                           ),
                         ),
                         const SizedBox(height: 34),
+                        Align(
+                          alignment: Alignment.center,
+                          child: 'Management'.poppins(
+                            color: Color.fromRGBO(72, 72, 72, 1),
+                            fontSize: 25 + 4 * pad,
+                          ),
+                        ),
+                        const SizedBox(height: 34),
                         Center(
                           child: FractionallySizedBox(
                             widthFactor: 0.9,
@@ -750,11 +784,12 @@ class _WistUsState extends ConsumerState<WistUs> {
                               ),
                               shrinkWrap: true,
                               physics: const NeverScrollableScrollPhysics(),
-                              itemCount: 8, // Number of items in the grid
+                              itemCount: managementTypeModels.length, // Number of items in the grid
                               itemBuilder: (BuildContext context, int index) {
                                 // final img = index1 == 1 ? gride_image[index + 4] : gride_image[index];
-                                final img = gride_image[index];
-                                final title = gride_title[index];
+                                // final img = gride_image[index];
+                                final img = '${MyConstant().domain}/img/${managementTypeModels[index].corver_img}';
+                                final title = '${managementTypeModels[index].name}';
                                 return AspectRatio(
                                   aspectRatio: 9 / 8,
                                   child: Container(
