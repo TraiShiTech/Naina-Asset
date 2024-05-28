@@ -607,7 +607,7 @@ class _RentDetailsState extends ConsumerState<RentDetails> {
                                                 image: DecorationImage(
                                                     fit: BoxFit.cover,
                                                     image: NetworkImage(
-                                                      main_img == '' ? '${assetmodels[0].corver_img}' : '$main_img',
+                                                      main_img == '' ? '${MyConstant().domain}img/${assetmodels[0].corver_img}' : '$main_img',
                                                     ))),
                                             child: main_img == ''
                                                 ? Container()
@@ -658,11 +658,11 @@ class _RentDetailsState extends ConsumerState<RentDetails> {
                                                   return InkWell(
                                                       onTap: () async {
                                                         setState(() {
-                                                          main_img = '${imgassetAllmodels[index].img}';
+                                                          main_img = '${MyConstant().domain}img/${imgassetAllmodels[index].img}';
                                                         });
                                                       },
                                                       child: Image(
-                                                        image: NetworkImage('${imgassetAllmodels[index].img}'),
+                                                        image: NetworkImage('${MyConstant().domain}img/${imgassetAllmodels[index].img}'),
                                                         fit: BoxFit.cover,
                                                       ));
                                                   // }

@@ -542,7 +542,7 @@ class _HowItWorksState extends State<HowItWorks> {
                                                         child: ClipRRect(
                                                           borderRadius: BorderRadius.circular(20),
                                                           child: Image.network(
-                                                            '${assetmodels[index].corverImg}',
+                                                            '${MyConstant().domain}img/${assetmodels[index].corverImg}',
                                                             fit: BoxFit.cover,
                                                             alignment: Alignment.center,
                                                           ),

@@ -222,6 +222,8 @@ class _RentAllState extends ConsumerState<RentAll> {
                     ),
                   ),
                   const SizedBox(height: 80),
+                  
+                  const SizedBox(height: 80),
                   BaseContainer(
                       child: Column(
                           crossAxisAlignment:
@@ -518,7 +520,7 @@ class _RentAllState extends ConsumerState<RentAll> {
                                                         child: ClipRRect(
                                                           borderRadius: BorderRadius.circular(20),
                                                           child: Image.network(
-                                                            '${ass[index].corverImg}',
+                                                            '${MyConstant().domain}img/${ass[index].corverImg}',
                                                             fit: BoxFit.cover,
                                                             alignment: Alignment.center,
                                                           ),
