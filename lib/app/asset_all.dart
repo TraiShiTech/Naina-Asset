@@ -1,5 +1,7 @@
 import 'dart:convert';
+import 'dart:developer';
 import 'dart:js';
+import 'dart:math';
 // import 'dart:ffi';
 
 import 'package:flutter/cupertino.dart';
@@ -11,12 +13,16 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:properties/Constant/Myconstant.dart';
 import 'package:properties/app/layouts/header/header_asset_all.dart';
 import 'package:properties/app/layouts/how_it_works/how_it_works.dart';
+import 'package:properties/app/service.dart';
+import 'package:properties/app/service_all.dart';
 import 'package:properties/app/widgets/base_container.dart';
 import 'package:properties/app/widgets/how_it_work_card_item.dart';
 import 'package:properties/core/core.dart';
 import 'package:properties/core/models/management_model.dart';
+import 'package:properties/core/models/management_typemodel.dart';
 import 'package:properties/core/models/review_model.dart';
 import 'package:http/http.dart' as http;
+import 'package:properties/core/models/service_type_model.dart';
 import 'package:properties/core/theme/app_colors.dart';
 import 'package:properties/core/utils/metrics.dart';
 import 'package:properties/core/utils/utils.dart';
@@ -39,7 +45,9 @@ class _AssetAllState extends ConsumerState<AssetAll> {
 ///////----------------------------------------------->
   late ScrollController _baseController;
   List<reviewmodel> reviewmodels = [];
+  List<Service_TypeModel> service_TypeModels = [];
   List<ManagementModel> ManagementModels = [];
+  List<Management_TypeModel> managementTypeModels = [];
   final GlobalKey _headerKey = GlobalKey();
 
 ///////----------------------------------------------->
@@ -55,6 +63,8 @@ class _AssetAllState extends ConsumerState<AssetAll> {
     });
     read_GC_reviewmodels();
     read_GC_Management();
+    read_GC_ManagementType();
+    read_GC_ServiceType();
     super.initState();
   }
 
@@ -67,6 +77,52 @@ class _AssetAllState extends ConsumerState<AssetAll> {
 ///////----------------------------------------------->
   Future scrollToItem(GlobalKey key) async {
     await Scrollable.ensureVisible(key.currentContext!, duration: const Duration(milliseconds: 480));
+  }
+
+  ///////----------------------------------------------->  List<Management_TypeModel> managementTypeModels = [];
+  Future<Null> read_GC_ManagementType() async {
+    if (managementTypeModels.length != 0) {
+      managementTypeModels.clear();
+    }
+
+    String url = '${MyConstant().domain}/GC_Management_Type.php?isAdd=true';
+
+    try {
+      var response = await http.get(Uri.parse(url));
+
+      var result = json.decode(response.body);
+      // print(result);
+
+      for (var map in result) {
+        Management_TypeModel managementTypeModelss = Management_TypeModel.fromJson(map);
+        setState(() {
+          managementTypeModels.add(managementTypeModelss);
+        });
+      }
+    } catch (e) {}
+  }
+
+///////----------------------------------------------->List<Service_TypeModel> service_TypeModels = [];
+  Future<Null> read_GC_ServiceType() async {
+    if (service_TypeModels.length != 0) {
+      service_TypeModels.clear();
+    }
+
+    String url = '${MyConstant().domain}/GC_Services_Type.php?isAdd=true';
+
+    try {
+      var response = await http.get(Uri.parse(url));
+
+      var result = json.decode(response.body);
+      // print(result);
+
+      for (var map in result) {
+        Service_TypeModel service_TypeModelss = Service_TypeModel.fromJson(map);
+        setState(() {
+          service_TypeModels.add(service_TypeModelss);
+        });
+      }
+    } catch (e) {}
   }
 
   ///////----------------------------------------------->  List<ManagementModel> ManagementModels = [];
@@ -171,9 +227,26 @@ class _AssetAllState extends ConsumerState<AssetAll> {
 
     final isBigScreen = Metrics.isDesktop(context) || Metrics.isTablet(context);
     final pad1 = isBigScreen ? 0.0 : normalize(min: 576, max: 976, data: Metrics.width(context));
-    if (ManagementModels.isEmpty) {
-      read_GC_Management();
-    }
+    // if (ManagementModels.isEmpty || managementTypeModels.isEmpty) {
+    //   read_GC_Management();
+    //   read_GC_ManagementType();
+    // }
+
+    // List Mtype = [];
+    // List Mtype1 = [];
+    // int index = 0;
+    // for (var element in managementTypeModels) {
+    //   print(element.ser);
+    //   var m = ManagementModels[0].ser_type!.split(',');
+    //   var m1 = ManagementModels[1].ser_type!.split(',');
+    //   if (m.where((ee) => ee == element.ser).isNotEmpty) {
+    //     Mtype.add(element);
+    //   }
+    //   if (m1.where((ee) => ee == element.ser).isNotEmpty) {
+    //     Mtype1.add(element);
+    //   }
+    //   index = index++;
+    // }
     return Scaffold(
       backgroundColor: white,
       body: SizedBox(
@@ -213,109 +286,110 @@ class _AssetAllState extends ConsumerState<AssetAll> {
                   ),
                   const SizedBox(height: 48),
 
-                  FractionallySizedBox(
-                    widthFactor: 0.9,
-                    child: Column(
-                      children: [
-                        if (Metrics.isMobile(context) || Metrics.isCompact(context) || Metrics.isTablet(context))
-                          const SizedBox(
-                            height: 500,
-                            child: Column(
-                              children: [
-                                tag(
-                                  img: 'images/82931e3de9e258f8d41ea43191d784c5s.png',
-                                  title: 'Lease Out Your Property',
-                                  subtitle:
-                                      'Stay with us ease-free at our handpicked properties at prime locations in Chiang Mai, Thailand! ',
-                                ),
-                                tag(
-                                  img: 'images/82931e3de9e258f8d41ea43191d784c5d.png',
-                                  title: 'Maintenance Services',
-                                  subtitle: 'property listings, bookings, guest communications, full management',
-                                ),
-                                tag(
-                                  img: 'images/82931e3de9e258f8d41ea43191d784c5df.png',
-                                  title: 'Guest Communications',
-                                  subtitle:
-                                      'In need of property maintenance services i.e. repairs, cleanings, gardening ? We’re here to help!',
-                                ),
-                              ],
-                            ),
-                          ),
-                        if (Metrics.isDesktop(context))
-                          const Row(
-                            children: [
-                              tag(
-                                img: 'images/82931e3de9e258f8d41ea43191d784c5s.png',
-                                title: 'Lease Out Your Property',
-                                subtitle:
-                                    'Stay with us ease-free at our handpicked properties at prime locations in Chiang Mai, Thailand! ',
-                              ),
-                              tag(
-                                img: 'images/82931e3de9e258f8d41ea43191d784c5d.png',
-                                title: 'Maintenance Services',
-                                subtitle: 'property listings, bookings, guest communications, full management',
-                              ),
-                              tag(
-                                img: 'images/82931e3de9e258f8d41ea43191d784c5df.png',
-                                title: 'Guest Communications',
-                                subtitle:
-                                    'In need of property maintenance services i.e. repairs, cleanings, gardening ? We’re here to help!',
-                              ),
-                            ],
-                          )
-                      ],
-                    ),
+                  // FractionallySizedBox(
+                  //   widthFactor: 0.9,
+                  //   child:
+                  //   // Column(
+                  //   //   children: [
+                  //   //     if (Metrics.isMobile(context) || Metrics.isCompact(context) || Metrics.isTablet(context))
+                  //   //       const SizedBox(
+                  //   //         height: 500,
+                  //   //         child: Column(
+                  //   //           children: [
+                  //   //             tag(
+                  //   //               img: 'images/82931e3de9e258f8d41ea43191d784c5s.png',
+                  //   //               title: 'Lease Out Your Property',
+                  //   //               subtitle:
+                  //   //                   'Stay with us ease-free at our handpicked properties at prime locations in Chiang Mai, Thailand! ',
+                  //   //             ),
+                  //   //             tag(
+                  //   //               img: 'images/82931e3de9e258f8d41ea43191d784c5d.png',
+                  //   //               title: 'Maintenance Services',
+                  //   //               subtitle: 'property listings, bookings, guest communications, full management',
+                  //   //             ),
+                  //   //             tag(
+                  //   //               img: 'images/82931e3de9e258f8d41ea43191d784c5df.png',
+                  //   //               title: 'Guest Communications',
+                  //   //               subtitle:
+                  //   //                   'In need of property maintenance services i.e. repairs, cleanings, gardening ? We’re here to help!',
+                  //   //             ),
+                  //   //           ],
+                  //   //         ),
+                  //   //       ),
+                  //   //     if (Metrics.isDesktop(context))
+                  //   //       const Row(
+                  //   //         children: [
+                  //   //           tag(
+                  //   //             img: 'images/82931e3de9e258f8d41ea43191d784c5s.png',
+                  //   //             title: 'Lease Out Your Property',
+                  //   //             subtitle:
+                  //   //                 'Stay with us ease-free at our handpicked properties at prime locations in Chiang Mai, Thailand! ',
+                  //   //           ),
+                  //   //           tag(
+                  //   //             img: 'images/82931e3de9e258f8d41ea43191d784c5d.png',
+                  //   //             title: 'Maintenance Services',
+                  //   //             subtitle: 'property listings, bookings, guest communications, full management',
+                  //   //           ),
+                  //   //           tag(
+                  //   //             img: 'images/82931e3de9e258f8d41ea43191d784c5df.png',
+                  //   //             title: 'Guest Communications',
+                  //   //             subtitle:
+                  //   //                 'In need of property maintenance services i.e. repairs, cleanings, gardening ? We’re here to help!',
+                  //   //           ),
+                  //   //         ],
+                  //   //       )
+                  //   //   ],
+                  //   // ),
 
-                    // Column(
-                    //   children: [
+                  //   // Column(
+                  //   //   children: [
 
-                    //     // if (isBigScreen)
-                    //     //   Row(
-                    //     //     crossAxisAlignment: CrossAxisAlignment.start,
-                    //     //     children: List.generate(
-                    //     //       cards.length,
-                    //     //       (index) => HowItWorksCardItem(
-                    //     //         item: cards[index],
-                    //     //       ),
-                    //     //     ),
-                    //     //   ),
-                    //     // if (Metrics.isCompact(context))
-                    //     //   Row(
-                    //     //     crossAxisAlignment: CrossAxisAlignment.start,
-                    //     //     children: List.generate(
-                    //     //       2,
-                    //     //       (index) => HowItWorksCardItem(
-                    //     //         item: cards[index],
-                    //     //       ),
-                    //     //     ),
-                    //     //   ),
-                    //     // if (Metrics.isCompact(context))
-                    //     //   Row(
-                    //     //     crossAxisAlignment: CrossAxisAlignment.start,
-                    //     //     children: List.generate(
-                    //     //       2,
-                    //     //       (index) => HowItWorksCardItem(
-                    //     //         item: cards[index + 2],
-                    //     //       ),
-                    //     //     ),
-                    //     //   ),
-                    //     // if (Metrics.isMobile(context))
-                    //     //   Column(
-                    //     //     children: List.generate(
-                    //     //       cards.length,
-                    //     //       (index) => Row(
-                    //     //         children: [
-                    //     //           HowItWorksCardItem(
-                    //     //             item: cards[index],
-                    //     //           ),
-                    //     //         ],
-                    //     //       ),
-                    //     //     ),
-                    //     //   ),
-                    //   ],
-                    // ),
-                  ),
+                  //   //     // if (isBigScreen)
+                  //   //     //   Row(
+                  //   //     //     crossAxisAlignment: CrossAxisAlignment.start,
+                  //   //     //     children: List.generate(
+                  //   //     //       cards.length,
+                  //   //     //       (index) => HowItWorksCardItem(
+                  //   //     //         item: cards[index],
+                  //   //     //       ),
+                  //   //     //     ),
+                  //   //     //   ),
+                  //   //     // if (Metrics.isCompact(context))
+                  //   //     //   Row(
+                  //   //     //     crossAxisAlignment: CrossAxisAlignment.start,
+                  //   //     //     children: List.generate(
+                  //   //     //       2,
+                  //   //     //       (index) => HowItWorksCardItem(
+                  //   //     //         item: cards[index],
+                  //   //     //       ),
+                  //   //     //     ),
+                  //   //     //   ),
+                  //   //     // if (Metrics.isCompact(context))
+                  //   //     //   Row(
+                  //   //     //     crossAxisAlignment: CrossAxisAlignment.start,
+                  //   //     //     children: List.generate(
+                  //   //     //       2,
+                  //   //     //       (index) => HowItWorksCardItem(
+                  //   //     //         item: cards[index + 2],
+                  //   //     //       ),
+                  //   //     //     ),
+                  //   //     //   ),
+                  //   //     // if (Metrics.isMobile(context))
+                  //   //     //   Column(
+                  //   //     //     children: List.generate(
+                  //   //     //       cards.length,
+                  //   //     //       (index) => Row(
+                  //   //     //         children: [
+                  //   //     //           HowItWorksCardItem(
+                  //   //     //             item: cards[index],
+                  //   //     //           ),
+                  //   //     //         ],
+                  //   //     //       ),
+                  //   //     //     ),
+                  //   //     //   ),
+                  //   //   ],
+                  //   // ),
+                  // ),
 
                   const SizedBox(height: 80),
                   BaseContainer(
@@ -323,131 +397,79 @@ class _AssetAllState extends ConsumerState<AssetAll> {
                           crossAxisAlignment:
                               Metrics.isMobile(context) ? CrossAxisAlignment.center : CrossAxisAlignment.start,
                           children: [
-                        // Asset_Management()
-                        Stack(
-                          children: [
-                            Center(
-                              child: FractionallySizedBox(
-                                widthFactor: 0.95,
-                                child: Container(
-                                  margin: EdgeInsets.symmetric(vertical: 50, horizontal: 10),
-                                  padding: EdgeInsets.all(20),
-                                  decoration: BoxDecoration(
-                                    color: white,
-                                    borderRadius: BorderRadius.circular(10),
-                                    boxShadow: [
-                                      BoxShadow(
-                                        color: textPrimary.withOpacity(0.15),
-                                        offset: const Offset(0, 6),
-                                        blurRadius: 10,
-                                      ),
-                                    ],
-                                  ),
-                                  child: Column(
-                                    children: [
-                                      FractionallySizedBox(
-                                        widthFactor: 0.9,
-                                        child: Padding(
-                                          padding: const EdgeInsets.symmetric(vertical: 10.0),
-                                          child: Metrics.isMobile(context)
-                                              ? Column(
-                                                  children: [
-                                                    Padding(
-                                                      padding: const EdgeInsets.all(20.0),
-                                                      child: Column(
-                                                        crossAxisAlignment: CrossAxisAlignment.center,
-                                                        mainAxisAlignment: MainAxisAlignment.center,
-                                                        children: [
-                                                          '${ManagementModels[0].commission}%'.poppins(
-                                                              fontSize: 40,
-                                                              fontWeight: FontWeight.bold,
-                                                              color: Color.fromRGBO(72, 72, 72, 1),
-                                                              textAlign: TextAlign.center),
-                                                          'Commission Fee'.poppins(
-                                                              fontSize: 20,
-                                                              fontWeight: FontWeight.bold,
-                                                              color: Color.fromRGBO(72, 72, 72, 1),
-                                                              textAlign: TextAlign.center),
-                                                          '+ Renovation Fee*'.poppins(
-                                                              fontSize: 18,
-                                                              fontWeight: FontWeight.w400,
-                                                              color: Color.fromRGBO(72, 72, 72, 1),
-                                                              textAlign: TextAlign.center),
-                                                        ],
-                                                      ),
-                                                    ),
-                                                    Padding(
-                                                      padding: const EdgeInsets.all(8.0),
-                                                      child: Column(
-                                                        mainAxisAlignment: MainAxisAlignment.center,
-                                                        crossAxisAlignment: CrossAxisAlignment.start,
-                                                        children: [
-                                                          Padding(
-                                                            padding: const EdgeInsets.symmetric(vertical: 16.0),
-                                                            child: 'Inclusive Services'.poppins(
+                        for (int index1 = 0; index1 < ManagementModels.length; index1++)
+                          // Asset_Management()
+                          Stack(
+                            children: [
+                              Center(
+                                child: FractionallySizedBox(
+                                  widthFactor: 0.95,
+                                  child: Container(
+                                    margin: EdgeInsets.symmetric(vertical: 50, horizontal: 10),
+                                    padding: EdgeInsets.all(20),
+                                    decoration: BoxDecoration(
+                                      color: white,
+                                      borderRadius: BorderRadius.circular(10),
+                                      boxShadow: [
+                                        BoxShadow(
+                                          color: textPrimary.withOpacity(0.15),
+                                          offset: const Offset(0, 6),
+                                          blurRadius: 10,
+                                        ),
+                                      ],
+                                    ),
+                                    child: Column(
+                                      children: [
+                                        FractionallySizedBox(
+                                          widthFactor: 0.9,
+                                          child: Padding(
+                                            padding: const EdgeInsets.symmetric(vertical: 10.0),
+                                            child: Metrics.isMobile(context)
+                                                ? Column(
+                                                    children: [
+                                                      Padding(
+                                                        padding: const EdgeInsets.all(20.0),
+                                                        child: Column(
+                                                          crossAxisAlignment: CrossAxisAlignment.center,
+                                                          mainAxisAlignment: MainAxisAlignment.center,
+                                                          children: [
+                                                            '${ManagementModels[index1].commission}%'.poppins(
+                                                                fontSize: 40,
+                                                                fontWeight: FontWeight.bold,
+                                                                color: Color.fromRGBO(72, 72, 72, 1),
+                                                                textAlign: TextAlign.center),
+                                                            'Commission Fee'.poppins(
                                                                 fontSize: 20,
-                                                                fontWeight: FontWeight.w600,
-                                                                color: Color.fromRGBO(72, 72, 72, 1)),
-                                                          ),
-                                                          Container(
-                                                            padding: const EdgeInsets.all(0.0),
-                                                            child:
-                                                                // '    \n With over 10+ years of experience in real estate industry, we are a real estate development company, which achieves the maximum benefit by meeting the needs of customers and investors. We have a new generation team that understands market trends. When you need the help fornew investors, we have experts to guide you. Don\'t worry about contacting us. Because we always have good suggestions.'
+                                                                fontWeight: FontWeight.bold,
+                                                                color: Color.fromRGBO(72, 72, 72, 1),
+                                                                textAlign: TextAlign.center),
+                                                            '+ Renovation Fee*'.poppins(
+                                                                fontSize: 18,
+                                                                fontWeight: FontWeight.w400,
+                                                                color: Color.fromRGBO(72, 72, 72, 1),
+                                                                textAlign: TextAlign.center),
+                                                          ],
+                                                        ),
+                                                      ),
+                                                      Padding(
+                                                        padding: const EdgeInsets.all(8.0),
+                                                        child: Column(
+                                                          mainAxisAlignment: MainAxisAlignment.center,
+                                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                                          children: [
+                                                            Padding(
+                                                              padding: const EdgeInsets.symmetric(vertical: 16.0),
+                                                              child: 'Inclusive Services'.poppins(
+                                                                  fontSize: 20,
+                                                                  fontWeight: FontWeight.w600,
+                                                                  color: Color.fromRGBO(72, 72, 72, 1)),
+                                                            ),
+                                                            Container(
+                                                              padding: const EdgeInsets.all(0.0),
+                                                              child:
+                                                                  // '    \n With over 10+ years of experience in real estate industry, we are a real estate development company, which achieves the maximum benefit by meeting the needs of customers and investors. We have a new generation team that understands market trends. When you need the help fornew investors, we have experts to guide you. Don\'t worry about contacting us. Because we always have good suggestions.'
 
-                                                                '${ManagementModels[0].content}${ManagementModels[0].content_sub1}${ManagementModels[0].content_sub2}${ManagementModels[0].content_sub3}'
-                                                                    .poppins(
-                                                                        fontSize: 18,
-                                                                        fontWeight: FontWeight.w400,
-                                                                        textAlign: TextAlign.center,
-                                                                        color: Color.fromRGBO(72, 72, 72, 1)),
-                                                          ),
-                                                        ],
-                                                      ),
-                                                    )
-                                                  ],
-                                                )
-                                              : Row(
-                                                  children: [
-                                                    Padding(
-                                                      padding: const EdgeInsets.all(40.0),
-                                                      child: Column(
-                                                        crossAxisAlignment: CrossAxisAlignment.center,
-                                                        mainAxisAlignment: MainAxisAlignment.center,
-                                                        children: [
-                                                          '${ManagementModels[0].commission}%'.poppins(
-                                                              fontSize: 40,
-                                                              fontWeight: FontWeight.bold,
-                                                              color: Color.fromRGBO(72, 72, 72, 1)),
-                                                          'Commission Fee'.poppins(
-                                                              fontSize: 20,
-                                                              fontWeight: FontWeight.bold,
-                                                              color: Color.fromRGBO(72, 72, 72, 1)),
-                                                          '+ Renovation Fee*'.poppins(
-                                                              fontSize: 18,
-                                                              fontWeight: FontWeight.w400,
-                                                              color: Color.fromRGBO(72, 72, 72, 1)),
-                                                        ],
-                                                      ),
-                                                    ),
-                                                    Expanded(
-                                                      child: Padding(
-                                                        padding: const EdgeInsets.all(8.0),
-                                                        child: Column(
-                                                          mainAxisAlignment: MainAxisAlignment.center,
-                                                          crossAxisAlignment: CrossAxisAlignment.start,
-                                                          children: [
-                                                            Padding(
-                                                              padding: const EdgeInsets.symmetric(vertical: 16.0),
-                                                              child: 'Inclusive Services'.poppins(
-                                                                  fontSize: 20,
-                                                                  fontWeight: FontWeight.w600,
-                                                                  color: Color.fromRGBO(72, 72, 72, 1)),
-                                                            ),
-                                                            Container(
-                                                              padding: const EdgeInsets.all(16.0),
-                                                              child:
-                                                                  // '    \n With over 10+ years of experience in real estate industry, we are a real estate development company, which achieves the maximum benefit by meeting the needs of customers and investors. We have a new generation team that understands market trends. When you need the help fornew investors, we have experts to guide you. Don\'t worry about contacting us. Because we always have good suggestions.'
-                                                                  '${ManagementModels[0].content}${ManagementModels[0].content_sub1}${ManagementModels[0].content_sub2}${ManagementModels[0].content_sub3}'
+                                                                  '${ManagementModels[index1].content}${ManagementModels[index1].content_sub1}${ManagementModels[index1].content_sub2}${ManagementModels[index1].content_sub3}'
                                                                       .poppins(
                                                                           fontSize: 18,
                                                                           fontWeight: FontWeight.w400,
@@ -456,312 +478,387 @@ class _AssetAllState extends ConsumerState<AssetAll> {
                                                             ),
                                                           ],
                                                         ),
-                                                      ),
-                                                    )
-                                                  ],
-                                                ),
-                                        ),
-                                      ),
-                                      Center(
-                                        child: FractionallySizedBox(
-                                          widthFactor: 0.95,
-                                          child: GridView.builder(
-                                            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                                              crossAxisCount: Metrics.isMobile(context)
-                                                  ? 1
-                                                  : Metrics.isCompact(context)
-                                                      ? 2
-                                                      : Metrics.isTablet(context)
-                                                          ? 2
-                                                          : 4,
-                                              crossAxisSpacing: 45.0, // Spacing between columns
-                                              mainAxisSpacing: 45.0, // Spacing between rows
-                                              childAspectRatio: 9 / (8),
-                                            ),
-                                            shrinkWrap: true,
-                                            physics: const NeverScrollableScrollPhysics(),
-                                            itemCount: 8, // Number of items in the grid
-                                            itemBuilder: (BuildContext context, int index) {
-                                              // final img = index1 == 1 ? gride_image[index + 4] : gride_image[index];
-                                              final img = gride_image[index];
-                                              final title = gride_title[index];
-                                              return AspectRatio(
-                                                aspectRatio: 9 / 8,
-                                                child: Container(
-                                                    alignment: Alignment.bottomLeft,
-                                                    clipBehavior: Clip.antiAlias,
-                                                    padding: EdgeInsets.all(20),
-                                                    decoration: BoxDecoration(
-                                                        image: DecorationImage(
-                                                            image: NetworkImage(img), fit: BoxFit.cover),
-                                                        borderRadius: BorderRadius.circular(20)),
-                                                    child: Text(
-                                                      title,
-                                                      style: GoogleFonts.poppins(
-                                                          fontWeight: FontWeight.w600,
-                                                          color: white,
-                                                          fontSize: 20,
-                                                          shadows: [
-                                                            Shadow(
-                                                                blurRadius: 2,
-                                                                color: Colors.black38,
-                                                                offset: Offset(2, 2))
-                                                          ]),
-                                                    )),
-                                              );
-                                            },
-                                          ),
-                                        ),
-                                      ),
-                                      SizedBox(
-                                        height: 30,
-                                      )
-                                    ],
-                                  ),
-                                ),
-                              ),
-                            ),
-                            Positioned(
-                                child: Container(
-                              margin: EdgeInsets.symmetric(vertical: 10, horizontal: 30),
-                              padding: EdgeInsets.only(left: 20, top: 20, bottom: 20, right: 100),
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(50),
-                                color: white,
-                                boxShadow: [
-                                  BoxShadow(
-                                    color: textPrimary.withOpacity(0.15),
-                                    offset: const Offset(0, 6),
-                                    blurRadius: 10,
-                                  ),
-                                ],
-                              ),
-                              child: '${ManagementModels[0].name}'.poppins(
-                                  fontSize: Metrics.isMobile(context) ? 14 : 30,
-                                  color: Color.fromRGBO(61, 57, 57, 1),
-                                  fontWeight: FontWeight.w600),
-                            )),
-                          ],
-                        ),
-                        Stack(
-                          children: [
-                            Center(
-                              child: FractionallySizedBox(
-                                widthFactor: 0.95,
-                                child: Container(
-                                  margin: EdgeInsets.symmetric(vertical: 50, horizontal: 10),
-                                  padding: EdgeInsets.all(20),
-                                  decoration: BoxDecoration(
-                                    color: white,
-                                    borderRadius: BorderRadius.circular(10),
-                                    boxShadow: [
-                                      BoxShadow(
-                                        color: textPrimary.withOpacity(0.15),
-                                        offset: const Offset(0, 6),
-                                        blurRadius: 10,
-                                      ),
-                                    ],
-                                  ),
-                                  child: Column(
-                                    children: [
-                                      FractionallySizedBox(
-                                        widthFactor: 0.9,
-                                        child: Padding(
-                                          padding: const EdgeInsets.symmetric(vertical: 10.0),
-                                          child: Metrics.isMobile(context)
-                                              ? Column(
-                                                  children: [
-                                                    Padding(
-                                                      padding: const EdgeInsets.all(20.0),
-                                                      child: Column(
-                                                        crossAxisAlignment: CrossAxisAlignment.center,
-                                                        mainAxisAlignment: MainAxisAlignment.center,
-                                                        children: [
-                                                          '${ManagementModels[1].commission}%'.poppins(
-                                                              fontSize: 40,
-                                                              fontWeight: FontWeight.bold,
-                                                              color: Color.fromRGBO(72, 72, 72, 1),
-                                                              textAlign: TextAlign.center),
-                                                          'Commission Fee'.poppins(
-                                                              fontSize: 20,
-                                                              fontWeight: FontWeight.bold,
-                                                              color: Color.fromRGBO(72, 72, 72, 1),
-                                                              textAlign: TextAlign.center),
-                                                          '+ Renovation Fee*'.poppins(
-                                                              fontSize: 18,
-                                                              fontWeight: FontWeight.w400,
-                                                              color: Color.fromRGBO(72, 72, 72, 1),
-                                                              textAlign: TextAlign.center),
-                                                        ],
-                                                      ),
-                                                    ),
-                                                    Padding(
-                                                      padding: const EdgeInsets.all(8.0),
-                                                      child: Column(
-                                                        mainAxisAlignment: MainAxisAlignment.center,
-                                                        crossAxisAlignment: CrossAxisAlignment.start,
-                                                        children: [
-                                                          Padding(
-                                                            padding: const EdgeInsets.symmetric(vertical: 8.0),
-                                                            child: 'Inclusive Services'.poppins(
-                                                                fontSize: 20,
-                                                                fontWeight: FontWeight.w600,
+                                                      )
+                                                    ],
+                                                  )
+                                                : Row(
+                                                    children: [
+                                                      Padding(
+                                                        padding: const EdgeInsets.all(40.0),
+                                                        child: Column(
+                                                          crossAxisAlignment: CrossAxisAlignment.center,
+                                                          mainAxisAlignment: MainAxisAlignment.center,
+                                                          children: [
+                                                            '${ManagementModels[index1].commission}%'.poppins(
+                                                                fontSize: 40,
+                                                                fontWeight: FontWeight.bold,
                                                                 color: Color.fromRGBO(72, 72, 72, 1)),
-                                                          ),
-                                                          Container(
-                                                            padding: const EdgeInsets.all(0.0),
-                                                            child:
-                                                                // '    \n With over 10+ years of experience in real estate industry, we are a real estate development company, which achieves the maximum benefit by meeting the needs of customers and investors. We have a new generation team that understands market trends. When you need the help fornew investors, we have experts to guide you. Don\'t worry about contacting us. Because we always have good suggestions.'
-                                                                '${ManagementModels[0].content}${ManagementModels[0].content_sub1}${ManagementModels[0].content_sub2}${ManagementModels[0].content_sub3}'
-                                                                    .poppins(
-                                                                        fontSize: 18,
-                                                                        fontWeight: FontWeight.w400,
-                                                                        textAlign: TextAlign.center,
-                                                                        color: Color.fromRGBO(72, 72, 72, 1)),
-                                                          ),
-                                                        ],
-                                                      ),
-                                                    )
-                                                  ],
-                                                )
-                                              : Row(
-                                                  children: [
-                                                    Padding(
-                                                      padding: const EdgeInsets.all(40.0),
-                                                      child: Column(
-                                                        crossAxisAlignment: CrossAxisAlignment.center,
-                                                        mainAxisAlignment: MainAxisAlignment.center,
-                                                        children: [
-                                                          '${ManagementModels[1].commission}%'.poppins(
-                                                              fontSize: 40,
-                                                              fontWeight: FontWeight.bold,
-                                                              color: Color.fromRGBO(72, 72, 72, 1)),
-                                                          'Commission Fee'.poppins(
-                                                              fontSize: 20,
-                                                              fontWeight: FontWeight.bold,
-                                                              color: Color.fromRGBO(72, 72, 72, 1)),
-                                                          '+ Renovation Fee*'.poppins(
-                                                              fontSize: 18,
-                                                              fontWeight: FontWeight.w400,
-                                                              color: Color.fromRGBO(72, 72, 72, 1)),
-                                                        ],
-                                                      ),
-                                                    ),
-                                                    Expanded(
-                                                      child: Padding(
-                                                        padding: const EdgeInsets.all(8.0),
-                                                        child: Column(
-                                                          mainAxisAlignment: MainAxisAlignment.center,
-                                                          crossAxisAlignment: CrossAxisAlignment.start,
-                                                          children: [
-                                                            Padding(
-                                                              padding: const EdgeInsets.symmetric(vertical: 16.0),
-                                                              child: 'Inclusive Services'.poppins(
-                                                                  fontSize: 20,
-                                                                  fontWeight: FontWeight.w600,
-                                                                  color: Color.fromRGBO(72, 72, 72, 1)),
-                                                            ),
-                                                            Container(
-                                                              padding: const EdgeInsets.all(16.0),
-                                                              child:
-                                                                  // '    \n With over 10+ years of experience in real estate industry, we are a real estate development company, which achieves the maximum benefit by meeting the needs of customers and investors. We have a new generation team that understands market trends. When you need the help fornew investors, we have experts to guide you. Don\'t worry about contacting us. Because we always have good suggestions.'
-                                                                  '${ManagementModels[0].content}${ManagementModels[0].content_sub1}${ManagementModels[0].content_sub2}${ManagementModels[0].content_sub3}'
-                                                                      .poppins(
-                                                                          fontSize: 18,
-                                                                          fontWeight: FontWeight.w400,
-                                                                          textAlign: TextAlign.center,
-                                                                          color: Color.fromRGBO(72, 72, 72, 1)),
-                                                            ),
+                                                            'Commission Fee'.poppins(
+                                                                fontSize: 20,
+                                                                fontWeight: FontWeight.bold,
+                                                                color: Color.fromRGBO(72, 72, 72, 1)),
+                                                            '+ Renovation Fee*'.poppins(
+                                                                fontSize: 18,
+                                                                fontWeight: FontWeight.w400,
+                                                                color: Color.fromRGBO(72, 72, 72, 1)),
                                                           ],
                                                         ),
                                                       ),
-                                                    )
-                                                  ],
-                                                ),
-                                        ),
-                                      ),
-                                      Center(
-                                        child: FractionallySizedBox(
-                                          widthFactor: 0.95,
-                                          // height: 1440,
-                                          child: GridView.builder(
-                                            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                                              crossAxisCount: Metrics.isMobile(context)
-                                                  ? 1
-                                                  : Metrics.isCompact(context)
-                                                      ? 2
-                                                      : Metrics.isTablet(context)
-                                                          ? 2
-                                                          : 4,
-                                              crossAxisSpacing: 45.0, // Spacing between columns
-                                              mainAxisSpacing: 45.0, // Spacing between rows
-                                              childAspectRatio: 9 / (8),
-                                            ),
-                                            shrinkWrap: true,
-                                            physics: const NeverScrollableScrollPhysics(),
-                                            itemCount: 4, // Number of items in the grid
-                                            itemBuilder: (BuildContext context, int index) {
-                                              // final img = index1 == 1 ? gride_image[index + 4] : gride_image[index];
-                                              final img = gride_image1[index];
-                                              final title = gride_title1[index];
-                                              return AspectRatio(
-                                                aspectRatio: 9 / 8,
-                                                child: Container(
-                                                    alignment: Alignment.bottomLeft,
-                                                    clipBehavior: Clip.antiAlias,
-                                                    padding: EdgeInsets.all(20),
-                                                    decoration: BoxDecoration(
-                                                        image: DecorationImage(
-                                                            image: NetworkImage(img), fit: BoxFit.cover),
-                                                        borderRadius: BorderRadius.circular(20)),
-                                                    child: Text(
-                                                      title,
-                                                      style: GoogleFonts.poppins(
-                                                          fontWeight: FontWeight.w600,
-                                                          color: white,
-                                                          fontSize: 20,
-                                                          shadows: [
-                                                            Shadow(
-                                                                blurRadius: 2,
-                                                                color: Colors.black38,
-                                                                offset: Offset(2, 2))
-                                                          ]),
-                                                    )),
-                                              );
-                                            },
+                                                      Expanded(
+                                                        child: Padding(
+                                                          padding: const EdgeInsets.all(8.0),
+                                                          child: Column(
+                                                            mainAxisAlignment: MainAxisAlignment.center,
+                                                            crossAxisAlignment: CrossAxisAlignment.start,
+                                                            children: [
+                                                              Padding(
+                                                                padding: const EdgeInsets.symmetric(vertical: 16.0),
+                                                                child: 'Inclusive Services'.poppins(
+                                                                    fontSize: 20,
+                                                                    fontWeight: FontWeight.w600,
+                                                                    color: Color.fromRGBO(72, 72, 72, 1)),
+                                                              ),
+                                                              Container(
+                                                                padding: const EdgeInsets.all(16.0),
+                                                                child:
+                                                                    // '    \n With over 10+ years of experience in real estate industry, we are a real estate development company, which achieves the maximum benefit by meeting the needs of customers and investors. We have a new generation team that understands market trends. When you need the help fornew investors, we have experts to guide you. Don\'t worry about contacting us. Because we always have good suggestions.'
+                                                                    '${ManagementModels[index1].content}${ManagementModels[index1].content_sub1}${ManagementModels[index1].content_sub2}${ManagementModels[index1].content_sub3}'
+                                                                        .poppins(
+                                                                            fontSize: 18,
+                                                                            fontWeight: FontWeight.w400,
+                                                                            textAlign: TextAlign.center,
+                                                                            color: Color.fromRGBO(72, 72, 72, 1)),
+                                                              ),
+                                                            ],
+                                                          ),
+                                                        ),
+                                                      )
+                                                    ],
+                                                  ),
                                           ),
                                         ),
-                                      ),
-                                      SizedBox(
-                                        height: 30,
-                                      )
-                                    ],
+                                        if (managementTypeModels.isNotEmpty)
+                                          Center(
+                                            child: FractionallySizedBox(
+                                              widthFactor: 0.95,
+                                              child: GridView.builder(
+                                                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                                                  crossAxisCount: Metrics.isMobile(context)
+                                                      ? 1
+                                                      : Metrics.isCompact(context)
+                                                          ? 2
+                                                          : Metrics.isTablet(context)
+                                                              ? 2
+                                                              : 4,
+                                                  crossAxisSpacing: 45.0, // Spacing between columns
+                                                  mainAxisSpacing: 45.0, // Spacing between rows
+                                                  childAspectRatio: 9 / (8),
+                                                ),
+                                                shrinkWrap: true,
+                                                physics: const NeverScrollableScrollPhysics(),
+                                                itemCount: ManagementModels[index1]
+                                                    .ser_type!
+                                                    .split(',')
+                                                    .toList()
+                                                    .length, // Number of items in the grid
+                                                itemBuilder: (BuildContext context, int index) {
+                                                  // if (managementTypeModels.isEmpty) {
+                                                  //   read_GC_ManagementType();
+                                                  // }
+
+                                                  final img =
+                                                      '${MyConstant().domain}img/${managementTypeModels[index].corver_img.toString()}';
+                                                  final title = '${managementTypeModels[index].name}';
+                                                  // if (ManagementModels[index1]
+                                                  //     .ser_type!
+                                                  //     .split(',')
+                                                  //     .where((element) => element == managementTypeModels[index].ser)
+                                                  //     .isNotEmpty)
+                                                  return AspectRatio(
+                                                    aspectRatio: 9 / 8,
+                                                    child: Container(
+                                                        alignment: Alignment.bottomLeft,
+                                                        clipBehavior: Clip.antiAlias,
+                                                        padding: EdgeInsets.all(20),
+                                                        decoration: BoxDecoration(
+                                                            image: DecorationImage(
+                                                                image: NetworkImage(img), fit: BoxFit.cover),
+                                                            borderRadius: BorderRadius.circular(20)),
+                                                        child: Text(
+                                                          title,
+                                                          style: GoogleFonts.poppins(
+                                                              fontWeight: FontWeight.w600,
+                                                              color: white,
+                                                              fontSize: 20,
+                                                              shadows: [
+                                                                Shadow(
+                                                                    blurRadius: 2,
+                                                                    color: Colors.black38,
+                                                                    offset: Offset(2, 2))
+                                                              ]),
+                                                        )),
+                                                  );
+                                                },
+                                              ),
+                                            ),
+                                          ),
+                                        SizedBox(
+                                          height: 30,
+                                        )
+                                      ],
+                                    ),
                                   ),
                                 ),
                               ),
-                            ),
-                            Positioned(
-                                child: Container(
-                              margin: EdgeInsets.symmetric(vertical: 10, horizontal: 30),
-                              padding: EdgeInsets.only(left: 20, top: 20, bottom: 20, right: 100),
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(50),
-                                color: white,
-                                boxShadow: [
-                                  BoxShadow(
-                                    color: textPrimary.withOpacity(0.15),
-                                    offset: const Offset(0, 6),
-                                    blurRadius: 10,
-                                  ),
-                                ],
-                              ),
-                              child: '${ManagementModels[1].name}'.poppins(
-                                  fontSize: Metrics.isMobile(context) ? 14 : 30,
-                                  color: Color.fromRGBO(61, 57, 57, 1),
-                                  fontWeight: FontWeight.w600),
-                            )),
-                          ],
-                        ),
+                              Positioned(
+                                  child: Container(
+                                margin: EdgeInsets.symmetric(vertical: 10, horizontal: 30),
+                                padding: EdgeInsets.only(left: 20, top: 20, bottom: 20, right: 100),
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(50),
+                                  color: white,
+                                  boxShadow: [
+                                    BoxShadow(
+                                      color: textPrimary.withOpacity(0.15),
+                                      offset: const Offset(0, 6),
+                                      blurRadius: 10,
+                                    ),
+                                  ],
+                                ),
+                                child: '${ManagementModels[index1].name}'.poppins(
+                                    fontSize: Metrics.isMobile(context) ? 14 : 30,
+                                    color: Color.fromRGBO(61, 57, 57, 1),
+                                    fontWeight: FontWeight.w600),
+                              )),
+                            ],
+                          ),
+                        // Stack(
+                        //   children: [
+                        //     Center(
+                        //       child: FractionallySizedBox(
+                        //         widthFactor: 0.95,
+                        //         child: Container(
+                        //           margin: EdgeInsets.symmetric(vertical: 50, horizontal: 10),
+                        //           padding: EdgeInsets.all(20),
+                        //           decoration: BoxDecoration(
+                        //             color: white,
+                        //             borderRadius: BorderRadius.circular(10),
+                        //             boxShadow: [
+                        //               BoxShadow(
+                        //                 color: textPrimary.withOpacity(0.15),
+                        //                 offset: const Offset(0, 6),
+                        //                 blurRadius: 10,
+                        //               ),
+                        //             ],
+                        //           ),
+                        //           child: Column(
+                        //             children: [
+                        //               FractionallySizedBox(
+                        //                 widthFactor: 0.9,
+                        //                 child: Padding(
+                        //                   padding: const EdgeInsets.symmetric(vertical: 10.0),
+                        //                   child: Metrics.isMobile(context)
+                        //                       ? Column(
+                        //                           children: [
+                        //                             Padding(
+                        //                               padding: const EdgeInsets.all(20.0),
+                        //                               child: Column(
+                        //                                 crossAxisAlignment: CrossAxisAlignment.center,
+                        //                                 mainAxisAlignment: MainAxisAlignment.center,
+                        //                                 children: [
+                        //                                   '${ManagementModels[1].commission}%'.poppins(
+                        //                                       fontSize: 40,
+                        //                                       fontWeight: FontWeight.bold,
+                        //                                       color: Color.fromRGBO(72, 72, 72, 1),
+                        //                                       textAlign: TextAlign.center),
+                        //                                   'Commission Fee'.poppins(
+                        //                                       fontSize: 20,
+                        //                                       fontWeight: FontWeight.bold,
+                        //                                       color: Color.fromRGBO(72, 72, 72, 1),
+                        //                                       textAlign: TextAlign.center),
+                        //                                   '+ Renovation Fee*'.poppins(
+                        //                                       fontSize: 18,
+                        //                                       fontWeight: FontWeight.w400,
+                        //                                       color: Color.fromRGBO(72, 72, 72, 1),
+                        //                                       textAlign: TextAlign.center),
+                        //                                 ],
+                        //                               ),
+                        //                             ),
+                        //                             Padding(
+                        //                               padding: const EdgeInsets.all(8.0),
+                        //                               child: Column(
+                        //                                 mainAxisAlignment: MainAxisAlignment.center,
+                        //                                 crossAxisAlignment: CrossAxisAlignment.start,
+                        //                                 children: [
+                        //                                   Padding(
+                        //                                     padding: const EdgeInsets.symmetric(vertical: 8.0),
+                        //                                     child: 'Inclusive Services'.poppins(
+                        //                                         fontSize: 20,
+                        //                                         fontWeight: FontWeight.w600,
+                        //                                         color: Color.fromRGBO(72, 72, 72, 1)),
+                        //                                   ),
+                        //                                   Container(
+                        //                                     padding: const EdgeInsets.all(0.0),
+                        //                                     child:
+                        //                                         // '    \n With over 10+ years of experience in real estate industry, we are a real estate development company, which achieves the maximum benefit by meeting the needs of customers and investors. We have a new generation team that understands market trends. When you need the help fornew investors, we have experts to guide you. Don\'t worry about contacting us. Because we always have good suggestions.'
+                        //                                         '${ManagementModels[0].content}${ManagementModels[0].content_sub1}${ManagementModels[0].content_sub2}${ManagementModels[0].content_sub3}'
+                        //                                             .poppins(
+                        //                                                 fontSize: 18,
+                        //                                                 fontWeight: FontWeight.w400,
+                        //                                                 textAlign: TextAlign.center,
+                        //                                                 color: Color.fromRGBO(72, 72, 72, 1)),
+                        //                                   ),
+                        //                                 ],
+                        //                               ),
+                        //                             )
+                        //                           ],
+                        //                         )
+                        //                       : Row(
+                        //                           children: [
+                        //                             Padding(
+                        //                               padding: const EdgeInsets.all(40.0),
+                        //                               child: Column(
+                        //                                 crossAxisAlignment: CrossAxisAlignment.center,
+                        //                                 mainAxisAlignment: MainAxisAlignment.center,
+                        //                                 children: [
+                        //                                   '${ManagementModels[1].commission}%'.poppins(
+                        //                                       fontSize: 40,
+                        //                                       fontWeight: FontWeight.bold,
+                        //                                       color: Color.fromRGBO(72, 72, 72, 1)),
+                        //                                   'Commission Fee'.poppins(
+                        //                                       fontSize: 20,
+                        //                                       fontWeight: FontWeight.bold,
+                        //                                       color: Color.fromRGBO(72, 72, 72, 1)),
+                        //                                   '+ Renovation Fee*'.poppins(
+                        //                                       fontSize: 18,
+                        //                                       fontWeight: FontWeight.w400,
+                        //                                       color: Color.fromRGBO(72, 72, 72, 1)),
+                        //                                 ],
+                        //                               ),
+                        //                             ),
+                        //                             Expanded(
+                        //                               child: Padding(
+                        //                                 padding: const EdgeInsets.all(8.0),
+                        //                                 child: Column(
+                        //                                   mainAxisAlignment: MainAxisAlignment.center,
+                        //                                   crossAxisAlignment: CrossAxisAlignment.start,
+                        //                                   children: [
+                        //                                     Padding(
+                        //                                       padding: const EdgeInsets.symmetric(vertical: 16.0),
+                        //                                       child: 'Inclusive Services'.poppins(
+                        //                                           fontSize: 20,
+                        //                                           fontWeight: FontWeight.w600,
+                        //                                           color: Color.fromRGBO(72, 72, 72, 1)),
+                        //                                     ),
+                        //                                     Container(
+                        //                                       padding: const EdgeInsets.all(16.0),
+                        //                                       child:
+                        //                                           // '    \n With over 10+ years of experience in real estate industry, we are a real estate development company, which achieves the maximum benefit by meeting the needs of customers and investors. We have a new generation team that understands market trends. When you need the help fornew investors, we have experts to guide you. Don\'t worry about contacting us. Because we always have good suggestions.'
+                        //                                           '${ManagementModels[0].content}${ManagementModels[0].content_sub1}${ManagementModels[0].content_sub2}${ManagementModels[0].content_sub3}'
+                        //                                               .poppins(
+                        //                                                   fontSize: 18,
+                        //                                                   fontWeight: FontWeight.w400,
+                        //                                                   textAlign: TextAlign.center,
+                        //                                                   color: Color.fromRGBO(72, 72, 72, 1)),
+                        //                                     ),
+                        //                                   ],
+                        //                                 ),
+                        //                               ),
+                        //                             )
+                        //                           ],
+                        //                         ),
+                        //                 ),
+                        //               ),
+                        //               Center(
+                        //                 child: FractionallySizedBox(
+                        //                   widthFactor: 0.95,
+                        //                   // height: 1440,
+                        //                   child: GridView.builder(
+                        //                     gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                        //                       crossAxisCount: Metrics.isMobile(context)
+                        //                           ? 1
+                        //                           : Metrics.isCompact(context)
+                        //                               ? 2
+                        //                               : Metrics.isTablet(context)
+                        //                                   ? 2
+                        //                                   : 4,
+                        //                       crossAxisSpacing: 45.0, // Spacing between columns
+                        //                       mainAxisSpacing: 45.0, // Spacing between rows
+                        //                       childAspectRatio: 9 / (8),
+                        //                     ),
+                        //                     shrinkWrap: true,
+                        //                     physics: const NeverScrollableScrollPhysics(),
+                        //                     itemCount: Mtype1.length, // Number of items in the grid
+                        //                     itemBuilder: (BuildContext context, int index) {
+                        //                       // final img = index1 == 1 ? gride_image[index + 4] : gride_image[index];
+                        //                       // if (managementTypeModels.isEmpty) {
+                        //                       //   read_GC_ManagementType();
+                        //                       // }
+                        //                       // var listM = managementTypeModels
+                        //                       //     .where((element) => Mtype1[index] == element.ser)
+                        //                       //     .toList();
+                        //                       final img =
+                        //                           '${MyConstant().domain}img/${Mtype1[index].corver_img.toString()}';
+                        //                       ;
+                        //                       final title = '${Mtype1[index].name}';
+                        //                       return AspectRatio(
+                        //                         aspectRatio: 9 / 8,
+                        //                         child: Container(
+                        //                             alignment: Alignment.bottomLeft,
+                        //                             clipBehavior: Clip.antiAlias,
+                        //                             padding: EdgeInsets.all(20),
+                        //                             decoration: BoxDecoration(
+                        //                                 image: DecorationImage(
+                        //                                     image: NetworkImage(img), fit: BoxFit.cover),
+                        //                                 borderRadius: BorderRadius.circular(20)),
+                        //                             child: Text(
+                        //                               title,
+                        //                               style: GoogleFonts.poppins(
+                        //                                   fontWeight: FontWeight.w600,
+                        //                                   color: white,
+                        //                                   fontSize: 20,
+                        //                                   shadows: [
+                        //                                     Shadow(
+                        //                                         blurRadius: 2,
+                        //                                         color: Colors.black38,
+                        //                                         offset: Offset(2, 2))
+                        //                                   ]),
+                        //                             )),
+                        //                       );
+                        //                     },
+                        //                   ),
+                        //                 ),
+                        //               ),
+                        //               SizedBox(
+                        //                 height: 30,
+                        //               )
+                        //             ],
+                        //           ),
+                        //         ),
+                        //       ),
+                        //     ),
+                        //     Positioned(
+                        //         child: Container(
+                        //       margin: EdgeInsets.symmetric(vertical: 10, horizontal: 30),
+                        //       padding: EdgeInsets.only(left: 20, top: 20, bottom: 20, right: 100),
+                        //       decoration: BoxDecoration(
+                        //         borderRadius: BorderRadius.circular(50),
+                        //         color: white,
+                        //         boxShadow: [
+                        //           BoxShadow(
+                        //             color: textPrimary.withOpacity(0.15),
+                        //             offset: const Offset(0, 6),
+                        //             blurRadius: 10,
+                        //           ),
+                        //         ],
+                        //       ),
+                        //       child: '${ManagementModels[1].name}'.poppins(
+                        //           fontSize: Metrics.isMobile(context) ? 14 : 30,
+                        //           color: Color.fromRGBO(61, 57, 57, 1),
+                        //           fontWeight: FontWeight.w600),
+                        //     )),
+                        //   ],
+                        // ),
                         Center(
                           child: FractionallySizedBox(
                             widthFactor: 0.9,
@@ -774,218 +871,243 @@ class _AssetAllState extends ConsumerState<AssetAll> {
                                     Metrics.isTablet(context))
                                   Column(
                                     children: [
-                                      AspectRatio(
-                                        aspectRatio: 12 / 9,
-                                        child: Container(
-                                          margin: EdgeInsets.all(Metrics.isMobile(context)
-                                              ? 10
-                                              : Metrics.isCompact(context)
-                                                  ? 10
-                                                  : Metrics.isTablet(context)
-                                                      ? 10
-                                                      : 40),
-                                          padding: EdgeInsets.symmetric(vertical: 40.0, horizontal: 16),
-                                          decoration: BoxDecoration(
-                                              borderRadius: BorderRadius.circular(20),
-                                              image: DecorationImage(
-                                                  image: NetworkImage(
-                                                      'https://s3-alpha-sig.figma.com/img/a838/e9c2/8f148541f8f8674d41bc3d5e257446e1?Expires=1716768000&Key-Pair-Id=APKAQ4GOSFWCVNEHN3O4&Signature=qOOHsVO~90fn6fq6uxLMB556kF1eckFMkW3MHqHBcgEweDuFkKS44vWzepBoPB2iWWjBLPmwKlIqI04R-sFZyGjPKVO3OQiP7eDUTxNJxTpN0470yoyfESeKmPNcZTIosBdkmtxL6DmRL0cibKlYN3SzgptDvrLL43QmxKTKWPyWSsHtbTL07abQTzcSNnh7yWFJTeAB0ixchQ-O0dpOvKpTAQ-9jSai4ArUdX1W5-Wvu15FL4hkkpYhoulTRtfqkKQazMVvfqmhrgCd~X0ju2ZTVf9pX4rjrMiBsPJykAAMT89YP-pw83~eJzJpw1P-FEwcA2E-xnF9d~kyBePMxQ__'),
-                                                  fit: BoxFit.cover,
-                                                  alignment: Alignment.center)),
-                                          child: Column(
-                                            crossAxisAlignment: CrossAxisAlignment.start,
-                                            mainAxisAlignment: MainAxisAlignment.end,
-                                            children: [
-                                              'Repairs &\n Maintenance'
-                                                  .poppins(fontWeight: FontWeight.bold, fontSize: 20, color: white),
-                                              Container(
-                                                padding: EdgeInsets.all(16.0),
-                                                decoration: BoxDecoration(
-                                                    borderRadius: BorderRadius.circular(8.0), color: white),
-                                                child: 'See more'.poppins(
-                                                    fontSize: 12,
-                                                    fontWeight: FontWeight.w400,
-                                                    color: Color.fromRGBO(55, 65, 81, 1)),
-                                              )
-                                            ],
+                                      for (int index = 0; index < 3; index++)
+                                        AspectRatio(
+                                          aspectRatio: 12 / 9,
+                                          child: Container(
+                                            margin: EdgeInsets.all(Metrics.isMobile(context)
+                                                ? 10
+                                                : Metrics.isCompact(context)
+                                                    ? 10
+                                                    : Metrics.isTablet(context)
+                                                        ? 10
+                                                        : 40),
+                                            padding: EdgeInsets.symmetric(vertical: 40.0, horizontal: 16),
+                                            decoration: BoxDecoration(
+                                                borderRadius: BorderRadius.circular(20),
+                                                image: DecorationImage(
+                                                    image: NetworkImage(
+                                                        // 'https://s3-alpha-sig.figma.com/img/a838/e9c2/8f148541f8f8674d41bc3d5e257446e1?Expires=1716768000&Key-Pair-Id=APKAQ4GOSFWCVNEHN3O4&Signature=qOOHsVO~90fn6fq6uxLMB556kF1eckFMkW3MHqHBcgEweDuFkKS44vWzepBoPB2iWWjBLPmwKlIqI04R-sFZyGjPKVO3OQiP7eDUTxNJxTpN0470yoyfESeKmPNcZTIosBdkmtxL6DmRL0cibKlYN3SzgptDvrLL43QmxKTKWPyWSsHtbTL07abQTzcSNnh7yWFJTeAB0ixchQ-O0dpOvKpTAQ-9jSai4ArUdX1W5-Wvu15FL4hkkpYhoulTRtfqkKQazMVvfqmhrgCd~X0ju2ZTVf9pX4rjrMiBsPJykAAMT89YP-pw83~eJzJpw1P-FEwcA2E-xnF9d~kyBePMxQ__'),
+                                                        '${MyConstant().domain}img/${service_TypeModels[index].corver_img.toString()}'),
+                                                    fit: BoxFit.cover,
+                                                    alignment: Alignment.center)),
+                                            child: Column(
+                                              crossAxisAlignment: CrossAxisAlignment.start,
+                                              mainAxisAlignment: MainAxisAlignment.end,
+                                              children: [
+                                                '${service_TypeModels[index].name}'
+                                                    .poppins(fontWeight: FontWeight.bold, fontSize: 20, color: white),
+                                                InkWell(
+                                                  onTap: () {
+                                                    Navigator.push(
+                                                      context,
+                                                      MaterialPageRoute(
+                                                        builder: (context) => Service_All(),
+                                                      ),
+                                                    );
+                                                  },
+                                                  child: Container(
+                                                    padding: EdgeInsets.all(16.0),
+                                                    decoration: BoxDecoration(
+                                                        borderRadius: BorderRadius.circular(8.0), color: white),
+                                                    child: 'See more'.poppins(
+                                                        fontSize: 12,
+                                                        fontWeight: FontWeight.w400,
+                                                        color: Color.fromRGBO(55, 65, 81, 1)),
+                                                  ),
+                                                )
+                                              ],
+                                            ),
                                           ),
                                         ),
-                                      ),
-                                      AspectRatio(
-                                        aspectRatio: 12 / 9,
-                                        child: Container(
-                                          margin: EdgeInsets.all(Metrics.isMobile(context)
-                                              ? 10
-                                              : Metrics.isCompact(context)
-                                                  ? 10
-                                                  : Metrics.isTablet(context)
-                                                      ? 10
-                                                      : 40),
-                                          padding: EdgeInsets.symmetric(vertical: 40.0, horizontal: 20),
-                                          decoration: BoxDecoration(
-                                              borderRadius: BorderRadius.circular(20),
-                                              image: DecorationImage(
-                                                  image: NetworkImage(
-                                                      'https://s3-alpha-sig.figma.com/img/a889/8d75/e0ff3ee67194644a954dad74b688da4a?Expires=1716768000&Key-Pair-Id=APKAQ4GOSFWCVNEHN3O4&Signature=hIgJXAPNZXERhYrLrAEMR4JOiTR0Xlg2754Q0M2r4pFxTCo3c0l25KEdRHkhsQU0FJNAYypA2Zo-6XjCEfFiwbj534azGaAkmxyqXB7Y4sAWi6rwhva5D6U0Nthjtx0uBPpzsfXyb3LIbE-znFbT6wi0KhsFhIS7K89ommRyKxqZzgLBgEDPCmAE-dCycYI8Wjm2S59u9n3hdV65vxZkWRom0Y4vFks-yMNT3I0J64b5XMTfOzW63cU99Cre5x5sAoH27boMAQn0-eykRZK0P~yLn38KHOSb~7XjFQ67y3V4zJLXBQBa5mkqY7mETJHQhnxla8c7JPhF4G36Yp2vCg__'),
-                                                  fit: BoxFit.cover,
-                                                  alignment: Alignment.center)),
-                                          child: Column(
-                                            crossAxisAlignment: CrossAxisAlignment.start,
-                                            mainAxisAlignment: MainAxisAlignment.end,
-                                            children: [
-                                              'House-\nkeeping'
-                                                  .poppins(fontWeight: FontWeight.bold, fontSize: 20, color: white),
-                                              Container(
-                                                padding: EdgeInsets.all(16.0),
-                                                decoration: BoxDecoration(
-                                                    borderRadius: BorderRadius.circular(8.0), color: white),
-                                                child: 'See more'.poppins(
-                                                    fontSize: 12,
-                                                    fontWeight: FontWeight.w400,
-                                                    color: Color.fromRGBO(55, 65, 81, 1)),
-                                              )
-                                            ],
-                                          ),
-                                        ),
-                                      ),
-                                      AspectRatio(
-                                        aspectRatio: 12 / 9,
-                                        child: Container(
-                                          margin: EdgeInsets.all(Metrics.isMobile(context)
-                                              ? 10
-                                              : Metrics.isCompact(context)
-                                                  ? 10
-                                                  : Metrics.isTablet(context)
-                                                      ? 10
-                                                      : 40),
-                                          padding: EdgeInsets.symmetric(vertical: 40.0, horizontal: 20),
-                                          decoration: BoxDecoration(
-                                              borderRadius: BorderRadius.circular(20),
-                                              image: DecorationImage(
-                                                  image: NetworkImage(
-                                                      'https://s3-alpha-sig.figma.com/img/a853/0d13/0fe0ddaeec703a316f384aee22d5ee51?Expires=1716768000&Key-Pair-Id=APKAQ4GOSFWCVNEHN3O4&Signature=H-z~ZD8sqTnLo~i5my5I5u7os5vdTQBV67Xc8kWmXDBR15e66CKfVSnIJ8WYe5z5lFyv2Pox-6h-ooWdV9a90wRtHj7eEGED2doY9gyWYmfBGK0YXpNka3uuLrwLD9VBliDunFYT5-twXp5MWBe9cKZ-EsC6Ryg7jo6O3PuJUdULUj9eDDrF8qg82FmE2NMooZFOETKhC5Z02Uf0uHOoqr36q2ce-BgwxrySB2IEEL8cW4peSoHlUyL-LCPTlegQ5y-OXIpIj6~MNueoj6NTVOewTYTceWkakCA3PQz5Mb0cdgbXHkKqUBB2W6q1EzjGUpOWT7bDIbastmrdvMSWNg__'),
-                                                  fit: BoxFit.cover,
-                                                  alignment: Alignment.center)),
-                                          child: Column(
-                                            crossAxisAlignment: CrossAxisAlignment.start,
-                                            mainAxisAlignment: MainAxisAlignment.end,
-                                            children: [
-                                              'Gardening'
-                                                  .poppins(fontWeight: FontWeight.bold, fontSize: 20, color: white),
-                                              Container(
-                                                padding: EdgeInsets.all(16.0),
-                                                decoration: BoxDecoration(
-                                                    borderRadius: BorderRadius.circular(8.0), color: white),
-                                                child: 'See more'.poppins(
-                                                    fontSize: 12,
-                                                    fontWeight: FontWeight.w400,
-                                                    color: Color.fromRGBO(55, 65, 81, 1)),
-                                              )
-                                            ],
-                                          ),
-                                        ),
-                                      )
+                                      // AspectRatio(
+                                      //   aspectRatio: 12 / 9,
+                                      //   child: Container(
+                                      //     margin: EdgeInsets.all(Metrics.isMobile(context)
+                                      //         ? 10
+                                      //         : Metrics.isCompact(context)
+                                      //             ? 10
+                                      //             : Metrics.isTablet(context)
+                                      //                 ? 10
+                                      //                 : 40),
+                                      //     padding: EdgeInsets.symmetric(vertical: 40.0, horizontal: 20),
+                                      //     decoration: BoxDecoration(
+                                      //         borderRadius: BorderRadius.circular(20),
+                                      //         image: DecorationImage(
+                                      //             image: NetworkImage(
+                                      //                 'https://s3-alpha-sig.figma.com/img/a889/8d75/e0ff3ee67194644a954dad74b688da4a?Expires=1716768000&Key-Pair-Id=APKAQ4GOSFWCVNEHN3O4&Signature=hIgJXAPNZXERhYrLrAEMR4JOiTR0Xlg2754Q0M2r4pFxTCo3c0l25KEdRHkhsQU0FJNAYypA2Zo-6XjCEfFiwbj534azGaAkmxyqXB7Y4sAWi6rwhva5D6U0Nthjtx0uBPpzsfXyb3LIbE-znFbT6wi0KhsFhIS7K89ommRyKxqZzgLBgEDPCmAE-dCycYI8Wjm2S59u9n3hdV65vxZkWRom0Y4vFks-yMNT3I0J64b5XMTfOzW63cU99Cre5x5sAoH27boMAQn0-eykRZK0P~yLn38KHOSb~7XjFQ67y3V4zJLXBQBa5mkqY7mETJHQhnxla8c7JPhF4G36Yp2vCg__'),
+                                      //             fit: BoxFit.cover,
+                                      //             alignment: Alignment.center)),
+                                      //     child: Column(
+                                      //       crossAxisAlignment: CrossAxisAlignment.start,
+                                      //       mainAxisAlignment: MainAxisAlignment.end,
+                                      //       children: [
+                                      //         'House-\nkeeping'
+                                      //             .poppins(fontWeight: FontWeight.bold, fontSize: 20, color: white),
+                                      //         Container(
+                                      //           padding: EdgeInsets.all(16.0),
+                                      //           decoration: BoxDecoration(
+                                      //               borderRadius: BorderRadius.circular(8.0), color: white),
+                                      //           child: 'See more'.poppins(
+                                      //               fontSize: 12,
+                                      //               fontWeight: FontWeight.w400,
+                                      //               color: Color.fromRGBO(55, 65, 81, 1)),
+                                      //         )
+                                      //       ],
+                                      //     ),
+                                      //   ),
+                                      // ),
+                                      // AspectRatio(
+                                      //   aspectRatio: 12 / 9,
+                                      //   child: Container(
+                                      //     margin: EdgeInsets.all(Metrics.isMobile(context)
+                                      //         ? 10
+                                      //         : Metrics.isCompact(context)
+                                      //             ? 10
+                                      //             : Metrics.isTablet(context)
+                                      //                 ? 10
+                                      //                 : 40),
+                                      //     padding: EdgeInsets.symmetric(vertical: 40.0, horizontal: 20),
+                                      //     decoration: BoxDecoration(
+                                      //         borderRadius: BorderRadius.circular(20),
+                                      //         image: DecorationImage(
+                                      //             image: NetworkImage(
+                                      //                 'https://s3-alpha-sig.figma.com/img/a853/0d13/0fe0ddaeec703a316f384aee22d5ee51?Expires=1716768000&Key-Pair-Id=APKAQ4GOSFWCVNEHN3O4&Signature=H-z~ZD8sqTnLo~i5my5I5u7os5vdTQBV67Xc8kWmXDBR15e66CKfVSnIJ8WYe5z5lFyv2Pox-6h-ooWdV9a90wRtHj7eEGED2doY9gyWYmfBGK0YXpNka3uuLrwLD9VBliDunFYT5-twXp5MWBe9cKZ-EsC6Ryg7jo6O3PuJUdULUj9eDDrF8qg82FmE2NMooZFOETKhC5Z02Uf0uHOoqr36q2ce-BgwxrySB2IEEL8cW4peSoHlUyL-LCPTlegQ5y-OXIpIj6~MNueoj6NTVOewTYTceWkakCA3PQz5Mb0cdgbXHkKqUBB2W6q1EzjGUpOWT7bDIbastmrdvMSWNg__'),
+                                      //             fit: BoxFit.cover,
+                                      //             alignment: Alignment.center)),
+                                      //     child: Column(
+                                      //       crossAxisAlignment: CrossAxisAlignment.start,
+                                      //       mainAxisAlignment: MainAxisAlignment.end,
+                                      //       children: [
+                                      //         'Gardening'
+                                      //             .poppins(fontWeight: FontWeight.bold, fontSize: 20, color: white),
+                                      //         Container(
+                                      //           padding: EdgeInsets.all(16.0),
+                                      //           decoration: BoxDecoration(
+                                      //               borderRadius: BorderRadius.circular(8.0), color: white),
+                                      //           child: 'See more'.poppins(
+                                      //               fontSize: 12,
+                                      //               fontWeight: FontWeight.w400,
+                                      //               color: Color.fromRGBO(55, 65, 81, 1)),
+                                      //         )
+                                      //       ],
+                                      //     ),
+                                      //   ),
+                                      // )
                                     ],
                                   ),
                                 if (Metrics.isDesktop(context))
                                   Row(
                                     children: [
-                                      Expanded(
-                                          child: AspectRatio(
-                                        aspectRatio: 9 / 12,
-                                        child: Container(
-                                          margin: EdgeInsets.all(40),
-                                          padding: EdgeInsets.symmetric(vertical: 40.0, horizontal: 20),
-                                          decoration: BoxDecoration(
-                                              borderRadius: BorderRadius.circular(20),
-                                              image: DecorationImage(
-                                                  image: NetworkImage(
-                                                      'https://s3-alpha-sig.figma.com/img/a838/e9c2/8f148541f8f8674d41bc3d5e257446e1?Expires=1716768000&Key-Pair-Id=APKAQ4GOSFWCVNEHN3O4&Signature=qOOHsVO~90fn6fq6uxLMB556kF1eckFMkW3MHqHBcgEweDuFkKS44vWzepBoPB2iWWjBLPmwKlIqI04R-sFZyGjPKVO3OQiP7eDUTxNJxTpN0470yoyfESeKmPNcZTIosBdkmtxL6DmRL0cibKlYN3SzgptDvrLL43QmxKTKWPyWSsHtbTL07abQTzcSNnh7yWFJTeAB0ixchQ-O0dpOvKpTAQ-9jSai4ArUdX1W5-Wvu15FL4hkkpYhoulTRtfqkKQazMVvfqmhrgCd~X0ju2ZTVf9pX4rjrMiBsPJykAAMT89YP-pw83~eJzJpw1P-FEwcA2E-xnF9d~kyBePMxQ__'),
-                                                  fit: BoxFit.cover,
-                                                  alignment: Alignment.center)),
-                                          child: Column(
-                                            crossAxisAlignment: CrossAxisAlignment.start,
-                                            mainAxisAlignment: MainAxisAlignment.end,
-                                            children: [
-                                              'Repairs &\n Maintenance'
-                                                  .poppins(fontWeight: FontWeight.bold, fontSize: 30, color: white),
-                                              Container(
-                                                padding: EdgeInsets.all(16.0),
-                                                decoration: BoxDecoration(
-                                                    borderRadius: BorderRadius.circular(8.0), color: white),
-                                                child: 'See more'.poppins(
-                                                    fontSize: 12,
-                                                    fontWeight: FontWeight.w400,
-                                                    color: Color.fromRGBO(55, 65, 81, 1)),
-                                              )
-                                            ],
+                                      for (int index = 0; index < 3; index++)
+                                        Expanded(
+                                            child: AspectRatio(
+                                          aspectRatio: 9 / 12,
+                                          child: Container(
+                                            margin: EdgeInsets.all(40),
+                                            padding: EdgeInsets.symmetric(vertical: 40.0, horizontal: 20),
+                                            decoration: BoxDecoration(
+                                                borderRadius: BorderRadius.circular(20),
+                                                image: DecorationImage(
+                                                    image: NetworkImage(
+                                                        // 'https://s3-alpha-sig.figma.com/img/a838/e9c2/8f148541f8f8674d41bc3d5e257446e1?Expires=1716768000&Key-Pair-Id=APKAQ4GOSFWCVNEHN3O4&Signature=qOOHsVO~90fn6fq6uxLMB556kF1eckFMkW3MHqHBcgEweDuFkKS44vWzepBoPB2iWWjBLPmwKlIqI04R-sFZyGjPKVO3OQiP7eDUTxNJxTpN0470yoyfESeKmPNcZTIosBdkmtxL6DmRL0cibKlYN3SzgptDvrLL43QmxKTKWPyWSsHtbTL07abQTzcSNnh7yWFJTeAB0ixchQ-O0dpOvKpTAQ-9jSai4ArUdX1W5-Wvu15FL4hkkpYhoulTRtfqkKQazMVvfqmhrgCd~X0ju2ZTVf9pX4rjrMiBsPJykAAMT89YP-pw83~eJzJpw1P-FEwcA2E-xnF9d~kyBePMxQ__'),
+                                                        '${MyConstant().domain}img/${service_TypeModels[index].corver_img.toString()}'),
+                                                    fit: BoxFit.cover,
+                                                    alignment: Alignment.center)),
+                                            child: Column(
+                                              crossAxisAlignment: CrossAxisAlignment.start,
+                                              mainAxisAlignment: MainAxisAlignment.end,
+                                              children: [
+                                                '${service_TypeModels[index].name}'
+                                                    .poppins(fontWeight: FontWeight.bold, fontSize: 30, color: white),
+                                                InkWell(
+                                                  onTap: () {
+                                                    Navigator.push(
+                                                      context,
+                                                      MaterialPageRoute(
+                                                        builder: (context) => Service_All(),
+                                                      ),
+                                                    );
+                                                  },
+                                                  child: Container(
+                                                    padding: EdgeInsets.all(16.0),
+                                                    decoration: BoxDecoration(
+                                                        borderRadius: BorderRadius.circular(8.0), color: white),
+                                                    child: 'See more'.poppins(
+                                                        fontSize: 12,
+                                                        fontWeight: FontWeight.w400,
+                                                        color: Color.fromRGBO(55, 65, 81, 1)),
+                                                  ),
+                                                )
+                                              ],
+                                            ),
                                           ),
-                                        ),
-                                      )),
-                                      Expanded(
-                                          child: AspectRatio(
-                                        aspectRatio: 9 / 12,
-                                        child: Container(
-                                          margin: EdgeInsets.all(40),
-                                          padding: EdgeInsets.symmetric(vertical: 40.0, horizontal: 20),
-                                          decoration: BoxDecoration(
-                                              borderRadius: BorderRadius.circular(20),
-                                              image: DecorationImage(
-                                                  image: NetworkImage(
-                                                      'https://s3-alpha-sig.figma.com/img/a889/8d75/e0ff3ee67194644a954dad74b688da4a?Expires=1716768000&Key-Pair-Id=APKAQ4GOSFWCVNEHN3O4&Signature=hIgJXAPNZXERhYrLrAEMR4JOiTR0Xlg2754Q0M2r4pFxTCo3c0l25KEdRHkhsQU0FJNAYypA2Zo-6XjCEfFiwbj534azGaAkmxyqXB7Y4sAWi6rwhva5D6U0Nthjtx0uBPpzsfXyb3LIbE-znFbT6wi0KhsFhIS7K89ommRyKxqZzgLBgEDPCmAE-dCycYI8Wjm2S59u9n3hdV65vxZkWRom0Y4vFks-yMNT3I0J64b5XMTfOzW63cU99Cre5x5sAoH27boMAQn0-eykRZK0P~yLn38KHOSb~7XjFQ67y3V4zJLXBQBa5mkqY7mETJHQhnxla8c7JPhF4G36Yp2vCg__'),
-                                                  fit: BoxFit.cover,
-                                                  alignment: Alignment.center)),
-                                          child: Column(
-                                            crossAxisAlignment: CrossAxisAlignment.start,
-                                            mainAxisAlignment: MainAxisAlignment.end,
-                                            children: [
-                                              'House-\nkeeping'
-                                                  .poppins(fontWeight: FontWeight.bold, fontSize: 30, color: white),
-                                              Container(
-                                                padding: EdgeInsets.all(16.0),
-                                                decoration: BoxDecoration(
-                                                    borderRadius: BorderRadius.circular(8.0), color: white),
-                                                child: 'See more'.poppins(
-                                                    fontSize: 12,
-                                                    fontWeight: FontWeight.w400,
-                                                    color: Color.fromRGBO(55, 65, 81, 1)),
-                                              )
-                                            ],
-                                          ),
-                                        ),
-                                      )),
-                                      Expanded(
-                                          child: AspectRatio(
-                                        aspectRatio: 9 / 12,
-                                        child: Container(
-                                          margin: EdgeInsets.all(40),
-                                          padding: EdgeInsets.symmetric(vertical: 40.0, horizontal: 20),
-                                          decoration: BoxDecoration(
-                                              borderRadius: BorderRadius.circular(20),
-                                              image: DecorationImage(
-                                                  image: NetworkImage(
-                                                      'https://s3-alpha-sig.figma.com/img/a853/0d13/0fe0ddaeec703a316f384aee22d5ee51?Expires=1716768000&Key-Pair-Id=APKAQ4GOSFWCVNEHN3O4&Signature=H-z~ZD8sqTnLo~i5my5I5u7os5vdTQBV67Xc8kWmXDBR15e66CKfVSnIJ8WYe5z5lFyv2Pox-6h-ooWdV9a90wRtHj7eEGED2doY9gyWYmfBGK0YXpNka3uuLrwLD9VBliDunFYT5-twXp5MWBe9cKZ-EsC6Ryg7jo6O3PuJUdULUj9eDDrF8qg82FmE2NMooZFOETKhC5Z02Uf0uHOoqr36q2ce-BgwxrySB2IEEL8cW4peSoHlUyL-LCPTlegQ5y-OXIpIj6~MNueoj6NTVOewTYTceWkakCA3PQz5Mb0cdgbXHkKqUBB2W6q1EzjGUpOWT7bDIbastmrdvMSWNg__'),
-                                                  fit: BoxFit.cover,
-                                                  alignment: Alignment.center)),
-                                          child: Column(
-                                            crossAxisAlignment: CrossAxisAlignment.start,
-                                            mainAxisAlignment: MainAxisAlignment.end,
-                                            children: [
-                                              'Gardening'
-                                                  .poppins(fontWeight: FontWeight.bold, fontSize: 30, color: white),
-                                              Container(
-                                                padding: EdgeInsets.all(16.0),
-                                                decoration: BoxDecoration(
-                                                    borderRadius: BorderRadius.circular(8.0), color: white),
-                                                child: 'See more'.poppins(
-                                                    fontSize: 12,
-                                                    fontWeight: FontWeight.w400,
-                                                    color: Color.fromRGBO(55, 65, 81, 1)),
-                                              )
-                                            ],
-                                          ),
-                                        ),
-                                      ))
+                                        )),
+                                      // Expanded(
+                                      //     child: AspectRatio(
+                                      //   aspectRatio: 9 / 12,
+                                      //   child: Container(
+                                      //     margin: EdgeInsets.all(40),
+                                      //     padding: EdgeInsets.symmetric(vertical: 40.0, horizontal: 20),
+                                      //     decoration: BoxDecoration(
+                                      //         borderRadius: BorderRadius.circular(20),
+                                      //         image: DecorationImage(
+                                      //             image: NetworkImage(
+                                      //                 // 'https://s3-alpha-sig.figma.com/img/a889/8d75/e0ff3ee67194644a954dad74b688da4a?Expires=1716768000&Key-Pair-Id=APKAQ4GOSFWCVNEHN3O4&Signature=hIgJXAPNZXERhYrLrAEMR4JOiTR0Xlg2754Q0M2r4pFxTCo3c0l25KEdRHkhsQU0FJNAYypA2Zo-6XjCEfFiwbj534azGaAkmxyqXB7Y4sAWi6rwhva5D6U0Nthjtx0uBPpzsfXyb3LIbE-znFbT6wi0KhsFhIS7K89ommRyKxqZzgLBgEDPCmAE-dCycYI8Wjm2S59u9n3hdV65vxZkWRom0Y4vFks-yMNT3I0J64b5XMTfOzW63cU99Cre5x5sAoH27boMAQn0-eykRZK0P~yLn38KHOSb~7XjFQ67y3V4zJLXBQBa5mkqY7mETJHQhnxla8c7JPhF4G36Yp2vCg__'),
+                                      //                 // '${MyConstant().domain}img/${service_TypeModels[3].corver_img}'),
+                                      //             fit: BoxFit.cover,
+                                      //             alignment: Alignment.center)),
+                                      //     child: Column(
+                                      //       crossAxisAlignment: CrossAxisAlignment.start,
+                                      //       mainAxisAlignment: MainAxisAlignment.end,
+                                      //       children: [
+                                      //         'House-\nkeeping'
+                                      //             .poppins(fontWeight: FontWeight.bold, fontSize: 30, color: white),
+                                      //         Container(
+                                      //           padding: EdgeInsets.all(16.0),
+                                      //           decoration: BoxDecoration(
+                                      //               borderRadius: BorderRadius.circular(8.0), color: white),
+                                      //           child: 'See more'.poppins(
+                                      //               fontSize: 12,
+                                      //               fontWeight: FontWeight.w400,
+                                      //               color: Color.fromRGBO(55, 65, 81, 1)),
+                                      //         )
+                                      //       ],
+                                      //     ),
+                                      //   ),
+                                      // )),
+                                      // Expanded(
+                                      //     child: AspectRatio(
+                                      //   aspectRatio: 9 / 12,
+                                      //   child: Container(
+                                      //     margin: EdgeInsets.all(40),
+                                      //     padding: EdgeInsets.symmetric(vertical: 40.0, horizontal: 20),
+                                      //     decoration: BoxDecoration(
+                                      //         borderRadius: BorderRadius.circular(20),
+                                      //         image: DecorationImage(
+                                      //             image: NetworkImage(
+                                      //                 'https://s3-alpha-sig.figma.com/img/a853/0d13/0fe0ddaeec703a316f384aee22d5ee51?Expires=1716768000&Key-Pair-Id=APKAQ4GOSFWCVNEHN3O4&Signature=H-z~ZD8sqTnLo~i5my5I5u7os5vdTQBV67Xc8kWmXDBR15e66CKfVSnIJ8WYe5z5lFyv2Pox-6h-ooWdV9a90wRtHj7eEGED2doY9gyWYmfBGK0YXpNka3uuLrwLD9VBliDunFYT5-twXp5MWBe9cKZ-EsC6Ryg7jo6O3PuJUdULUj9eDDrF8qg82FmE2NMooZFOETKhC5Z02Uf0uHOoqr36q2ce-BgwxrySB2IEEL8cW4peSoHlUyL-LCPTlegQ5y-OXIpIj6~MNueoj6NTVOewTYTceWkakCA3PQz5Mb0cdgbXHkKqUBB2W6q1EzjGUpOWT7bDIbastmrdvMSWNg__'),
+                                      //             fit: BoxFit.cover,
+                                      //             alignment: Alignment.center)),
+                                      //     child: Column(
+                                      //       crossAxisAlignment: CrossAxisAlignment.start,
+                                      //       mainAxisAlignment: MainAxisAlignment.end,
+                                      //       children: [
+                                      //         'Gardening'
+                                      //             .poppins(fontWeight: FontWeight.bold, fontSize: 30, color: white),
+                                      //         Container(
+                                      //           padding: EdgeInsets.all(16.0),
+                                      //           decoration: BoxDecoration(
+                                      //               borderRadius: BorderRadius.circular(8.0), color: white),
+                                      //           child: 'See more'.poppins(
+                                      //               fontSize: 12,
+                                      //               fontWeight: FontWeight.w400,
+                                      //               color: Color.fromRGBO(55, 65, 81, 1)),
+                                      //         )
+                                      //       ],
+                                      //     ),
+                                      //   ),
+                                      // ))
                                     ],
                                   ),
                                 AspectRatio(
@@ -997,20 +1119,40 @@ class _AssetAllState extends ConsumerState<AssetAll> {
                                         borderRadius: BorderRadius.circular(20),
                                         image: DecorationImage(
                                             image: NetworkImage(
-                                                'https://s3-alpha-sig.figma.com/img/29ee/b2de/ad9c059e52c42db60e4382fcbfdea8ce?Expires=1716768000&Key-Pair-Id=APKAQ4GOSFWCVNEHN3O4&Signature=iCZagAo5~0XbxpnOtYSAMZ88J0LrLy~QMbiavGYWyXY4mlYSQYVxsdPMwudjQdyAcwYnDwdL~42b1ucW32IELYc5I6jbcnjd8kXpj7kYK3t4UEPDBDOStkwTaLwlV5xYJiKQ0DKxL4-tbJbcoxDp7gh2zlW5vVWB0HDcSlc30O3TobmesagzroCeK1GFZjJBPvdnaskR~usMfgYDomK9UcW4sNMGaU6~~dYbn4oof1ss6OlijW2xbolV4ft4zSL2zGVwZ~7Te5L6wD5rA7VPhCIFY2ub39L~Z7~E23a-Bjw7sMoIxrZkj2bio9LlulGx3qoVSgeHUp8bchIk5338YA__'),
+                                                // 'https://s3-alpha-sig.figma.com/img/29ee/b2de/ad9c059e52c42db60e4382fcbfdea8ce?Expires=1716768000&Key-Pair-Id=APKAQ4GOSFWCVNEHN3O4&Signature=iCZagAo5~0XbxpnOtYSAMZ88J0LrLy~QMbiavGYWyXY4mlYSQYVxsdPMwudjQdyAcwYnDwdL~42b1ucW32IELYc5I6jbcnjd8kXpj7kYK3t4UEPDBDOStkwTaLwlV5xYJiKQ0DKxL4-tbJbcoxDp7gh2zlW5vVWB0HDcSlc30O3TobmesagzroCeK1GFZjJBPvdnaskR~usMfgYDomK9UcW4sNMGaU6~~dYbn4oof1ss6OlijW2xbolV4ft4zSL2zGVwZ~7Te5L6wD5rA7VPhCIFY2ub39L~Z7~E23a-Bjw7sMoIxrZkj2bio9LlulGx3qoVSgeHUp8bchIk5338YA__'),
+                                                '${MyConstant().domain}img/${service_TypeModels[3].corver_img.toString()}'),
                                             fit: BoxFit.cover,
                                             alignment: Alignment.center)),
                                     child: Column(
                                       crossAxisAlignment: Metrics.isMobile(context)
                                           ? CrossAxisAlignment.center
-                                          : CrossAxisAlignment.center,
+                                          : CrossAxisAlignment.start,
                                       mainAxisAlignment:
                                           Metrics.isMobile(context) ? MainAxisAlignment.center : MainAxisAlignment.end,
                                       children: [
-                                        'Renovation Service'.poppins(
+                                        '${service_TypeModels[3].corver_img}'.poppins(
                                             fontWeight: FontWeight.bold,
                                             fontSize: Metrics.isMobile(context) ? 20 : 40,
                                             color: white),
+                                        InkWell(
+                                          onTap: () {
+                                            Navigator.push(
+                                              context,
+                                              MaterialPageRoute(
+                                                builder: (context) => Service_All(),
+                                              ),
+                                            );
+                                          },
+                                          child: Container(
+                                            padding: EdgeInsets.all(16.0),
+                                            decoration:
+                                                BoxDecoration(borderRadius: BorderRadius.circular(8.0), color: white),
+                                            child: 'See more'.poppins(
+                                                fontSize: 12,
+                                                fontWeight: FontWeight.w400,
+                                                color: Color.fromRGBO(55, 65, 81, 1)),
+                                          ),
+                                        )
                                       ],
                                     ),
                                   ),

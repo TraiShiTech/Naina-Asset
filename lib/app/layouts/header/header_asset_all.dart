@@ -1,8 +1,12 @@
+import 'dart:convert';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:properties/Constant/Myconstant.dart';
 import 'package:properties/app/layouts/experiences/experiences.dart';
 import 'package:properties/core/core.dart';
+import 'package:properties/core/models/page_model.dart';
 
 import '../../../core/theme/app_colors.dart';
 import '../../../core/utils/metrics.dart';
@@ -14,8 +18,10 @@ import '../experiences/experiences_info.dart';
 import '../experiences/experiences_info_item.dart';
 import 'header_left.dart';
 import 'header_right.dart';
+import 'package:http/http.dart' as http;
 
-class Header_AssetAll extends StatelessWidget {
+class Header_AssetAll extends StatefulWidget {
+  // const Header_AssetAll({super.key});
   const Header_AssetAll({
     Key? key,
     required GlobalKey<State<StatefulWidget>> headerKey,
@@ -23,6 +29,58 @@ class Header_AssetAll extends StatelessWidget {
         super(key: key);
 
   final GlobalKey<State<StatefulWidget>> _headerKey;
+  @override
+  State<Header_AssetAll> createState() => _Header_AssetAllState();
+}
+
+class _Header_AssetAllState extends State<Header_AssetAll> {
+  ///////----------------------------------------------->
+  @override
+  void initState() {
+    // _baseController = ScrollController();
+    // _baseController.addListener(() {
+    //   if (_baseController.offset > 500) {
+    //     ref.read(scrollProvider.notifier).change(true);
+    //   } else {
+    //     ref.read(scrollProvider.notifier).change(false);
+    //   }
+    // });
+    read_GC_Page();
+    // read_GC_Asset();
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    // _baseController.dispose();
+    super.dispose();
+  }
+
+  ///////----------------------------------------------->
+  List<PageModel> pageModels = [];
+  Future<Null> read_GC_Page() async {
+    if (pageModels.length != 0) {
+      pageModels.clear();
+    }
+
+    String url = '${MyConstant().domain}/GC_Page.php?isAdd=true';
+
+    try {
+      var response = await http.get(Uri.parse(url));
+
+      var result = json.decode(response.body);
+      // print(result);
+
+      for (var map in result) {
+        PageModel pageModelss = PageModel.fromJson(map);
+        if (pageModelss.ser.toString() == '3') {
+          setState(() {
+            pageModels.add(pageModelss);
+          });
+        } else {}
+      }
+    } catch (e) {}
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -43,13 +101,14 @@ class Header_AssetAll extends StatelessWidget {
           Column(
             children: [
               Container(
-                key: _headerKey,
+                // key: _headerKey,
                 width: Metrics.width(context),
                 height: 720,
                 // color: greenBorder,
                 decoration: BoxDecoration(
                     image: DecorationImage(
-                      image: AssetImage('assets/property_service/08.jpg'),
+                      // image: AssetImage('assets/property_service/08.jpg'),
+                      image: NetworkImage('${MyConstant().domain}img/${pageModels[0].corver_img}'),
                       //  NetworkImage(
                       //     "https://drive.google.com/file/d/128N1Li3SURnZ_sn8DUsbCU-A6YKecTip/view"),
                       fit: BoxFit.cover,
@@ -92,15 +151,17 @@ class Header_AssetAll extends StatelessWidget {
                                                 'Naina Asset'.poppins(
                                                   color: greenBg,
                                                   fontWeight: FontWeight.w600,
-                                                  fontSize:
-                                                      (Metrics.isDesktop(context) || Metrics.isTablet(context)) ? 24 : 14,
+                                                  fontSize: (Metrics.isDesktop(context) || Metrics.isTablet(context))
+                                                      ? 24
+                                                      : 14,
                                                   height: 1.5,
                                                 ),
                                                 'ในนา แอสเสท - บริการดูแลพร็อพเพอร์ตี้มืออาชีพ '.poppins(
                                                   color: greenBg,
                                                   fontWeight: FontWeight.w600,
-                                                  fontSize:
-                                                      (Metrics.isDesktop(context) || Metrics.isTablet(context)) ? 14 : 10,
+                                                  fontSize: (Metrics.isDesktop(context) || Metrics.isTablet(context))
+                                                      ? 14
+                                                      : 10,
                                                   height: 1.5,
                                                 ),
                                               ],
