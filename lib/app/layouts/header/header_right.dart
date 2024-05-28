@@ -14,8 +14,7 @@ class HeaderRight extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final bool isBigScreen =
-        Metrics.isDesktop(context) || Metrics.isTablet(context);
+    final bool isBigScreen = Metrics.isDesktop(context) || Metrics.isTablet(context);
     final pad = normalize(min: 976, max: 1440, data: Metrics.width(context));
 
     return isBigScreen
@@ -23,23 +22,24 @@ class HeaderRight extends StatelessWidget {
             child: Stack(
               clipBehavior: Clip.none,
               children: [
-                Positioned(
-                  top: 24,
-                  bottom: 24,
-                  left: 72,
-                  right: 136 * pad,
-                  child: AspectRatio(
-                    aspectRatio: 4 / 3,
-                    child: ClipRRect(
-                      borderRadius:
-                          const BorderRadius.only(topLeft: Radius.circular(64)),
-                      child: Image.network(
-                        'https://images.unsplash.com/photo-1613252036716-e1efc9788e5b?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=774&q=80',
-                        fit: BoxFit.cover,
-                      ),
-                    ),
-                  ),
-                ),
+                // Positioned(
+                //   top: 24,
+                //   bottom: 24,
+                //   left: 72,
+                //   right: 136 * pad,
+                //   child: AspectRatio(
+                //     aspectRatio: 4 / 3,
+                //     child: ClipRRect(
+                //       borderRadius:
+                //           const BorderRadius.only(topLeft: Radius.circular(64)),
+                //       child: Container()
+                //       // Image.network(
+                //       //   'https://images.unsplash.com/photo-1613252036716-e1efc9788e5b?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=774&q=80',
+                //       //   fit: BoxFit.cover,
+                //       // ),
+                //     ),
+                //   ),
+                // ),
                 Positioned(
                   right: 0,
                   bottom: 100,
@@ -154,8 +154,7 @@ class HeaderRight extends StatelessWidget {
                                       child: Column(
                                         children: [
                                           Row(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.spaceBetween,
+                                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                             children: [
                                               Row(
                                                 children: [
@@ -188,15 +187,10 @@ class HeaderRight extends StatelessWidget {
                                                 allowHalfRating: true,
                                                 itemCount: 5,
                                                 itemSize: 36,
-                                                itemPadding:
-                                                    const EdgeInsets.symmetric(
-                                                        horizontal: 4.0),
-                                                unratedColor: Colors.grey
-                                                    .withOpacity(0.5),
-                                                wrapAlignment:
-                                                    WrapAlignment.start,
-                                                itemBuilder: (context, _) =>
-                                                    const Icon(
+                                                itemPadding: const EdgeInsets.symmetric(horizontal: 4.0),
+                                                unratedColor: Colors.grey.withOpacity(0.5),
+                                                wrapAlignment: WrapAlignment.start,
+                                                itemBuilder: (context, _) => const Icon(
                                                   Icons.star,
                                                   color: Colors.amber,
                                                 ),

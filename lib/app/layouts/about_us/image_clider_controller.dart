@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:properties/core/core.dart';
-
 
 import '../../widgets/base_container.dart';
 
@@ -12,10 +12,12 @@ class ImageSliderController extends StatefulWidget {
     required this.images,
     this.prev,
     this.next,
+    required this.title,
   }) : super(key: key);
 
   final int currentPage;
   final List<String> images;
+  final List<String> title;
   final Function()? prev;
   final Function()? next;
 
@@ -46,9 +48,9 @@ class _ImageSliderControllerState extends State<ImageSliderController> {
             height: 1.5,
           ),
           const SizedBox(width: 8),
-          SizedBox(
-            width: 180,
-            height: 3,
+          Expanded(
+            // width: 180,
+            // height: 3,
             child: Stack(
               children: [
                 Container(
@@ -75,11 +77,11 @@ class _ImageSliderControllerState extends State<ImageSliderController> {
             ),
           ),
           const SizedBox(width: 8),
-          (widget.images.length < 10 ? '0${widget.images.length}' : '${widget.images.length}').poppins(
-            fontSize: 18,
-            fontWeight: FontWeight.w600,
-            height: 1.5,
-          ),
+          // (widget.title.length < 10 ? '0${widget.title.length}' : '${widget.title.length}').poppins(
+          //   fontSize: 18,
+          //   fontWeight: FontWeight.w600,
+          //   height: 1.5,
+          // ),
           const SizedBox(width: 16),
           Material(
             color: Colors.transparent,

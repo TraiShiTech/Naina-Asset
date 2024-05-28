@@ -9,7 +9,7 @@ class Metrics {
   static DeviceWidth getScreenWidth(BuildContext context) {
     if (width(context) >= 1440) {
       return DeviceWidth.lg;
-    } else if (width(context) >= 976) {
+    } else if (width(context) >= 1284) {
       return DeviceWidth.md;
     } else if (width(context) >= 576) {
       return DeviceWidth.sm;

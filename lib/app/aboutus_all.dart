@@ -1,9 +1,14 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:properties/app/widgets/base_container.dart';
 import 'package:properties/app/with_us.dart';
 import 'package:properties/core/core.dart';
-
+import 'package:http/http.dart' as http;
+import '../Constant/Myconstant.dart';
+import '../core/models/about_us_model.dart';
+import '../core/models/img_aboutUsAll_model.dart';
 import '../core/providers/scroll_provider.dart';
 import '../core/theme/app_colors.dart';
 import '../core/utils/methods.dart';
@@ -35,31 +40,10 @@ class _AboutUs_AllState extends ConsumerState<AboutUs_All> {
   ///////----------------------------------------------->
   late PageController _controller;
   int currentPage = 0;
-///////----------------------------------------------->
-  List<String> images = [
-    'https://images.unsplash.com/photo-1579656592043-a20e25a4aa4b?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=774&q=80',
-    'https://images.unsplash.com/photo-1618220179428-22790b461013?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=654&q=80',
-    'https://images.unsplash.com/photo-1551298370-9d3d53740c72?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=774&q=80',
-    'https://images.unsplash.com/photo-1540932239986-30128078f3c5?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=774&q=80',
-    'https://images.unsplash.com/photo-1540638349517-3abd5afc5847?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=774&q=80',
-    'https://images.unsplash.com/photo-1599696848652-f0ff23bc911f?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=774&q=80',
-  ];
-
-  List<String> limitedList_links = [];
-  List<String> links = [
-    'Homes',
-    'Condominium',
-    'Commercial Buildings',
-    'Others',
-  ];
-
-  List<Icon> icons_links = [
-    Icon(Icons.home),
-    Icon(Icons.offline_share),
-    Icon(Icons.home_work),
-    Icon(Icons.search),
-  ];
-  List<List<bool>> isHover = [];
+  ///////----------------------------------------------->
+  List<AboutUsModel> AboutUsModels = [];
+  List<imgaboutUsAllmodel> imgaboutUsAllmodels = [];
+  List<bool> isHover = [];
 
 ///////----------------------------------------------->
   @override
@@ -77,7 +61,8 @@ class _AboutUs_AllState extends ConsumerState<AboutUs_All> {
       keepPage: false,
       viewportFraction: 0.25,
     );
-    read_links_limit();
+    read_GC_AboutUsAll();
+    read_GC_AboutUs_Img();
     super.initState();
   }
 
@@ -90,38 +75,65 @@ class _AboutUs_AllState extends ConsumerState<AboutUs_All> {
 
 ///////----------------------------------------------->
   Future scrollToItem(GlobalKey key) async {
-    await Scrollable.ensureVisible(key.currentContext!,
-        duration: const Duration(milliseconds: 480));
-  }
-
-  Future<void> read_isHover() async {
-    setState(() {
-      isHover = List.generate(
-        links.length,
-        (index) => List<bool>.filled(links.length, false),
-      );
-    });
+    await Scrollable.ensureVisible(key.currentContext!, duration: const Duration(milliseconds: 480));
   }
 
 ///////----------------------------------------------->
+  Future<Null> read_GC_AboutUsAll() async {
+    if (AboutUsModels.length != 0) {
+      AboutUsModels.clear();
+    }
 
-  Future<Null> read_links_limit() async {
-    setState(() {
-      endIndex = offset + limit;
-      limitedList_links = limitedList_links +
-          links.sublist(
-              offset, // Start index
-              (endIndex <= links.length) ? endIndex : links.length // End index
-              );
-    });
-    read_isHover();
+    String url = '${MyConstant().domain}/GC_AboutUsAll.php?isAdd=true';
+
+    try {
+      var response = await http.get(Uri.parse(url));
+
+      var result = json.decode(response.body);
+      // print(result);
+
+      for (var map in result) {
+        AboutUsModel AboutUsModelss = AboutUsModel.fromJson(map);
+
+        setState(() {
+          AboutUsModels.add(AboutUsModelss);
+        });
+      }
+    } catch (e) {}
   }
 
-  Next_links_limit() {
+///////----------------------------------------------->
+  Future<Null> read_GC_AboutUs_Img() async {
+    if (imgaboutUsAllmodels.length != 0) {
+      imgaboutUsAllmodels.clear();
+    }
+
+    String url = '${MyConstant().domain}/GC_AboutUs_Img.php?isAdd=true';
+
+    try {
+      var response = await http.get(Uri.parse(url));
+
+      var result = json.decode(response.body);
+      // print(result);
+
+      for (var map in result) {
+        imgaboutUsAllmodel imgaboutUsAllmodelss = imgaboutUsAllmodel.fromJson(map);
+        setState(() {
+          imgaboutUsAllmodels.add(imgaboutUsAllmodelss);
+        });
+      }
+      read_isHover();
+    } catch (e) {}
+  }
+
+///////----------------------------------------------->
+  Future<void> read_isHover() async {
     setState(() {
-      offset = offset + limit;
+      isHover = List.generate(
+        imgaboutUsAllmodels.length,
+        (index) => false,
+      );
     });
-    read_links_limit();
   }
 
 ///////----------------------------------------------->
@@ -130,18 +142,20 @@ class _AboutUs_AllState extends ConsumerState<AboutUs_All> {
     final pad = normalize(min: 576, max: 1440, data: Metrics.width(context));
 
     final isBigScreen = Metrics.isDesktop(context) || Metrics.isTablet(context);
-    final pad1 = isBigScreen
-        ? 0.0
-        : normalize(min: 576, max: 976, data: Metrics.width(context));
-    double plus = Metrics.isDesktop(context)
-        ? 0
-        : (0.5 *
-            (1 - normalize(min: 976, max: 1440, data: Metrics.width(context))));
+    final pad1 = isBigScreen ? 0.0 : normalize(min: 576, max: 976, data: Metrics.width(context));
+    double plus =
+        Metrics.isDesktop(context) ? 0 : (0.5 * (1 - normalize(min: 976, max: 1440, data: Metrics.width(context))));
     _controller = PageController(
       initialPage: currentPage,
       keepPage: false,
       viewportFraction: 0.25 + plus,
     );
+
+    List<String> imageUrls = imgaboutUsAllmodels.map((data) => data.img.toString()).toList();
+    if (imgaboutUsAllmodels.isEmpty || AboutUsModels.isEmpty) {
+      read_GC_AboutUs_Img();
+      read_GC_AboutUsAll();
+    }
     return Scaffold(
       backgroundColor: white,
       body: SizedBox(
@@ -162,19 +176,15 @@ class _AboutUs_AllState extends ConsumerState<AboutUs_All> {
                   Align(
                     alignment: Alignment.center,
                     child: 'About Us'.poppins(
-                      color: brown,
-                      fontSize: 25 + 4 * pad,
-                    ),
+                        color: Color.fromRGBO(71, 69, 69, 1), fontSize: 25 + 4 * pad, fontWeight: FontWeight.w600),
                   ),
                   Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: Align(
                       alignment: Alignment.center,
-                      child:
-                          'Over 10+ years of experience in real estate industry. We\'re now ready to assist you'
-                              .poppinscenter(
-                        color: const Color(0xff896e57),
-                        fontWeight: FontWeight.bold,
+                      child: '${AboutUsModels[0].content}'.poppinscenter(
+                        color: Color.fromRGBO(71, 69, 69, 1),
+                        fontWeight: FontWeight.w400,
                         height: 1.5,
                         letterSpacing: 1,
                       ),
@@ -186,14 +196,13 @@ class _AboutUs_AllState extends ConsumerState<AboutUs_All> {
                     child: PageView.builder(
                       controller: _controller,
                       onPageChanged: (val) => setState(() => currentPage = val),
-                      itemCount: images.length,
+                      itemCount: imgaboutUsAllmodels.length,
                       // physics: const NeverScrollableScrollPhysics(),
                       itemBuilder: (context, index) {
-                        final img = images[index];
-
+                        final img = '${MyConstant().domain}img/${imgaboutUsAllmodels[index].img.toString()}';
+                        
                         return Padding(
-                          padding:
-                              EdgeInsets.only(left: 36 * pad, right: 36 * pad),
+                          padding: EdgeInsets.only(left: 36 * pad, right: 36 * pad),
                           child: AnimatedScale(
                             duration: const Duration(milliseconds: 240),
                             scale: currentPage == index ? 1 : 0.75,
@@ -211,90 +220,163 @@ class _AboutUs_AllState extends ConsumerState<AboutUs_All> {
                     ),
                   ),
                   const SizedBox(height: 20),
-                  ImageSliderController(
-                    currentPage: currentPage,
-                    images: images,
-                    prev: currentPage != 0
-                        ? () {
-                            _controller.animateToPage(
-                              currentPage - 1,
-                              duration: const Duration(milliseconds: 240),
-                              curve: Curves.linear,
-                            );
-                          }
-                        : null,
-                    next: (currentPage != images.length - 1)
-                        ? () {
-                            _controller.animateToPage(
-                              currentPage + 1,
-                              duration: const Duration(milliseconds: 240),
-                              curve: Curves.linear,
-                            );
-                          }
-                        : null,
+
+                  Align(
+                    alignment: Alignment.centerRight,
+                    child: Container(
+                      width: 300 * pad,
+                      child: ImageSliderController(
+                        currentPage: currentPage,
+                        images: imageUrls,
+                        title: [],
+                        prev: currentPage != 0
+                            ? () {
+                                _controller.animateToPage(
+                                  currentPage - 1,
+                                  duration: const Duration(milliseconds: 240),
+                                  curve: Curves.linear,
+                                );
+                              }
+                            : null,
+                        next: (currentPage != imgaboutUsAllmodels.length - 1)
+                            ? () {
+                                _controller.animateToPage(
+                                  currentPage + 1,
+                                  duration: const Duration(milliseconds: 240),
+                                  curve: Curves.linear,
+                                );
+                              }
+                            : null,
+                      ),
+                    ),
                   ),
+                  //     :
+                  // FractionallySizedBox(
+                  //   widthFactor: 0.9,
+                  //   child: Row(
+                  //     children: [
+                  //       for (var index = 0;
+                  //           index < imgaboutUsAllmodels.length;
+                  //           index++)
+                  //         Expanded(
+                  //           child: Padding(
+                  //             padding: const EdgeInsets.all(16),
+                  //             child: AspectRatio(
+                  //               aspectRatio: 9 / 16,
+                  //               child: Container(
+                  //                 margin: EdgeInsets.all(8.0),
+                  //                 padding: EdgeInsets.all(8),
+                  //                 clipBehavior: Clip.antiAlias,
+                  //                 decoration: BoxDecoration(
+                  //                   borderRadius:
+                  //                       BorderRadius.all(Radius.circular(10)),
+                  //                   image: DecorationImage(
+                  //                     // colorFilter: ColorFilter.mode(Colors.white38, BlendMode.softLight),
+                  //                     image: NetworkImage(
+                  //                         imgaboutUsAllmodels[index]
+                  //                             .img
+                  //                             .toString()),
+                  //                     // image: NetworkImage(content_image[index]),
+                  //                     fit: BoxFit.cover,
+                  //                     alignment: index == 1
+                  //                         ? Alignment.centerLeft
+                  //                         : Alignment.center,
+                  //                   ),
+                  //                 ),
+                  //               ),
+                  //             ),
+                  //           ),
+                  //         )
+                  //     ],
+                  //   ),
+                  // ),
                   const SizedBox(height: 34),
                   BaseContainer(
-                      child: Column(
-                          crossAxisAlignment: Metrics.isMobile(context)
-                              ? CrossAxisAlignment.center
-                              : CrossAxisAlignment.start,
-                          children: [
-                        for (int index = 0; index < 4; index++)
-                          Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: Container(
-                              child:
-                                  'With over 10+ years of experience in real estate industry, we are a real estate development company, which achieves the maximum benefit by meeting the needs of customers and investors. We have a new generation team that understands market trends. When you need the help fornew investors, we have experts to guide you. Don\'t worry about contacting us. Because we always have good suggestions.'
-                                      .poppins(
-                                textAlign: TextAlign.center,
-                                fontSize: 14 + 4 * pad,
-                                fontWeight: FontWeight.w500,
-                                height: 1.75,
+                      child: FractionallySizedBox(
+                    widthFactor: 0.9,
+                    child: Column(
+                        crossAxisAlignment:
+                            Metrics.isMobile(context) ? CrossAxisAlignment.center : CrossAxisAlignment.start,
+                        children: [
+                          for (int index = 0; index < 4; index++)
+                            Padding(
+                              padding: const EdgeInsets.all(20.0),
+                              child: Container(
+                                child: (index == 0)
+                                    ? '${AboutUsModels[0].content}'.poppins(
+                                        textAlign: TextAlign.center,
+                                        fontSize: 14 + 4 * pad,
+                                        fontWeight: FontWeight.w400,
+                                        height: 1.75,
+                                        color: Color.fromRGBO(87, 87, 87, 1))
+                                    : (index == 1)
+                                        ? '${AboutUsModels[0].content_sub1}'.poppins(
+                                            textAlign: TextAlign.center,
+                                            fontSize: 14 + 4 * pad,
+                                            fontWeight: FontWeight.w400,
+                                            height: 1.75,
+                                            color: Color.fromRGBO(87, 87, 87, 1))
+                                        : (index == 2)
+                                            ? '${AboutUsModels[0].content_sub2}'.poppins(
+                                                textAlign: TextAlign.center,
+                                                fontSize: 14 + 4 * pad,
+                                                fontWeight: FontWeight.w400,
+                                                height: 1.75,
+                                                color: Color.fromRGBO(87, 87, 87, 1))
+                                            : '${AboutUsModels[0].content_sub3}'.poppins(
+                                                textAlign: TextAlign.center,
+                                                fontSize: 14 + 4 * pad,
+                                                fontWeight: FontWeight.w400,
+                                                height: 1.75,
+                                                color: Color.fromRGBO(87, 87, 87, 1)),
                               ),
                             ),
-                          ),
-                        const SizedBox(height: 80),
-                        AspectRatio(
-                            aspectRatio:
-                                // 45 / 35,
-                                Metrics.isMobile(context)
-                                    ? 45 / 65
-                                    : Metrics.isCompact(context)
-                                        ? 45 / 65
-                                        : Metrics.isTablet(context)
-                                            ? 45 / 65
-                                            : 45 / 20,
-                            child: Container(
-                              decoration: BoxDecoration(
-                                borderRadius: const BorderRadius.only(
-                                  topLeft: Radius.circular(20),
-                                  topRight: Radius.circular(20),
-                                  bottomLeft: Radius.circular(20),
-                                  bottomRight: Radius.circular(20),
-                                ),
-                                color: white,
-                                boxShadow: [
-                                  BoxShadow(
-                                    color: Colors.grey.withOpacity(0.25),
-                                    offset: const Offset(0, 4),
-                                    blurRadius: 4,
+                          const SizedBox(height: 80),
+                          AspectRatio(
+                              aspectRatio:
+                                  // 45 / 35,
+                                  Metrics.isMobile(context)
+                                      ? 45 / 65
+                                      : Metrics.isCompact(context)
+                                          ? 45 / 65
+                                          : Metrics.isTablet(context)
+                                              ? 45 / 65
+                                              : 45 / 20,
+                              child: Container(
+                                decoration: BoxDecoration(
+                                  // borderRadius: const BorderRadius.only(
+                                  //   topLeft: Radius.circular(20),
+                                  //   topRight: Radius.circular(20),
+                                  //   bottomLeft: Radius.circular(20),
+                                  //   bottomRight: Radius.circular(20),
+                                  // ),
+                                  color: white,
+                                  // boxShadow: [
+                                  //   BoxShadow(
+                                  //     color: Colors.grey.withOpacity(0.25),
+                                  //     offset: const Offset(0, 4),
+                                  //     blurRadius: 4,
+                                  //   ),
+                                  // ],
+                                  border: Border.all(color: Color.fromARGB(255, 192, 189, 189), width: 1),
+                                  image: DecorationImage(
+                                    // image: AssetImage(
+                                    //   'assets/property_service/11.jpg',
+                                    // ),
+                                    image: NetworkImage(
+                                      '${MyConstant().domain}img/${AboutUsModels[0].corver_img.toString()}',
+                                      // 'https://s3-alpha-sig.figma.com/img/5707/6267/b40190e4b5dd591f1343ccfc4f040e38?Expires=1716768000&Key-Pair-Id=APKAQ4GOSFWCVNEHN3O4&Signature=SNXG~rvl~9f4Y7EbFn8oeKrtQZ75UGe~9KC-fu1JUxOvMW5JaSJ1S4tM-S7Uztz1ghGXw9OBjs5neImyN70j~mKAAkay0rxvfn0MsPJpw1bSkzjJ6p3lK29yStGitIVwNpznHjXg6jwX1Wl70GEX0Cfm9bpP1waz47fZJtgB896yc1Tii93Tv-uYigDigHq1foabPRtGob6lFTJmfwt0Soup3SaXj9VRMt0rMWhgxmu9tSsvk8Fufx4xk0JzqCAK9FqziH4q43weqOVPgJzOtz0z~1eFXqi091-CbadNzP3ZdZad4ujf9D-~XoOh5Ay3tAHT24QDxEST209MiECHWw__',
+                                    ),
+                                    fit: BoxFit.cover,
                                   ),
-                                ],
-                                border: Border.all(
-                                    color: Color.fromARGB(255, 192, 189, 189),
-                                    width: 1),
-                                image: DecorationImage(
-                                  image: AssetImage(
-                                    'assets/property_service/11.jpg',
-                                  ),
-                                  fit: BoxFit.cover,
                                 ),
-                              ),
-                            )),
-                      ])),
+                              )),
+                        ]),
+                  )),
                   const SizedBox(height: 80),
-                  const Footer(),
+                  const Footer(
+                    bgcolor: Colors.white,
+                  ),
                 ],
               ),
             ),
