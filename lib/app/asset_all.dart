@@ -902,7 +902,8 @@ class _AssetAllState extends ConsumerState<AssetAll> {
                                                     Navigator.push(
                                                       context,
                                                       MaterialPageRoute(
-                                                        builder: (context) => Service_All(),
+                                                        builder: (context) =>
+                                                            Service_All(ser: '${service_TypeModels[index].ser}'),
                                                       ),
                                                     );
                                                   },
@@ -1025,7 +1026,8 @@ class _AssetAllState extends ConsumerState<AssetAll> {
                                                     Navigator.push(
                                                       context,
                                                       MaterialPageRoute(
-                                                        builder: (context) => Service_All(),
+                                                        builder: (context) =>
+                                                            Service_All(ser: '${service_TypeModels[index].ser}'),
                                                       ),
                                                     );
                                                   },
@@ -1139,7 +1141,7 @@ class _AssetAllState extends ConsumerState<AssetAll> {
                                             Navigator.push(
                                               context,
                                               MaterialPageRoute(
-                                                builder: (context) => Service_All(),
+                                                builder: (context) => Service_All(ser: '${service_TypeModels[3].ser}'),
                                               ),
                                             );
                                           },
